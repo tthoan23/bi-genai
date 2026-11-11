@@ -22,10 +22,25 @@ Hướng dẫn này đi từng bước. Làm xong bước nào thì kiểm tra k
 2. [Lấy mã nguồn](#2-lấy-mã-nguồn)
 3. [Giải nén dữ liệu](#3-giải-nén-dữ-liệu)
 4. [Khởi động Mage và DuckDB](#4-khởi-động-mage-và-duckdb)
-5. [Dừng và chạy lại](#5-dừng-và-chạy-lại)
-6. [Các bước tiếp theo](#6-các-bước-tiếp-theo)
-7. [Xử lý sự cố](#7-xử-lý-sự-cố)
-8. [Nguồn dữ liệu](#8-nguồn-dữ-liệu)
+5. [Nạp dữ liệu vào DuckDB](#5-nạp-dữ-liệu-vào-duckdb)
+6. [Dừng và chạy lại](#6-dừng-và-chạy-lại)
+7. [Các bước tiếp theo](#7-các-bước-tiếp-theo)
+8. [Xử lý sự cố](#8-xử-lý-sự-cố)
+9. [Nguồn dữ liệu](#9-nguồn-dữ-liệu)
+
+**Cấu trúc thư mục:**
+
+```
+bi-genai/
+├── data/                         dữ liệu nguồn (file zip gốc; data/raw là bản giải nén, không đưa lên git)
+├── olist_bi/                     dự án Mage
+│   ├── custom/ingest_csv.py      block nạp 9 file CSV vào DuckDB
+│   └── pipelines/ingest_olist/   pipeline nạp dữ liệu
+├── sql/                          câu SQL tạo bảng audit và kiểm tra kết quả
+├── scripts/query.py              chạy một file SQL trên kho DuckDB
+├── warehouse/olist.duckdb        kho dữ liệu (mỗi người tự tạo, không đưa lên git)
+└── docker-compose.yml            cấu hình container Mage
+```
 
 ## 1. Cài công cụ (làm một lần)
 
@@ -97,7 +112,37 @@ docker compose exec mage python -c "import duckdb, os; con = duckdb.connect(os.e
 
 Kết quả đúng là một bảng nhỏ có cột `ket_qua` bằng `42`, đồng thời xuất hiện file `warehouse/olist.duckdb`. Đây chính là kho dữ liệu: toàn bộ bảng sẽ nằm trong file này.
 
-## 5. Dừng và chạy lại
+## 5. Nạp dữ liệu vào DuckDB
+
+Pipeline `ingest_olist` đọc 9 file CSV trong `data/raw` và nạp vào DuckDB:
+- Mỗi file thành một bảng trong schema `staging`, mọi cột giữ nguyên dạng chữ (text) để không mất dòng nào vì lỗi kiểu dữ liệu.
+- Mỗi dòng có thêm 5 cột truy vết: tên file, mã kiểm tra (checksum) của file, số thứ tự dòng trong file, mã batch, thời điểm nạp.
+- Mỗi lần chạy được ghi vào schema `audit`: batch, lần chạy, số dòng đọc và nạp của từng bảng, lỗi nếu có.
+
+**Cách 1: chạy trên giao diện Mage.** Mở http://localhost:6789, chọn **Pipelines** ở thanh bên trái, bấm vào `ingest_olist`, vào mục **Triggers**, bấm **Run@once** rồi **Run now**. Chờ trạng thái chuyển sang *completed* (khoảng 30 giây).
+
+**Cách 2: chạy bằng lệnh** (dùng khi giao diện khác với mô tả ở trên):
+
+```bash
+docker compose exec mage mage run olist_bi ingest_olist
+```
+
+Thấy dòng `Pipeline run completed.` là xong.
+
+**Kiểm tra:**
+
+```bash
+docker compose exec mage python scripts/query.py sql/check_ingest.sql
+```
+
+Kết quả đúng:
+- Bảng đầu tiên: batch `FULL_001` có trạng thái `INGESTED` (nạp xong; trạng thái `SUCCESS` sẽ có sau khi làm bước dbt).
+- Bảng thứ ba: 9 bảng đều có `rows_read` bằng `rows_loaded`, `rows_rejected` bằng 0, `status` là `SUCCESS`.
+- Bảng cuối: số dòng là orders 99.441, customers 99.441, order_items 112.650, order_reviews 99.224, order_payments 103.886, products 32.951, sellers 3.095, geolocation 1.000.163, category_translation 71 (tổng 1.550.922).
+
+**Thử chạy lại:** chạy pipeline thêm một lần nữa rồi kiểm tra lại. Số dòng không đổi (không sinh dòng trùng), còn bảng thứ hai có thêm một lần chạy với `attempt` bằng 2.
+
+## 6. Dừng và chạy lại
 
 | Việc | Lệnh |
 |---|---|
@@ -107,13 +152,13 @@ Kết quả đúng là một bảng nhỏ có cột `ket_qua` bằng `42`, đồ
 | Xem log khi có lỗi | `docker compose logs --tail 50 mage` |
 | Gỡ container (file trong repo vẫn còn) | `docker compose down` |
 
-## 6. Các bước tiếp theo
+## 7. Các bước tiếp theo
 
 Nhóm đang dựng hệ thống theo từng bước. Mỗi bước xong sẽ được thêm hướng dẫn vào đây.
 
 - [x] Bước 0: khung repo, dữ liệu, Docker Compose
 - [x] Bước 1: Mage và DuckDB chạy được
-- [ ] Bước 2: pipeline Mage nạp 9 file CSV vào DuckDB, có bảng audit
+- [x] Bước 2: pipeline Mage nạp 9 file CSV vào DuckDB, có bảng audit
 - [ ] Bước 3: dbt làm sạch dữ liệu (staging)
 - [ ] Bước 4: dbt dựng kho dữ liệu (dimension, fact)
 - [ ] Bước 5: kiểm thử và tài liệu dbt
@@ -121,7 +166,7 @@ Nhóm đang dựng hệ thống theo từng bước. Mỗi bước xong sẽ đ�
 - [ ] Bước 7: kết nối Power BI
 - [ ] Bước 8: AI tóm tắt và giải thích
 
-## 7. Xử lý sự cố
+## 8. Xử lý sự cố
 
 | Hiện tượng | Cách xử lý |
 |---|---|
@@ -129,8 +174,10 @@ Nhóm đang dựng hệ thống theo từng bước. Mỗi bước xong sẽ đ�
 | `port is already allocated` khi `docker compose up` | Cổng 6789 đang bị chương trình khác dùng. Tắt chương trình đó, hoặc đổi dòng `"6789:6789"` trong `docker-compose.yml` thành `"6790:6789"` rồi mở http://localhost:6790. |
 | Trang http://localhost:6789 không mở được | Chờ thêm 30 giây; xem log bằng `docker compose logs --tail 50 mage`. |
 | Báo lỗi file DuckDB bị khóa (`Could not set lock on file`) | DuckDB chỉ cho một chương trình ghi cùng lúc. Đóng DBeaver hoặc chương trình khác đang mở `olist.duckdb` rồi chạy lại. |
+| Pipeline báo `Không tìm thấy /home/src/data/raw/...` | Chưa giải nén dữ liệu. Làm lại mục 3 rồi chạy pipeline lại. |
+| Pipeline báo `Could not set lock on file` | Đang có chương trình khác mở `olist.duckdb` (ví dụ DBeaver). Ngắt kết nối (Disconnect) trong chương trình đó rồi chạy lại. |
 | Linux: không sửa được file do Mage tạo | Xem phần `.env` với `UID`, `GID` ở mục 4, rồi chạy `docker compose up -d` lại. |
 
-## 8. Nguồn dữ liệu
+## 9. Nguồn dữ liệu
 
 [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), giấy phép CC BY-NC-SA 4.0. Repo giữ nguyên file gốc trong `data/` để mọi người chạy lại được, chỉ dùng cho mục đích học tập. Xem thêm `data/README.md`.
