@@ -1,0 +1,26 @@
+# Dữ liệu giải nén và kho DuckDB: mỗi người tự tạo trên máy mình
+data/raw/
+data/batches/
+warehouse/*.duckdb
+warehouse/*.duckdb.wal
+
+# Mage: dữ liệu chạy, log, thư mục home trong container
+mage_data/
+.mage_home/
+olist_bi/.ssh_tunnel/
+
+# dbt
+**/target/
+**/logs/
+**/dbt_packages/
+
+# Cấu hình riêng và bí mật (API key của AI, UID/GID trên Linux)
+.env
+
+# Python, hệ điều hành, editor
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

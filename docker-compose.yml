@@ -1,0 +1,18 @@
+# Hệ thống BI Olist: Mage (nạp dữ liệu, điều phối) + dbt + DuckDB, tất cả trong một container.
+services:
+  mage:
+    # Mage 0.9.79, ghim theo digest để cả nhóm dùng đúng một phiên bản (có sẵn dbt-duckdb 1.8.4, duckdb 1.0.0)
+    image: mageai/mageai@sha256:440970d14b6e1c66e879650c35564cf5125cbbed56032c0fb8337808fdf012fe
+    container_name: bi-genai-mage
+    command: mage start olist_bi
+    # Chạy bằng user thường để file tạo ra trong repo vẫn thuộc về bạn (quan trọng trên Linux)
+    user: "${UID:-1000}:${GID:-1000}"
+    environment:
+      HOME: /home/src/.mage_home
+      USER_CODE_PATH: /home/src/olist_bi
+      DUCKDB_PATH: /home/src/warehouse/olist.duckdb
+    ports:
+      - "6789:6789"
+    volumes:
+      - ./:/home/src
+    restart: unless-stopped
