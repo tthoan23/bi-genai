@@ -48,6 +48,7 @@ bi-genai/
 │   ├── seeds/                    bảng tra cứu: trạng thái đơn, nhóm kết quả giao
 │   ├── tests/                    8 kiểm thử nghiệp vụ (không mất đơn, thời gian không âm, …)
 │   └── macros/                   hàm đổi kiểu dữ liệu an toàn, hàm cấp khoá
+├── docs/                         tài liệu thêm (phương án chuyển sang SSIS)
 ├── sql/                          câu SQL tạo bảng audit và kiểm tra kết quả
 ├── scripts/query.py              chạy một file SQL trên kho DuckDB
 ├── warehouse/olist.duckdb        kho dữ liệu (mỗi người tự tạo, không đưa lên git)
@@ -270,6 +271,8 @@ Nhóm đang dựng hệ thống theo từng bước. Mỗi bước xong sẽ đ�
 - [ ] Bước 6: nạp tăng thêm (incremental) và kiểm tra chạy lại
 - [ ] Bước 7: kết nối Power BI
 - [ ] Bước 8: AI tóm tắt và giải thích
+
+Nếu giảng viên yêu cầu dùng SSIS thay Mage: xem [docs/phuong-an-ssis.md](docs/phuong-an-ssis.md) (mới ghi lại những gì phải đổi, chưa làm).
 
 ## 11. Xử lý sự cố
 
