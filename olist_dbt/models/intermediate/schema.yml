@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: int_order_timeline
+    description: "Vòng đời mỗi đơn: đủ điều kiện xét giao, đúng hạn hay trễ, thời gian từng bước"
+    columns:
+      - name: order_id
+        data_tests: [not_null, unique]
+  - name: int_order_review_representative
+    description: "Tối đa một đánh giá đại diện cho mỗi đơn"
+    columns:
+      - name: order_id
+        data_tests: [not_null, unique]
+      - name: representative_review_score
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4, 5]
+              quote: false
+  - name: int_order_item_summary
+    description: "Một dòng mỗi đơn: số dòng hàng, số người bán, tiền hàng, phí vận chuyển"
+    columns:
+      - name: order_id
+        data_tests: [not_null, unique]
+  - name: int_order_customer_map
+    columns:
+      - name: order_id
+        data_tests: [not_null, unique]
+      - name: missing_customer_flag
+        data_tests:
+          - accepted_values:
+              values: [0]
+              quote: false
+              config: {severity: warn}
+  - name: int_geography_canonical
+    description: "Một dòng mỗi mã bưu chính"
+    columns:
+      - name: zip_prefix
+        data_tests: [not_null, unique]

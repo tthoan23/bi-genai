@@ -1,0 +1,38 @@
+version: 2
+
+# Mỗi bảng map: mỗi khoá nghiệp vụ (BK) có đúng một khoá thay thế (SK) và ngược lại.
+models:
+  - name: km_order
+    columns:
+      - name: order_key
+        data_tests: [not_null, unique]
+      - name: order_id
+        data_tests: [not_null, unique]
+  - name: km_order_item
+    columns:
+      - name: order_item_key
+        data_tests: [not_null, unique]
+  - name: km_customer
+    columns:
+      - name: customer_key
+        data_tests: [not_null, unique]
+      - name: customer_unique_id
+        data_tests: [not_null, unique]
+  - name: km_product
+    columns:
+      - name: product_key
+        data_tests: [not_null, unique]
+      - name: product_id
+        data_tests: [not_null, unique]
+  - name: km_seller
+    columns:
+      - name: seller_key
+        data_tests: [not_null, unique]
+      - name: seller_id
+        data_tests: [not_null, unique]
+  - name: km_geography
+    columns:
+      - name: geography_key
+        data_tests: [not_null, unique]
+      - name: zip_prefix
+        data_tests: [not_null, unique]

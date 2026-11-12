@@ -14,8 +14,18 @@ clean-targets: ["target", "dbt_packages"]
 flags:
   send_anonymous_usage_stats: false   # không gửi thống kê sử dụng cho dbt Labs
 
+vars:
+  batch_id: null                # rỗng = tính lại mọi đơn; khi nạp tăng thêm thì truyền mã batch
+  payment_threshold_brl: 0.01   # lệch thanh toán quá ngưỡng này (BRL) thì gắn cờ
+
 models:
   olist_dbt:
     staging:                # models/staging/*: làm sạch từng bảng nguồn
       +schema: staging
       +materialized: view   # view: không lưu dữ liệu, mỗi lần đọc thì tính lại từ bảng thô
+    intermediate:           # models/intermediate/*: tính toán trung gian theo nghiệp vụ
+      +schema: intermediate
+      +materialized: table  # table: lưu kết quả thành bảng, phải chạy lại dbt khi dữ liệu đổi
+    marts:                  # models/marts/*: kho dữ liệu (khoá, dimension, fact)
+      +schema: dwh
+      +materialized: table

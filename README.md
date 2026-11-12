@@ -24,10 +24,11 @@ Hướng dẫn này đi từng bước. Làm xong bước nào thì kiểm tra k
 4. [Khởi động Mage và DuckDB](#4-khởi-động-mage-và-duckdb)
 5. [Nạp dữ liệu vào DuckDB](#5-nạp-dữ-liệu-vào-duckdb)
 6. [Làm sạch dữ liệu bằng dbt](#6-làm-sạch-dữ-liệu-bằng-dbt)
-7. [Dừng và chạy lại](#7-dừng-và-chạy-lại)
-8. [Các bước tiếp theo](#8-các-bước-tiếp-theo)
-9. [Xử lý sự cố](#9-xử-lý-sự-cố)
-10. [Nguồn dữ liệu](#10-nguồn-dữ-liệu)
+7. [Tầng trung gian và bảng khoá](#7-tầng-trung-gian-và-bảng-khoá)
+8. [Dừng và chạy lại](#8-dừng-và-chạy-lại)
+9. [Các bước tiếp theo](#9-các-bước-tiếp-theo)
+10. [Xử lý sự cố](#10-xử-lý-sự-cố)
+11. [Nguồn dữ liệu](#11-nguồn-dữ-liệu)
 
 **Cấu trúc thư mục:**
 
@@ -39,7 +40,9 @@ bi-genai/
 │   └── pipelines/ingest_olist/   pipeline nạp dữ liệu
 ├── olist_dbt/                    dự án dbt
 │   ├── models/staging/           9 model stg_* làm sạch từng bảng nguồn, kèm kiểm thử
-│   └── macros/                   hàm đổi kiểu dữ liệu an toàn
+│   ├── models/intermediate/      7 model int_* tính toán trung gian theo nghiệp vụ
+│   ├── models/marts/keys/        6 bảng km_* cấp khoá thay thế bền vững
+│   └── macros/                   hàm đổi kiểu dữ liệu an toàn, hàm cấp khoá
 ├── sql/                          câu SQL tạo bảng audit và kiểm tra kết quả
 ├── scripts/query.py              chạy một file SQL trên kho DuckDB
 ├── warehouse/olist.duckdb        kho dữ liệu (mỗi người tự tạo, không đưa lên git)
@@ -181,7 +184,36 @@ Kết quả đúng: 8 bảng có `dong_tho` bằng `dong_stg`; riêng geolocatio
 
 Lưu ý: dbt cần ghi vào `olist.duckdb`, nên đừng chạy dbt khi pipeline Mage đang chạy hoặc DBeaver đang mở file kho.
 
-## 7. Dừng và chạy lại
+## 7. Tầng trung gian và bảng khoá
+
+dbt dựng thêm hai tầng (lưu thành **bảng**, nên mỗi lần nạp dữ liệu mới phải chạy lại dbt):
+
+| Tầng | Schema | Làm gì |
+|---|---|---|
+| Intermediate (7 model `int_*`) | `intermediate` | Vòng đời mỗi đơn (đủ điều kiện xét giao, đúng hạn hay trễ, thời gian từng bước); một đánh giá đại diện cho mỗi đơn; gộp dòng hàng theo đơn; một dòng cho mỗi mã bưu chính; đối chiếu thanh toán |
+| Bảng khoá (6 model `km_*`) | `dwh` | Cấp khoá thay thế (số nguyên) cho đơn, dòng hàng, khách, sản phẩm, người bán, mã bưu chính. Khoá đã cấp không bao giờ đổi, kể cả khi chạy lại hay `--full-refresh` |
+
+**Chạy toàn bộ dbt** (staging, intermediate, bảng khoá và kiểm thử):
+
+```bash
+docker compose exec mage dbt build
+```
+
+Kết quả đúng: dòng cuối là `Done. PASS=71 WARN=0 ERROR=0 SKIP=0 TOTAL=71`, mất khoảng 30 giây.
+
+**Kiểm tra:**
+
+```bash
+docker compose exec mage python scripts/query.py sql/check_intermediate.sql
+```
+
+Kết quả đúng:
+- Bảng khoá: km_order 99.441, km_order_item 112.650, km_customer 96.096, km_product 32.951, km_seller 3.095, km_geography 19.177.
+- Giao hàng: 96.478 đơn đã giao, 96.470 đơn đủ điều kiện xét, 6.534 đơn trễ, tỷ lệ trễ 6,77%.
+- 98.673 đơn có đánh giá đại diện, điểm trung bình 4,09; 303 đơn lệch thanh toán trên 0,01 BRL, 249 đơn trên 1 BRL.
+- 19.177 mã bưu chính, 682 mã có nhiều tên thành phố, 41 mã có nhiều bang.
+
+## 8. Dừng và chạy lại
 
 | Việc | Lệnh |
 |---|---|
@@ -191,7 +223,7 @@ Lưu ý: dbt cần ghi vào `olist.duckdb`, nên đừng chạy dbt khi pipeline
 | Xem log khi có lỗi | `docker compose logs --tail 50 mage` |
 | Gỡ container (file trong repo vẫn còn) | `docker compose down` |
 
-## 8. Các bước tiếp theo
+## 9. Các bước tiếp theo
 
 Nhóm đang dựng hệ thống theo từng bước. Mỗi bước xong sẽ được thêm hướng dẫn vào đây.
 
@@ -199,13 +231,14 @@ Nhóm đang dựng hệ thống theo từng bước. Mỗi bước xong sẽ đ�
 - [x] Bước 1: Mage và DuckDB chạy được
 - [x] Bước 2: pipeline Mage nạp 9 file CSV vào DuckDB, có bảng audit
 - [x] Bước 3: dbt làm sạch dữ liệu (staging)
-- [ ] Bước 4: dbt dựng kho dữ liệu (dimension, fact)
+- [x] Bước 4a: tầng trung gian (intermediate) và bảng khoá thay thế
+- [ ] Bước 4b: 7 dimension, 2 fact và block dbt trong pipeline Mage
 - [ ] Bước 5: kiểm thử và tài liệu dbt
 - [ ] Bước 6: nạp tăng thêm (incremental) và kiểm tra chạy lại
 - [ ] Bước 7: kết nối Power BI
 - [ ] Bước 8: AI tóm tắt và giải thích
 
-## 9. Xử lý sự cố
+## 10. Xử lý sự cố
 
 | Hiện tượng | Cách xử lý |
 |---|---|
@@ -219,6 +252,6 @@ Nhóm đang dựng hệ thống theo từng bước. Mỗi bước xong sẽ đ�
 | `dbt build` báo không tìm thấy bảng nguồn (`Catalog Error: Table … does not exist`) | Chưa nạp dữ liệu. Làm mục 5 trước rồi chạy lại dbt. |
 | Linux: không sửa được file do Mage tạo | Xem phần `.env` với `UID`, `GID` ở mục 4, rồi chạy `docker compose up -d` lại. |
 
-## 10. Nguồn dữ liệu
+## 11. Nguồn dữ liệu
 
 [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), giấy phép CC BY-NC-SA 4.0. Repo giữ nguyên file gốc trong `data/` để mọi người chạy lại được, chỉ dùng cho mục đích học tập. Xem thêm `data/README.md`.
