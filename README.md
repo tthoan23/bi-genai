@@ -131,7 +131,7 @@ Pipeline `ingest_olist` có 2 block chạy nối tiếp: `ingest_csv` đọc 9 f
 - Mỗi dòng có thêm 5 cột truy vết: tên file, mã kiểm tra (checksum) của file, số thứ tự dòng trong file, mã batch, thời điểm nạp.
 - Mỗi lần chạy được ghi vào schema `audit`: batch, lần chạy, số dòng đọc và nạp của từng bảng, lỗi nếu có.
 
-**Cách 1: chạy trên giao diện Mage.** Mở http://localhost:6789, chọn **Pipelines** ở thanh bên trái, bấm vào `ingest_olist`, vào mục **Triggers**, bấm **Run@once** rồi **Run now**. Chờ trạng thái chuyển sang *completed* (khoảng 1 phút).
+**Cách 1: chạy trên giao diện Mage.** Mở http://localhost:6789, chọn **Pipelines** ở thanh bên trái, bấm vào `ingest_olist`, vào mục **Triggers**, bấm **Run@once** rồi **Run now**. Chờ trạng thái chuyển sang *completed* (khoảng 1–2 phút).
 
 **Cách 2: chạy bằng lệnh** (dùng khi giao diện khác với mô tả ở trên):
 
