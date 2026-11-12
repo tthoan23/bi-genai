@@ -1,4 +1,4 @@
--- Tạo các schema và 4 bảng audit trong DuckDB. Chạy lại nhiều lần vẫn an toàn (if not exists).
+-- Tạo các schema và 5 bảng audit trong DuckDB. Chạy lại nhiều lần vẫn an toàn (if not exists).
 -- Block ingest_csv của Mage tự chạy file này trước mỗi lần nạp.
 
 create schema if not exists staging;       -- bảng thô (mọi cột dạng text) và các view stg_* của dbt
@@ -55,3 +55,28 @@ create table if not exists audit.source_manifest (
     column_list     varchar,
     primary key (batch_id, source_file)
 );
+
+-- Mốc nạp tăng dần của từng nguồn (mỗi file CSV là một nguồn, mỗi nguồn một dòng).
+--   lset (Last Successful Extraction Time): mốc thời gian dữ liệu đã nạp tới ở lần thành công trước.
+--   cet  (Current Extraction Time): thời điểm bắt đầu trích xuất của lần thành công gần nhất.
+--   watermark_column: các cột thời gian dùng để so với lset (trống nghĩa là luôn nạp lại toàn bộ file).
+-- Giá trị khởi tạo 1990-01-01 nghĩa là chưa nạp lần nào. Block ingest_csv tự cập nhật sau mỗi bảng nạp xong.
+create table if not exists audit.etl_metadata (
+    source_name      varchar primary key,
+    watermark_column varchar,
+    lset             timestamp,
+    cet              timestamp,
+    last_batch_id    varchar
+);
+
+insert into audit.etl_metadata (source_name, lset, cet) values
+    ('orders',               '1990-01-01 00:00:00', '1990-01-01 00:00:00'),
+    ('customers',            '1990-01-01 00:00:00', '1990-01-01 00:00:00'),
+    ('order_items',          '1990-01-01 00:00:00', '1990-01-01 00:00:00'),
+    ('order_reviews',        '1990-01-01 00:00:00', '1990-01-01 00:00:00'),
+    ('order_payments',       '1990-01-01 00:00:00', '1990-01-01 00:00:00'),
+    ('products',             '1990-01-01 00:00:00', '1990-01-01 00:00:00'),
+    ('sellers',              '1990-01-01 00:00:00', '1990-01-01 00:00:00'),
+    ('geolocation',          '1990-01-01 00:00:00', '1990-01-01 00:00:00'),
+    ('category_translation', '1990-01-01 00:00:00', '1990-01-01 00:00:00')
+on conflict (source_name) do nothing;

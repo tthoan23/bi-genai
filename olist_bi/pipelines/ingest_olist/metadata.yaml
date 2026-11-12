@@ -57,6 +57,7 @@ variables:
   batch_id: FULL_001
   batch_type: FULL
   is_simulated: 'false'
+  use_lset: 'true'
   raw_dir: /home/src/data/raw
 variables_dir: /home/src/mage_data/olist_bi
 widgets: []

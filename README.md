@@ -155,6 +155,27 @@ Kết quả đúng:
 
 **Thử chạy lại:** chạy pipeline thêm một lần nữa rồi kiểm tra lại. Số dòng không đổi (không sinh dòng trùng), còn bảng thứ hai có thêm một lần chạy với `attempt` bằng 2.
 
+### Nạp tăng dần theo LSET và CET
+
+Mỗi file CSV là một nguồn, có một dòng trong bảng `audit.etl_metadata`:
+
+| Cột | Ý nghĩa |
+|---|---|
+| `source_name` | Tên nguồn (orders, customers, ...) |
+| `watermark_column` | Các cột thời gian dùng để so với LSET. Trống nghĩa là nguồn không có cột thời gian, luôn nạp lại toàn bộ file |
+| `lset` | Last Successful Extraction Time: mốc thời gian dữ liệu đã nạp tới ở lần thành công trước. Ban đầu là `1990-01-01` |
+| `cet` | Current Extraction Time: thời điểm bắt đầu trích xuất của lần thành công gần nhất |
+| `last_batch_id` | Batch đã cập nhật dòng này |
+
+Cách hoạt động:
+- **Batch FULL** (`batch_type = FULL`, mặc định): nạp toàn bộ file rồi đặt lại `lset` bằng thời điểm muộn nhất của dữ liệu.
+- **Batch INCREMENTAL** (`batch_type = INCREMENTAL`): chỉ nạp các dòng có thời điểm muộn hơn `lset`, rồi đẩy `lset` lên. Đặt biến pipeline `use_lset = false` nếu muốn nạp toàn bộ file.
+- Ba bảng có cột thời gian: `orders` (4 cột: đặt hàng, duyệt, giao cho vận chuyển, giao cho khách), `order_items` (`shipping_limit_date`), `order_reviews` (2 cột: tạo, trả lời). Mỗi dòng lấy thời điểm muộn nhất trong các cột đó, nên đơn cũ có thêm sự kiện mới vẫn được nạp lại. Các bảng còn lại (customers, order_payments, products, sellers, geolocation, category_translation) nạp lại toàn bộ file của batch, và `lset` của chúng bằng `cet`.
+- `lset` và `cet` được cập nhật trong cùng transaction với việc nạp từng bảng, nên mốc luôn khớp với dữ liệu. Bảng nào lỗi thì mốc của bảng đó không đổi.
+- Trong `audit.etl_step_log`, `rows_read` là số dòng được trích xuất sau khi lọc theo `lset`. Số dòng của cả file nằm trong `audit.source_manifest.row_count`.
+
+Xem mốc hiện tại: `docker compose exec mage python scripts/query.py sql/check_ingest.sql` (bảng thứ năm).
+
 ## 6. Làm sạch dữ liệu bằng dbt
 
 Bảng thô trong `staging` còn ở dạng chữ, có thể trùng phiên bản giữa các đợt nạp. dbt tạo 9 **view** `stg_*` (cũng trong schema `staging`), mỗi view làm sạch một bảng nguồn:

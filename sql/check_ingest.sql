@@ -22,3 +22,6 @@ union all select 'products', count(*) from staging.products
 union all select 'sellers', count(*) from staging.sellers
 union all select 'geolocation', count(*) from staging.geolocation
 union all select 'category_translation', count(*) from staging.category_translation;
+
+-- 5) Mốc LSET/CET của từng nguồn (lset: dữ liệu đã nạp tới đâu, cet: lần trích xuất thành công gần nhất)
+select source_name, watermark_column, lset, cet, last_batch_id from audit.etl_metadata order by source_name;
