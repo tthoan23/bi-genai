@@ -34,14 +34,17 @@ def run_dbt(*args, **kwargs):
     finally:
         con.close()
 
-    # 2) Chạy dbt
-    cmd = ['dbt', 'build', '--project-dir', DBT_DIR, '--profiles-dir', DBT_DIR]
+    # 2) Chạy dbt. Xoá kết quả cũ trước: nếu dbt lỗi ngay từ đầu (ví dụ không mở được kho)
+    #    thì nó không ghi run_results.json mới, và ta không được đọc nhầm kết quả của lần trước.
+    results_path = os.path.join(DBT_DIR, 'target', 'run_results.json')
+    if os.path.exists(results_path):
+        os.remove(results_path)
+    cmd = ['dbt', 'build', '--no-use-colors', '--project-dir', DBT_DIR, '--profiles-dir', DBT_DIR]
     if batch_type == 'INCREMENTAL':
         cmd += ['--vars', json.dumps({'batch_id': batch_id})]
     proc = subprocess.run(cmd, capture_output=True, text=True)
     print(proc.stdout[-3000:])
 
-    results_path = os.path.join(DBT_DIR, 'target', 'run_results.json')
     rows, failed = [], []
     if os.path.exists(results_path):
         with open(results_path, encoding='utf-8') as f:
@@ -57,7 +60,7 @@ def run_dbt(*args, **kwargs):
                 if status in ('error', 'fail', 'skipped'):
                     failed.append(r['unique_id'])
     if proc.returncode != 0 and not failed:
-        failed.append(f'dbt build thoát với mã {proc.returncode}: {proc.stderr[-500:]}')
+        failed.append(f'dbt build thoát với mã {proc.returncode}: {(proc.stderr or proc.stdout)[-500:]}')
 
     # 3) Ghi kết quả vào audit và chốt trạng thái
     final = 'FAILED' if failed else 'SUCCESS'
