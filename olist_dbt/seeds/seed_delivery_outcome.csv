@@ -1,0 +1,6 @@
+outcome_key,outcome_code,outcome_label,sort_order
+1,ON_TIME,Đúng hạn,1
+2,LATE_1_3,Trễ 1–3 ngày,2
+3,LATE_4_7,Trễ 4–7 ngày,3
+4,LATE_GT7,Trễ trên 7 ngày,4
+5,NOT_ELIGIBLE,Chưa đủ điều kiện,5

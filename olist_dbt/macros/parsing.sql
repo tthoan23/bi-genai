@@ -36,3 +36,16 @@
     translate(lower(trim({{ col }})), 'áàâãäéèêëíìîïóòôõöúùûüç', 'aaaaaeeeeiiiiooooouuuuc'),
     '\s+', ' ', 'g'), '')
 {%- endmacro %}
+
+{#
+  Khoá ngày cho fact: YYYYMMDD khi có ngày hợp lệ; -2 = ngày bị lỗi; -1 = mốc chưa xảy ra (theo trạng thái đơn);
+  0 = thiếu hoặc không rõ. Ba khoá đặc biệt có sẵn trong dim_date.
+#}
+{% macro to_date_key(ts, parse_err=none, not_yet=none) -%}
+  (case
+    {% if parse_err %}when {{ parse_err }} = 1 then -2{% endif %}
+    when {{ ts }} is not null then strftime({{ ts }}, '%Y%m%d')::int
+    {% if not_yet %}when {{ not_yet }} then -1{% endif %}
+    else 0
+  end)
+{%- endmacro %}

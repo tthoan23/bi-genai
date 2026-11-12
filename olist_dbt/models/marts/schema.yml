@@ -1,0 +1,194 @@
+version: 2
+
+# Kho dữ liệu: mỗi dimension có khoá chính không rỗng, không trùng;
+# mỗi khoá ngoại trên fact phải tìm được dòng tương ứng trong dimension (relationships).
+models:
+  - name: dim_date
+    columns:
+      - name: date_key
+        data_tests: [not_null, unique]
+  - name: dim_customer
+    columns:
+      - name: customer_key
+        data_tests: [not_null, unique]
+      - name: customer_unique_id
+        data_tests: [not_null, unique]
+  - name: dim_geography
+    columns:
+      - name: geography_key
+        data_tests: [not_null, unique]
+      - name: zip_prefix
+        data_tests: [not_null, unique]
+  - name: dim_order_status
+    columns:
+      - name: status_key
+        data_tests: [not_null, unique]
+      - name: order_status
+        data_tests: [not_null, unique]
+  - name: dim_delivery_outcome
+    columns:
+      - name: outcome_key
+        data_tests: [not_null, unique]
+      - name: outcome_code
+        data_tests: [not_null, unique]
+  - name: dim_product
+    columns:
+      - name: product_key
+        data_tests: [not_null, unique]
+      - name: product_id
+        data_tests: [not_null, unique]
+  - name: dim_seller
+    columns:
+      - name: seller_key
+        data_tests: [not_null, unique]
+      - name: seller_id
+        data_tests: [not_null, unique]
+  - name: fact_order_experience
+    description: "Một dòng cho mỗi đơn hàng"
+    columns:
+      - name: order_key
+        data_tests: [not_null, unique]
+      - name: order_id
+        data_tests: [not_null, unique]
+      - name: customer_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customer')
+              field: customer_key
+      - name: customer_geography_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_geography')
+              field: geography_key
+      - name: status_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_order_status')
+              field: status_key
+      - name: outcome_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_delivery_outcome')
+              field: outcome_key
+      - name: purchase_date_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: approved_date_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: carrier_date_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: delivered_date_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: estimated_date_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: review_answer_date_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: order_count
+        data_tests:
+          - accepted_values:
+              values: [0, 1]
+              quote: false
+      - name: delivered_count
+        data_tests:
+          - accepted_values:
+              values: [0, 1]
+              quote: false
+      - name: delivery_eligible_count
+        data_tests:
+          - accepted_values:
+              values: [0, 1]
+              quote: false
+      - name: late_count
+        data_tests:
+          - accepted_values:
+              values: [0, 1]
+              quote: false
+      - name: on_time_count
+        data_tests:
+          - accepted_values:
+              values: [0, 1]
+              quote: false
+      - name: reviewed_order_count
+        data_tests:
+          - accepted_values:
+              values: [0, 1]
+              quote: false
+      - name: low_review_order_count
+        data_tests:
+          - accepted_values:
+              values: [0, 1]
+              quote: false
+  - name: fact_order_item
+    description: "Một dòng cho mỗi dòng hàng (order_id, order_item_id)"
+    columns:
+      - name: order_item_key
+        data_tests: [not_null, unique]
+      - name: customer_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customer')
+              field: customer_key
+      - name: customer_geography_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_geography')
+              field: geography_key
+      - name: product_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_product')
+              field: product_key
+      - name: seller_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_seller')
+              field: seller_key
+      - name: seller_geography_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_geography')
+              field: geography_key
+      - name: purchase_date_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: shipping_limit_date_key
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key

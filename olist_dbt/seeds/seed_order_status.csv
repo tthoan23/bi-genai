@@ -1,0 +1,9 @@
+status_key,order_status,status_label,status_group
+1,created,Created,In progress
+2,approved,Approved,In progress
+3,invoiced,Invoiced,In progress
+4,processing,Processing,In progress
+5,shipped,Shipped,In progress
+6,delivered,Delivered,Delivered
+7,canceled,Canceled,Not fulfilled
+8,unavailable,Unavailable,Not fulfilled

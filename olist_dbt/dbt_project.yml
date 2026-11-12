@@ -29,3 +29,7 @@ models:
     marts:                  # models/marts/*: kho dữ liệu (khoá, dimension, fact)
       +schema: dwh
       +materialized: table
+
+seeds:
+  olist_dbt:                # seeds/*.csv: bảng tra cứu nhỏ do nhóm tự định nghĩa (trạng thái đơn, nhóm kết quả giao)
+    +schema: dwh
