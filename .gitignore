@@ -24,3 +24,6 @@ __pycache__/
 Thumbs.db
 .vscode/
 .idea/
+
+# dbt tự tạo, chứa mã định danh riêng của máy
+**/.user.yml

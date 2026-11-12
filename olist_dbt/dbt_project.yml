@@ -11,6 +11,9 @@ seed-paths: ["seeds"]
 target-path: "target"
 clean-targets: ["target", "dbt_packages"]
 
+flags:
+  send_anonymous_usage_stats: false   # không gửi thống kê sử dụng cho dbt Labs
+
 models:
   olist_dbt:
     staging:                # models/staging/*: làm sạch từng bảng nguồn
