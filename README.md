@@ -23,10 +23,11 @@ Hướng dẫn này đi từng bước. Làm xong bước nào thì kiểm tra k
 3. [Giải nén dữ liệu](#3-giải-nén-dữ-liệu)
 4. [Khởi động Mage và DuckDB](#4-khởi-động-mage-và-duckdb)
 5. [Nạp dữ liệu vào DuckDB](#5-nạp-dữ-liệu-vào-duckdb)
-6. [Dừng và chạy lại](#6-dừng-và-chạy-lại)
-7. [Các bước tiếp theo](#7-các-bước-tiếp-theo)
-8. [Xử lý sự cố](#8-xử-lý-sự-cố)
-9. [Nguồn dữ liệu](#9-nguồn-dữ-liệu)
+6. [Làm sạch dữ liệu bằng dbt](#6-làm-sạch-dữ-liệu-bằng-dbt)
+7. [Dừng và chạy lại](#7-dừng-và-chạy-lại)
+8. [Các bước tiếp theo](#8-các-bước-tiếp-theo)
+9. [Xử lý sự cố](#9-xử-lý-sự-cố)
+10. [Nguồn dữ liệu](#10-nguồn-dữ-liệu)
 
 **Cấu trúc thư mục:**
 
@@ -36,6 +37,9 @@ bi-genai/
 ├── olist_bi/                     dự án Mage
 │   ├── custom/ingest_csv.py      block nạp 9 file CSV vào DuckDB
 │   └── pipelines/ingest_olist/   pipeline nạp dữ liệu
+├── olist_dbt/                    dự án dbt
+│   ├── models/staging/           9 model stg_* làm sạch từng bảng nguồn, kèm kiểm thử
+│   └── macros/                   hàm đổi kiểu dữ liệu an toàn
 ├── sql/                          câu SQL tạo bảng audit và kiểm tra kết quả
 ├── scripts/query.py              chạy một file SQL trên kho DuckDB
 ├── warehouse/olist.duckdb        kho dữ liệu (mỗi người tự tạo, không đưa lên git)
@@ -142,7 +146,42 @@ Kết quả đúng:
 
 **Thử chạy lại:** chạy pipeline thêm một lần nữa rồi kiểm tra lại. Số dòng không đổi (không sinh dòng trùng), còn bảng thứ hai có thêm một lần chạy với `attempt` bằng 2.
 
-## 6. Dừng và chạy lại
+## 6. Làm sạch dữ liệu bằng dbt
+
+Bảng thô trong `staging` còn ở dạng chữ, có thể trùng phiên bản giữa các đợt nạp. dbt tạo 9 **view** `stg_*` (cũng trong schema `staging`), mỗi view làm sạch một bảng nguồn:
+- Đổi kiểu dữ liệu an toàn: chữ thành ngày giờ, số; giá trị sai thành rỗng (NULL) thay vì làm hỏng cả câu lệnh, và được đếm vào các cột `*_parse_error`.
+- Mỗi khoá chỉ giữ một dòng: nếu có nhiều phiên bản từ nhiều đợt nạp, lấy phiên bản của đợt mới nhất (theo `batch_seq`).
+- Chuẩn hoá mã bưu chính (đủ 5 chữ số) và tên thành phố (chữ thường, bỏ dấu); bỏ dòng toạ độ trùng.
+
+**Nếu bạn đã khởi động hệ thống trước khi kéo (pull) bước này về**, chạy `docker compose up -d` một lần để container nhận cấu hình mới (thêm biến `DBT_PROJECT_DIR`, `DBT_PROFILES_DIR`).
+
+**Kiểm tra dbt kết nối được kho:**
+
+```bash
+docker compose exec mage dbt debug
+```
+
+Dòng cuối phải là `All checks passed!`.
+
+**Chạy dbt** (tạo các view và chạy kiểm thử):
+
+```bash
+docker compose exec mage dbt build --select staging
+```
+
+Kết quả đúng: dòng cuối là `Done. PASS=23 WARN=0 ERROR=0 SKIP=0 TOTAL=23` (9 view và 14 kiểm thử: khoá không rỗng, không trùng, trạng thái đơn và điểm đánh giá hợp lệ).
+
+**Kiểm tra số dòng:**
+
+```bash
+docker compose exec mage python scripts/query.py sql/check_staging.sql
+```
+
+Kết quả đúng: 8 bảng có `dong_tho` bằng `dong_stg`; riêng geolocation giảm từ 1.000.163 xuống 720.460 do bỏ dòng trùng; các cột thời điểm hiển thị dạng ngày giờ; bảng cuối toàn số 0 (không có giá trị đọc lỗi).
+
+Lưu ý: dbt cần ghi vào `olist.duckdb`, nên đừng chạy dbt khi pipeline Mage đang chạy hoặc DBeaver đang mở file kho.
+
+## 7. Dừng và chạy lại
 
 | Việc | Lệnh |
 |---|---|
@@ -152,21 +191,21 @@ Kết quả đúng:
 | Xem log khi có lỗi | `docker compose logs --tail 50 mage` |
 | Gỡ container (file trong repo vẫn còn) | `docker compose down` |
 
-## 7. Các bước tiếp theo
+## 8. Các bước tiếp theo
 
 Nhóm đang dựng hệ thống theo từng bước. Mỗi bước xong sẽ được thêm hướng dẫn vào đây.
 
 - [x] Bước 0: khung repo, dữ liệu, Docker Compose
 - [x] Bước 1: Mage và DuckDB chạy được
 - [x] Bước 2: pipeline Mage nạp 9 file CSV vào DuckDB, có bảng audit
-- [ ] Bước 3: dbt làm sạch dữ liệu (staging)
+- [x] Bước 3: dbt làm sạch dữ liệu (staging)
 - [ ] Bước 4: dbt dựng kho dữ liệu (dimension, fact)
 - [ ] Bước 5: kiểm thử và tài liệu dbt
 - [ ] Bước 6: nạp tăng thêm (incremental) và kiểm tra chạy lại
 - [ ] Bước 7: kết nối Power BI
 - [ ] Bước 8: AI tóm tắt và giải thích
 
-## 8. Xử lý sự cố
+## 9. Xử lý sự cố
 
 | Hiện tượng | Cách xử lý |
 |---|---|
@@ -176,8 +215,10 @@ Nhóm đang dựng hệ thống theo từng bước. Mỗi bước xong sẽ đ�
 | Báo lỗi file DuckDB bị khóa (`Could not set lock on file`) | DuckDB chỉ cho một chương trình ghi cùng lúc. Đóng DBeaver hoặc chương trình khác đang mở `olist.duckdb` rồi chạy lại. |
 | Pipeline báo `Không tìm thấy /home/src/data/raw/...` | Chưa giải nén dữ liệu. Làm lại mục 3 rồi chạy pipeline lại. |
 | Pipeline báo `Could not set lock on file` | Đang có chương trình khác mở `olist.duckdb` (ví dụ DBeaver). Ngắt kết nối (Disconnect) trong chương trình đó rồi chạy lại. |
+| `dbt` báo `Could not set lock on file` | Giống lỗi trên: đóng chương trình đang mở `olist.duckdb`, đợi pipeline Mage chạy xong rồi chạy lại dbt. |
+| `dbt build` báo không tìm thấy bảng nguồn (`Catalog Error: Table … does not exist`) | Chưa nạp dữ liệu. Làm mục 5 trước rồi chạy lại dbt. |
 | Linux: không sửa được file do Mage tạo | Xem phần `.env` với `UID`, `GID` ở mục 4, rồi chạy `docker compose up -d` lại. |
 
-## 9. Nguồn dữ liệu
+## 10. Nguồn dữ liệu
 
 [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), giấy phép CC BY-NC-SA 4.0. Repo giữ nguyên file gốc trong `data/` để mọi người chạy lại được, chỉ dùng cho mục đích học tập. Xem thêm `data/README.md`.

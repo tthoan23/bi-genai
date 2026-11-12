@@ -1,0 +1,22 @@
+version: 2
+
+# Nguồn: các bảng do Mage nạp (dbt không tạo ra chúng, chỉ đọc). Model gọi chúng bằng source('olist', '<bảng>').
+sources:
+  - name: olist
+    description: "9 file CSV Olist do Mage nạp nguyên dạng text, kèm 5 cột truy vết"
+    schema: staging
+    tables:
+      - name: orders
+      - name: customers
+      - name: order_items
+      - name: order_reviews
+      - name: order_payments
+      - name: products
+      - name: sellers
+      - name: geolocation
+      - name: category_translation
+  - name: audit
+    description: "Nhật ký nạp của Mage; batch_seq cho biết đợt nào mới hơn"
+    schema: audit
+    tables:
+      - name: etl_batch

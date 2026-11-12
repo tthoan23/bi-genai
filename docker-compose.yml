@@ -11,6 +11,9 @@ services:
       HOME: /home/src/.mage_home
       USER_CODE_PATH: /home/src/olist_bi
       DUCKDB_PATH: /home/src/warehouse/olist.duckdb
+      # dbt tự tìm dự án và cấu hình kết nối ở đây, nên chỉ cần gõ `dbt build` từ bất kỳ đâu
+      DBT_PROJECT_DIR: /home/src/olist_dbt
+      DBT_PROFILES_DIR: /home/src/olist_dbt
     ports:
       - "6789:6789"
     volumes:

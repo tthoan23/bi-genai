@@ -1,0 +1,18 @@
+# Dự án dbt của nhóm: biến đổi dữ liệu thô trong DuckDB thành kho dữ liệu.
+name: olist_dbt
+version: '1.0.0'
+config-version: 2
+profile: olist_dbt          # tên kết nối, khai báo trong profiles.yml
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  olist_dbt:
+    staging:                # models/staging/*: làm sạch từng bảng nguồn
+      +schema: staging
+      +materialized: view   # view: không lưu dữ liệu, mỗi lần đọc thì tính lại từ bảng thô

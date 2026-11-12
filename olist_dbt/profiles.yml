@@ -1,0 +1,8 @@
+# Cách dbt kết nối tới kho dữ liệu: một file DuckDB, đường dẫn lấy từ biến DUCKDB_PATH (docker-compose.yml).
+olist_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_PATH', '/home/src/warehouse/olist.duckdb') }}"
+      threads: 4

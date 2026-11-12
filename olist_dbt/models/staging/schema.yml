@@ -1,0 +1,42 @@
+version: 2
+
+# Kiểm thử cho tầng staging: khoá phải có giá trị (not_null) và không trùng (unique).
+models:
+  - name: stg_orders
+    description: "Một dòng cho mỗi đơn hàng, phiên bản mới nhất theo batch_seq"
+    columns:
+      - name: order_id
+        data_tests: [not_null, unique]
+      - name: order_status
+        data_tests:
+          - accepted_values:
+              values: ['delivered', 'shipped', 'canceled', 'unavailable', 'invoiced', 'processing', 'created', 'approved']
+  - name: stg_customers
+    columns:
+      - name: customer_id
+        data_tests: [not_null, unique]
+  - name: stg_order_items
+    columns:
+      - name: order_id
+        data_tests: [not_null]
+      - name: order_item_id
+        data_tests: [not_null]
+  - name: stg_order_reviews
+    columns:
+      - name: review_score
+        data_tests:
+          - accepted_values:
+              values: [1, 2, 3, 4, 5]
+              quote: false
+  - name: stg_products
+    columns:
+      - name: product_id
+        data_tests: [not_null, unique]
+  - name: stg_sellers
+    columns:
+      - name: seller_id
+        data_tests: [not_null, unique]
+  - name: stg_category_translation
+    columns:
+      - name: category_name
+        data_tests: [not_null, unique]
