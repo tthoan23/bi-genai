@@ -1,42 +1,148 @@
 version: 2
 
-# Kiểm thử cho tầng staging: khoá phải có giá trị (not_null) và không trùng (unique).
+# Tầng staging: mỗi model đọc một bảng thô (source 'olist'), làm sạch kiểu dữ liệu và giữ phiên bản mới nhất theo batch_seq.
+# Kiểm thử: khoá phải có giá trị (not_null) và không trùng (unique).
 models:
   - name: stg_orders
-    description: "Một dòng cho mỗi đơn hàng, phiên bản mới nhất theo batch_seq"
+    description: "Một dòng cho mỗi đơn hàng, phiên bản mới nhất theo batch_seq. Đổi chuỗi thời gian sang timestamp và gắn cờ lỗi đọc thời gian."
     columns:
       - name: order_id
+        description: "Mã đơn hàng (khoá nghiệp vụ)."
         data_tests: [not_null, unique]
+      - name: customer_id
+        description: "Mã khách theo từng đơn; khách thật là customer_unique_id trong stg_customers."
       - name: order_status
+        description: "Trạng thái đơn, chữ thường (8 giá trị của Olist)."
         data_tests:
           - accepted_values:
               values: ['delivered', 'shipped', 'canceled', 'unavailable', 'invoiced', 'processing', 'created', 'approved']
+      - name: purchase_ts
+        description: "Thời điểm đặt mua."
+      - name: approved_ts
+        description: "Thời điểm duyệt thanh toán."
+      - name: carrier_ts
+        description: "Thời điểm giao cho đơn vị vận chuyển."
+      - name: delivered_ts
+        description: "Thời điểm khách nhận hàng."
+      - name: estimated_ts
+        description: "Ngày giao dự kiến."
+      - name: purchase_ts_parse_error
+        description: "1 nếu chuỗi thời gian đặt mua có giá trị nhưng không đọc được; các cột *_parse_error khác tương tự."
+      - name: source_batch_id
+        description: "Batch đã nạp phiên bản này của dòng."
+
   - name: stg_customers
+    description: "Một dòng cho mỗi customer_id (mỗi đơn có một customer_id riêng). Chuẩn hoá mã bưu chính, thành phố, bang."
     columns:
       - name: customer_id
+        description: "Mã khách theo đơn (khoá của bảng)."
         data_tests: [not_null, unique]
+      - name: customer_unique_id
+        description: "Mã khách thật, dùng làm khoá nghiệp vụ của dim_customer."
+      - name: zip_prefix
+        description: "5 chữ số đầu của mã bưu chính, đã chuẩn hoá."
+      - name: city
+        description: "Tên thành phố đã chuẩn hoá (bỏ dấu, chữ thường)."
+      - name: state
+        description: "Mã bang, chữ hoa."
+
   - name: stg_order_items
+    description: "Một dòng cho mỗi dòng hàng (order_id, order_item_id). Không dùng (order_id, product_id) vì một sản phẩm có thể lặp trong cùng đơn."
     columns:
       - name: order_id
+        description: "Mã đơn hàng."
         data_tests: [not_null]
       - name: order_item_id
+        description: "Số thứ tự dòng hàng trong đơn."
         data_tests: [not_null]
-  - name: stg_order_reviews
+      - name: product_id
+        description: "Mã sản phẩm."
+      - name: seller_id
+        description: "Mã người bán."
+      - name: shipping_limit_ts
+        description: "Hạn người bán phải giao cho đơn vị vận chuyển."
+      - name: price_amount
+        description: "Giá sản phẩm (BRL)."
+      - name: freight_amount
+        description: "Phí vận chuyển phân bổ cho dòng hàng (BRL)."
+
+  - name: stg_order_payments
+    description: "Một dòng cho mỗi lần thanh toán của đơn (order_id, payment_sequential)."
     columns:
+      - name: order_id
+        description: "Mã đơn hàng."
+      - name: payment_sequential
+        description: "Thứ tự lần thanh toán trong đơn."
+      - name: payment_type
+        description: "Hình thức thanh toán (credit_card, boleto, voucher, debit_card…)."
+      - name: payment_installments
+        description: "Số kỳ trả góp."
+      - name: payment_value
+        description: "Số tiền của lần thanh toán (BRL)."
+
+  - name: stg_order_reviews
+    description: "Mọi đánh giá, chỉ bỏ dòng trùng hoàn toàn mọi cột nội dung. Một đơn có thể có nhiều đánh giá; việc chọn đánh giá đại diện làm ở int_order_review_representative."
+    columns:
+      - name: review_id
+        description: "Mã đánh giá (có thể lặp giữa các đơn)."
+      - name: order_id
+        description: "Mã đơn được đánh giá."
       - name: review_score
+        description: "Điểm 1–5; NULL nếu giá trị gốc không hợp lệ."
         data_tests:
           - accepted_values:
               values: [1, 2, 3, 4, 5]
               quote: false
+      - name: invalid_score_flag
+        description: "1 nếu điểm gốc có giá trị nhưng không thuộc 1–5."
+      - name: review_creation_ts
+        description: "Thời điểm gửi khảo sát đánh giá."
+      - name: review_answer_ts
+        description: "Thời điểm khách trả lời đánh giá."
+
   - name: stg_products
+    description: "Một dòng cho mỗi sản phẩm. Bỏ cột tên/mô tả có lỗi chính tả 'lenght'; kích thước theo cm, khối lượng theo gram."
     columns:
       - name: product_id
+        description: "Mã sản phẩm."
         data_tests: [not_null, unique]
+      - name: category_name
+        description: "Tên danh mục tiếng Bồ Đào Nha, chữ thường."
+      - name: product_weight_g
+        description: "Khối lượng (gram)."
+
   - name: stg_sellers
+    description: "Một dòng cho mỗi người bán, kèm địa chỉ đã chuẩn hoá."
     columns:
       - name: seller_id
+        description: "Mã người bán."
         data_tests: [not_null, unique]
+      - name: zip_prefix
+        description: "5 chữ số đầu của mã bưu chính người bán."
+      - name: city
+        description: "Thành phố đã chuẩn hoá."
+      - name: state
+        description: "Mã bang."
+
+  - name: stg_geolocation
+    description: "Bảng toạ độ theo mã bưu chính, đã bỏ các dòng trùng hoàn toàn (khoảng 26% dòng gốc). Gộp về một dòng mỗi mã bưu chính làm ở int_geography_canonical."
+    columns:
+      - name: zip_prefix
+        description: "5 chữ số đầu của mã bưu chính."
+      - name: lat
+        description: "Vĩ độ."
+      - name: lng
+        description: "Kinh độ."
+      - name: city
+        description: "Thành phố đã chuẩn hoá."
+      - name: state
+        description: "Mã bang."
+
   - name: stg_category_translation
+    description: "Một dòng cho mỗi danh mục: tên tiếng Bồ Đào Nha và tên tiếng Anh."
     columns:
       - name: category_name
+        description: "Tên danh mục tiếng Bồ Đào Nha, chữ thường (khoá nối với stg_products)."
         data_tests: [not_null, unique]
+      - name: category_name_english
+        description: "Tên danh mục tiếng Anh."

@@ -1,38 +1,56 @@
 version: 2
 
 # Mỗi bảng map: mỗi khoá nghiệp vụ (BK) có đúng một khoá thay thế (SK) và ngược lại.
+# Các bảng là incremental với full_refresh=false: khoá đã cấp không bao giờ bị cấp lại, kể cả khi chạy --full-refresh.
 models:
   - name: km_order
+    description: "Bảng cấp khoá thay thế bền vững cho đơn hàng (order_id → order_key)."
     columns:
       - name: order_key
+        description: "Khoá thay thế của đơn."
         data_tests: [not_null, unique]
       - name: order_id
+        description: "Mã đơn hàng (khoá nghiệp vụ)."
         data_tests: [not_null, unique]
   - name: km_order_item
+    description: "Bảng cấp khoá thay thế bền vững cho dòng hàng ((order_id, order_item_id) → order_item_key)."
     columns:
       - name: order_item_key
+        description: "Khoá thay thế của dòng hàng."
         data_tests: [not_null, unique]
   - name: km_customer
+    description: "Bảng cấp khoá thay thế bền vững cho khách thật (customer_unique_id → customer_key)."
     columns:
       - name: customer_key
+        description: "Khoá thay thế của khách."
         data_tests: [not_null, unique]
       - name: customer_unique_id
+        description: "Mã khách thật (khoá nghiệp vụ)."
         data_tests: [not_null, unique]
   - name: km_product
+    description: "Bảng cấp khoá thay thế bền vững cho sản phẩm (product_id → product_key)."
     columns:
       - name: product_key
+        description: "Khoá thay thế của sản phẩm."
         data_tests: [not_null, unique]
       - name: product_id
+        description: "Mã sản phẩm (khoá nghiệp vụ)."
         data_tests: [not_null, unique]
   - name: km_seller
+    description: "Bảng cấp khoá thay thế bền vững cho người bán (seller_id → seller_key)."
     columns:
       - name: seller_key
+        description: "Khoá thay thế của người bán."
         data_tests: [not_null, unique]
       - name: seller_id
+        description: "Mã người bán (khoá nghiệp vụ)."
         data_tests: [not_null, unique]
   - name: km_geography
+    description: "Bảng cấp khoá thay thế bền vững cho mã bưu chính (zip_prefix → geography_key)."
     columns:
       - name: geography_key
+        description: "Khoá thay thế của địa lý."
         data_tests: [not_null, unique]
       - name: zip_prefix
+        description: "5 chữ số đầu của mã bưu chính (khoá nghiệp vụ)."
         data_tests: [not_null, unique]

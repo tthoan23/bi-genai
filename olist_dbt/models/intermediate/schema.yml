@@ -1,39 +1,110 @@
 version: 2
 
+# Tầng intermediate: tính toán theo nghiệp vụ trước khi dựng khoá, dimension và fact.
 models:
   - name: int_order_timeline
-    description: "Vòng đời mỗi đơn: đủ điều kiện xét giao, đúng hạn hay trễ, thời gian từng bước"
+    description: "Vòng đời mỗi đơn: đủ điều kiện xét giao, đúng hạn hay trễ, thời gian từng bước. Có thêm cờ sai thứ tự mốc và số quy tắc chất lượng bị vi phạm."
     columns:
       - name: order_id
+        description: "Mã đơn hàng."
         data_tests: [not_null, unique]
+      - name: delivery_eligible_count
+        description: "1 nếu đơn đã giao, có đủ ngày mua, ngày nhận, ngày dự kiến và hai ngày sau không trước ngày mua."
+      - name: late_count
+        description: "1 nếu đơn đủ điều kiện và ngày nhận sau ngày dự kiến (so theo ngày)."
+      - name: on_time_count
+        description: "1 nếu đơn đủ điều kiện và nhận đúng hoặc trước ngày dự kiến."
+      - name: late_days
+        description: "Số ngày trễ (0 nếu đúng hạn); NULL nếu không đủ điều kiện."
+      - name: outcome_code
+        description: "Nhóm kết quả giao: ON_TIME, LATE_1_3, LATE_4_7, LATE_GT7, NOT_ELIGIBLE."
+      - name: quality_issue_count
+        description: "Số quy tắc chất lượng mà đơn vi phạm (sai thứ tự mốc, lỗi đọc thời gian)."
+
   - name: int_order_review_representative
-    description: "Tối đa một đánh giá đại diện cho mỗi đơn"
+    description: "Tối đa một đánh giá đại diện cho mỗi đơn: đánh giá hợp lệ được trả lời gần nhất, hoà thì xét ngày tạo, mã đánh giá, vị trí dòng."
     columns:
       - name: order_id
+        description: "Mã đơn hàng."
         data_tests: [not_null, unique]
       - name: representative_review_score
+        description: "Điểm (1–5) của đánh giá đại diện."
         data_tests:
           - not_null
           - accepted_values:
               values: [1, 2, 3, 4, 5]
               quote: false
+      - name: review_record_count
+        description: "Số đánh giá hợp lệ của đơn trước khi chọn đại diện."
+
   - name: int_order_item_summary
-    description: "Một dòng mỗi đơn: số dòng hàng, số người bán, tiền hàng, phí vận chuyển"
+    description: "Một dòng mỗi đơn: số dòng hàng, số người bán, tiền hàng, phí vận chuyển. Gộp trước khi nối vào fact cấp đơn để tránh nhân dòng."
     columns:
       - name: order_id
+        description: "Mã đơn hàng."
         data_tests: [not_null, unique]
+      - name: item_line_count
+        description: "Số dòng hàng của đơn."
+      - name: seller_count
+        description: "Số người bán khác nhau trong đơn."
+      - name: goods_value
+        description: "Tổng tiền hàng (BRL)."
+      - name: freight_value
+        description: "Tổng phí vận chuyển (BRL)."
+      - name: amounts_complete
+        description: "true nếu mọi dòng hàng đều đọc được giá và phí vận chuyển."
+
   - name: int_order_customer_map
+    description: "Đơn → customer_id của chính đơn → khách thật (customer_unique_id) và mã bưu chính tại thời điểm đơn. Không gán một địa chỉ chung cho mọi đơn của cùng khách."
     columns:
       - name: order_id
+        description: "Mã đơn hàng."
         data_tests: [not_null, unique]
+      - name: customer_unique_id
+        description: "Mã khách thật."
+      - name: customer_zip_prefix
+        description: "Mã bưu chính của khách trong đơn này."
       - name: missing_customer_flag
+        description: "1 nếu đơn không tìm thấy khách trong stg_customers (mong đợi 0, chỉ cảnh báo)."
         data_tests:
           - accepted_values:
               values: [0]
               quote: false
               config: {severity: warn}
+
   - name: int_geography_canonical
-    description: "Một dòng mỗi mã bưu chính"
+    description: "Một dòng mỗi mã bưu chính. Thành phố, bang lấy cặp xuất hiện nhiều nhất (ưu tiên khách, rồi người bán); toạ độ là trung vị các toạ độ nằm trong khung Brazil."
     columns:
       - name: zip_prefix
+        description: "5 chữ số đầu của mã bưu chính."
         data_tests: [not_null, unique]
+      - name: city_state_label
+        description: "Nhãn 'thành phố - bang' để hiển thị."
+      - name: location_conflict_flag
+        description: "1 nếu mã bưu chính có nhiều cặp thành phố/bang khác nhau."
+      - name: state_conflict_flag
+        description: "1 nếu mã bưu chính xuất hiện ở nhiều bang."
+      - name: coordinate_quality_code
+        description: "MEDIAN_OF_VALID hoặc NO_VALID_COORD (không có toạ độ hợp lệ)."
+
+  - name: int_affected_orders
+    description: "Danh sách đơn cần tính lại khi nạp tăng thêm: đơn có dòng mới trong orders, order_items, order_reviews của batch, hoặc có khách/người bán đổi địa chỉ. Không truyền var('batch_id') thì trả về mọi đơn."
+    columns:
+      - name: order_id
+        description: "Mã đơn bị batch ảnh hưởng."
+
+  - name: int_order_payment_reconciliation
+    description: "Đối chiếu tổng thanh toán với tiền hàng + phí vận chuyển của mỗi đơn. Chỉ gắn cờ, không loại đơn (dùng cho test T13)."
+    columns:
+      - name: order_id
+        description: "Mã đơn hàng."
+      - name: payment_total
+        description: "Tổng các lần thanh toán (BRL)."
+      - name: goods_plus_freight
+        description: "Tiền hàng + phí vận chuyển (BRL)."
+      - name: diff_brl
+        description: "Chênh lệch thanh toán so với tiền hàng + phí vận chuyển."
+      - name: mismatch_gt_threshold
+        description: "1 nếu chênh lệch vượt var('payment_threshold_brl'); NULL nếu số liệu không đầy đủ."
+      - name: mismatch_gt_1brl
+        description: "1 nếu chênh lệch vượt 1 BRL."

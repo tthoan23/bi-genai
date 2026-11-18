@@ -4,189 +4,236 @@ version: 2
 # mỗi khoá ngoại trên fact phải tìm được dòng tương ứng trong dimension (relationships).
 models:
   - name: dim_date
+    description: "Lịch liên tục từ ngày nhỏ nhất đến lớn nhất trong dữ liệu, cộng 3 dòng đặc biệt: 0 Unknown, -1 mốc chưa xảy ra, -2 ngày lỗi. SCD Type 0."
     columns:
       - name: date_key
+        description: "Khoá ngày dạng yyyymmdd; 0, -1, -2 là dòng đặc biệt."
         data_tests: [not_null, unique]
   - name: dim_customer
+    description: "Một dòng cho mỗi khách thật (customer_unique_id), khoá lấy từ km_customer; dòng khoá 0 là Unknown. Địa chỉ gắn theo từng đơn trên fact. SCD Type 1."
     columns:
       - name: customer_key
+        description: "Khoá thay thế của khách thật; 0 = Unknown."
         data_tests: [not_null, unique]
       - name: customer_unique_id
+        description: "Mã khách thật (khoá nghiệp vụ)."
         data_tests: [not_null, unique]
   - name: dim_geography
+    description: "Một dòng cho mỗi mã bưu chính, dùng cho cả địa chỉ khách và người bán (role-playing). Thuộc tính lấy từ int_geography_canonical. SCD Type 1."
     columns:
       - name: geography_key
+        description: "Khoá thay thế của mã bưu chính; 0 = Unknown."
         data_tests: [not_null, unique]
       - name: zip_prefix
+        description: "5 chữ số đầu của mã bưu chính."
         data_tests: [not_null, unique]
   - name: dim_order_status
+    description: "8 trạng thái đơn của Olist (từ seed_order_status) và dòng Unknown khoá 0."
     columns:
       - name: status_key
+        description: "Khoá trạng thái đơn; 0 = Unknown."
         data_tests: [not_null, unique]
       - name: order_status
+        description: "Trạng thái đơn của Olist."
         data_tests: [not_null, unique]
   - name: dim_delivery_outcome
+    description: "Nhóm kết quả giao (đúng hạn, trễ 1–3, 4–7, trên 7 ngày, chưa đủ điều kiện) từ seed_delivery_outcome; sort_order để hiển thị đúng thứ tự."
     columns:
       - name: outcome_key
+        description: "Khoá nhóm kết quả giao; 0 = Unknown."
         data_tests: [not_null, unique]
       - name: outcome_code
+        description: "Mã nhóm kết quả giao (ON_TIME, LATE_1_3, LATE_4_7, LATE_GT7, NOT_ELIGIBLE)."
         data_tests: [not_null, unique]
   - name: dim_product
+    description: "Một dòng cho mỗi sản phẩm, danh mục gộp thẳng vào (star). Không có danh mục thì 'Missing Category'; chưa có bản dịch thì giữ tên gốc và gắn cờ. SCD Type 1."
     columns:
       - name: product_key
+        description: "Khoá thay thế của sản phẩm; 0 = Unknown."
         data_tests: [not_null, unique]
       - name: product_id
+        description: "Mã sản phẩm (khoá nghiệp vụ)."
         data_tests: [not_null, unique]
   - name: dim_seller
+    description: "Một dòng cho mỗi người bán, khoá lấy từ km_seller; dòng khoá 0 là Unknown. Địa chỉ người bán nằm trên fact_order_item. SCD Type 1."
     columns:
       - name: seller_key
+        description: "Khoá thay thế của người bán; 0 = Unknown."
         data_tests: [not_null, unique]
       - name: seller_id
+        description: "Mã người bán (khoá nghiệp vụ)."
         data_tests: [not_null, unique]
   - name: fact_order_experience
-    description: "Một dòng cho mỗi đơn hàng"
+    description: "Một dòng cho mỗi đơn hàng (accumulating snapshot): 6 vai trò ngày, thời gian từng bước, kết quả giao, đánh giá đại diện. Nạp tăng thêm chỉ tính lại đơn trong int_affected_orders (delete+insert theo order_id)."
     columns:
       - name: order_key
+        description: "Khoá thay thế của đơn (từ km_order)."
         data_tests: [not_null, unique]
       - name: order_id
+        description: "Mã đơn hàng."
         data_tests: [not_null, unique]
       - name: customer_key
+        description: "Khoá thay thế của khách thật; 0 = Unknown."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_customer')
               field: customer_key
       - name: customer_geography_key
+        description: "Địa chỉ khách tại thời điểm đơn → dim_geography."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_geography')
               field: geography_key
       - name: status_key
+        description: "Khoá trạng thái đơn; 0 = Unknown."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_order_status')
               field: status_key
       - name: outcome_key
+        description: "Khoá nhóm kết quả giao; 0 = Unknown."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_delivery_outcome')
               field: outcome_key
       - name: purchase_date_key
+        description: "Ngày đặt mua → dim_date."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_date')
               field: date_key
       - name: approved_date_key
+        description: "Ngày duyệt thanh toán → dim_date; -1 nếu chưa duyệt theo trạng thái đơn."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_date')
               field: date_key
       - name: carrier_date_key
+        description: "Ngày giao cho vận chuyển → dim_date; -1 nếu chưa tới bước này."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_date')
               field: date_key
       - name: delivered_date_key
+        description: "Ngày khách nhận → dim_date; -1 nếu chưa giao."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_date')
               field: date_key
       - name: estimated_date_key
+        description: "Ngày giao dự kiến → dim_date."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_date')
               field: date_key
       - name: review_answer_date_key
+        description: "Ngày khách trả lời đánh giá đại diện → dim_date."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_date')
               field: date_key
       - name: order_count
+        description: "Luôn 1; cộng lại ra số đơn."
         data_tests:
           - accepted_values:
               values: [0, 1]
               quote: false
       - name: delivered_count
+        description: "1 nếu đơn ở trạng thái delivered."
         data_tests:
           - accepted_values:
               values: [0, 1]
               quote: false
       - name: delivery_eligible_count
+        description: "1 nếu đơn đủ điều kiện xét giao đúng hạn (mẫu số tỷ lệ trễ)."
         data_tests:
           - accepted_values:
               values: [0, 1]
               quote: false
       - name: late_count
+        description: "1 nếu đơn giao trễ (tử số tỷ lệ trễ)."
         data_tests:
           - accepted_values:
               values: [0, 1]
               quote: false
       - name: on_time_count
+        description: "1 nếu đơn giao đúng hạn."
         data_tests:
           - accepted_values:
               values: [0, 1]
               quote: false
       - name: reviewed_order_count
+        description: "1 nếu đơn có đánh giá đại diện."
         data_tests:
           - accepted_values:
               values: [0, 1]
               quote: false
       - name: low_review_order_count
+        description: "1 nếu điểm đánh giá đại diện là 1 hoặc 2."
         data_tests:
           - accepted_values:
               values: [0, 1]
               quote: false
   - name: fact_order_item
-    description: "Một dòng cho mỗi dòng hàng (order_id, order_item_id)"
+    description: "Một dòng cho mỗi dòng hàng (order_id, order_item_id), transaction fact: giá, phí vận chuyển, sản phẩm, người bán và địa chỉ khách/người bán."
     columns:
       - name: order_item_key
+        description: "Khoá thay thế của dòng hàng (từ km_order_item)."
         data_tests: [not_null, unique]
       - name: customer_key
+        description: "Khoá thay thế của khách thật; 0 = Unknown."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_customer')
               field: customer_key
       - name: customer_geography_key
+        description: "Địa chỉ khách tại thời điểm đơn → dim_geography."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_geography')
               field: geography_key
       - name: product_key
+        description: "Khoá thay thế của sản phẩm; 0 = Unknown."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_product')
               field: product_key
       - name: seller_key
+        description: "Khoá thay thế của người bán; 0 = Unknown."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_seller')
               field: seller_key
       - name: seller_geography_key
+        description: "Địa chỉ người bán → dim_geography."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_geography')
               field: geography_key
       - name: purchase_date_key
+        description: "Ngày đặt mua → dim_date."
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_date')
               field: date_key
       - name: shipping_limit_date_key
+        description: "Hạn giao cho vận chuyển → dim_date."
         data_tests:
           - not_null
           - relationships:
