@@ -27,3 +27,12 @@ Thumbs.db
 
 # dbt tự tạo, chứa mã định danh riêng của máy
 **/.user.yml
+
+# Các file và thư mục khác
+.env
+.venv/
+ssis/**/bin/
+ssis/**/obj/
+*.user
+*.suo
+.vs/

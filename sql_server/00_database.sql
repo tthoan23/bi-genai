@@ -1,0 +1,10 @@
+IF DB_ID(N'OlistDW') IS NULL
+    CREATE DATABASE OlistDW;
+GO
+USE OlistDW;
+GO
+IF SCHEMA_ID(N'staging')      IS NULL EXEC(N'CREATE SCHEMA staging');
+IF SCHEMA_ID(N'intermediate') IS NULL EXEC(N'CREATE SCHEMA intermediate');
+IF SCHEMA_ID(N'dwh')          IS NULL EXEC(N'CREATE SCHEMA dwh');
+IF SCHEMA_ID(N'audit')        IS NULL EXEC(N'CREATE SCHEMA audit');
+GO
