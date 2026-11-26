@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/26/2026 6:44:09 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="CHULLZZ"
+  DTS:CreatorName="CHULLZZ\USER"
+  DTS:Description="Test: kiểm thử kho (T02-T13); có kiểm tra mức ERROR không đạt thì package báo lỗi"
+  DTS:DTSID="{475A9D4F-F4AF-4B96-B759-A0713AED2D10}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="17.0.1000.7"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Test_DW"
+  DTS:ProtectionLevel="0"
+  DTS:VersionGUID="{62A198AF-889E-4F1D-A3BC-8783CED9406E}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\SQL Kiem thu kho"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{1767F841-5AD0-435C-9399-9B61A4ABDDFB}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL Kiem thu kho"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2025; © 2025 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="SqlStatementSource">"EXEC audit.usp_check_dw @batch_id = N'" + @[$Project::BatchId] + "';"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
+          SQLTask:SqlStatementSource="EXEC audit.usp_check_dw @batch_id = N'FULL_001';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+</DTS:Executable>
