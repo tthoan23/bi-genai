@@ -41,6 +41,7 @@ FROM (
     UNION ALL SELECT N'order_reviews',              99224, COUNT(*) FROM staging.order_reviews
     UNION ALL SELECT N'order_payments',            103886, COUNT(*) FROM staging.order_payments
     UNION ALL SELECT N'products',                   32951, COUNT(*) FROM staging.products
+    UNION ALL SELECT N'sellers',                     3095, COUNT(*) FROM staging.sellers
     UNION ALL SELECT N'geolocation',              1000163, COUNT(*) FROM staging.geolocation
     UNION ALL SELECT N'category_translation',          71, COUNT(*) FROM staging.category_translation
 ) q
@@ -54,6 +55,7 @@ FROM (
     UNION ALL SELECT COUNT(*) FROM staging.order_reviews
     UNION ALL SELECT COUNT(*) FROM staging.order_payments
     UNION ALL SELECT COUNT(*) FROM staging.products
+    UNION ALL SELECT COUNT(*) FROM staging.sellers
     UNION ALL SELECT COUNT(*) FROM staging.geolocation
     UNION ALL SELECT COUNT(*) FROM staging.category_translation
 ) t;
@@ -91,7 +93,7 @@ UNION ALL SELECT 'category_translation', COUNT(*) FROM (
 -- 6) Tiếng Việt và bình luận nhiều dòng phải còn nguyên sau khi đọc bằng SSIS.
 SELECT TOP (5) customer_city
 FROM staging.customers
-WHERE source_batch_id = @batch_id AND customer_city LIKE N'%são%'
+WHERE source_batch_id = @batch_id AND customer_city LIKE N'%sao%'
 ORDER BY customer_city;
 
 SELECT TOP (5) review_id, review_comment_message

@@ -1,0 +1,263 @@
+/* THIS IS AUTO-GENERATED CODE THAT WILL BE OVERWRITTEN! DO NOT EDIT!
+*  Microsoft SQL Server Integration Services buffer wrappers
+*  This module defines classes for accessing data flow buffers
+*  THIS IS AUTO-GENERATED CODE THAT WILL BE OVERWRITTEN! DO NOT EDIT! */
+
+
+
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Pipeline;
+using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+
+public class Input0Buffer: ScriptBuffer
+
+{
+    public Input0Buffer(PipelineBuffer Buffer, int[] BufferColumnIndexes, OutputNameMap OutputMap)
+        : base(Buffer, BufferColumnIndexes, OutputMap)
+    {
+    }
+
+    public String ConvertedRegion
+    {
+        get
+        {
+            return Buffer.GetString(BufferColumnIndexes[0]);
+        }
+    }
+    public bool ConvertedRegion_IsNull
+    {
+        get
+        {
+            return IsNull(0);
+        }
+    }
+
+    public String CustomerName
+    {
+        get
+        {
+            return Buffer.GetString(BufferColumnIndexes[1]);
+        }
+    }
+    public bool CustomerName_IsNull
+    {
+        get
+        {
+            return IsNull(1);
+        }
+    }
+
+    public String CopyofOrderID
+    {
+        get
+        {
+            return Buffer.GetString(BufferColumnIndexes[2]);
+        }
+    }
+    public bool CopyofOrderID_IsNull
+    {
+        get
+        {
+            return IsNull(2);
+        }
+    }
+
+    public String CopyofOrderDate
+    {
+        get
+        {
+            return Buffer.GetString(BufferColumnIndexes[3]);
+        }
+    }
+    public bool CopyofOrderDate_IsNull
+    {
+        get
+        {
+            return IsNull(3);
+        }
+    }
+
+    public String CopyofCustomerName
+    {
+        get
+        {
+            return Buffer.GetString(BufferColumnIndexes[4]);
+        }
+    }
+    public bool CopyofCustomerName_IsNull
+    {
+        get
+        {
+            return IsNull(4);
+        }
+    }
+
+    public String CopyofProduct
+    {
+        get
+        {
+            return Buffer.GetString(BufferColumnIndexes[5]);
+        }
+    }
+    public bool CopyofProduct_IsNull
+    {
+        get
+        {
+            return IsNull(5);
+        }
+    }
+
+    public String CopyofQuantity
+    {
+        get
+        {
+            return Buffer.GetString(BufferColumnIndexes[6]);
+        }
+    }
+    public bool CopyofQuantity_IsNull
+    {
+        get
+        {
+            return IsNull(6);
+        }
+    }
+
+    public String CopyofUnitPrice
+    {
+        get
+        {
+            return Buffer.GetString(BufferColumnIndexes[7]);
+        }
+    }
+    public bool CopyofUnitPrice_IsNull
+    {
+        get
+        {
+            return IsNull(7);
+        }
+    }
+
+    public String TrimmedRegion
+    {
+        get
+        {
+            return Buffer.GetString(BufferColumnIndexes[8]);
+        }
+    }
+    public bool TrimmedRegion_IsNull
+    {
+        get
+        {
+            return IsNull(8);
+        }
+    }
+
+    public Int32 ConvertedOrderID
+    {
+        get
+        {
+            return Buffer.GetInt32(BufferColumnIndexes[9]);
+        }
+    }
+    public bool ConvertedOrderID_IsNull
+    {
+        get
+        {
+            return IsNull(9);
+        }
+    }
+
+    public DateTime ConvertedOrderDate
+    {
+        get
+        {
+            return Buffer.GetDate(BufferColumnIndexes[10]);
+        }
+    }
+    public bool ConvertedOrderDate_IsNull
+    {
+        get
+        {
+            return IsNull(10);
+        }
+    }
+
+    public Int32 ConvertedQuantity
+    {
+        get
+        {
+            return Buffer.GetInt32(BufferColumnIndexes[11]);
+        }
+    }
+    public bool ConvertedQuantity_IsNull
+    {
+        get
+        {
+            return IsNull(11);
+        }
+    }
+
+    public Double ConvertedUnitPrice
+    {
+        get
+        {
+            return Buffer.GetDouble(BufferColumnIndexes[12]);
+        }
+    }
+    public bool ConvertedUnitPrice_IsNull
+    {
+        get
+        {
+            return IsNull(12);
+        }
+    }
+
+    public String ConvertedProduct
+    {
+        get
+        {
+            return Buffer.GetString(BufferColumnIndexes[13]);
+        }
+    }
+    public bool ConvertedProduct_IsNull
+    {
+        get
+        {
+            return IsNull(13);
+        }
+    }
+
+    public Int32 RowId
+    {
+        set
+        {
+            this[14] = value;
+        }
+    }
+    public bool RowId_IsNull
+    {
+        set
+        {
+            if (value)
+            {
+                SetNull(14);
+            }
+            else
+            {
+                throw new InvalidOperationException("IsNull property cannot be set to False. Assign a value to the column instead.");
+            }
+        }
+    }
+
+    new public bool NextRow()
+    {
+        return base.NextRow();
+    }
+
+    new public bool EndOfRowset()
+    {
+        return base.EndOfRowset();
+    }
+
+}

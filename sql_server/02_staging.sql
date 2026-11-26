@@ -26,7 +26,7 @@ CREATE TABLE staging.order_items (
 IF OBJECT_ID(N'staging.order_reviews', N'U') IS NULL
 CREATE TABLE staging.order_reviews (
     review_id NVARCHAR(255), order_id NVARCHAR(255), review_score NVARCHAR(255),
-    review_comment_title NVARCHAR(1000), review_comment_message NVARCHAR(1000),
+    review_comment_title NVARCHAR(4000), review_comment_message NVARCHAR(4000),
     review_creation_date NVARCHAR(255), review_answer_timestamp NVARCHAR(255),
     source_file NVARCHAR(260), source_checksum VARCHAR(64), source_row_number INT,
     source_batch_id VARCHAR(100), ingested_at DATETIME2(0));

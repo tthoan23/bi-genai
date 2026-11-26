@@ -1,0 +1,21 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34714.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{C9674DCB-5085-4A16-B785-4C70DD1589BD}") = "OlistETL", "OlistETL\OlistETL.dtproj", "{E02C8ACD-E4BA-4BD9-8888-FCA193B25885}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Development|Default = Development|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E02C8ACD-E4BA-4BD9-8888-FCA193B25885}.Development|Default.ActiveCfg = Development
+		{E02C8ACD-E4BA-4BD9-8888-FCA193B25885}.Development|Default.Build.0 = Development
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7F5C1A2E-9B4D-4C6A-8E31-D0F2A7B95C64}
+	EndGlobalSection
+EndGlobal
