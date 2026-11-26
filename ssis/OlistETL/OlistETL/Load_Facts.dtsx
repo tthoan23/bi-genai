@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
-  DTS:CreationDate="11/26/2026 6:44:08 PM"
+  DTS:CreationDate="11/26/2026 7:24:21 PM"
   DTS:CreationName="Microsoft.Package"
   DTS:CreatorComputerName="CHULLZZ"
   DTS:CreatorName="CHULLZZ\USER"
-  DTS:Description="Load Facts: nạp lại toàn bộ 2 fact, tra khoá dimension bằng Lookup (không khớp -&gt; khoá 0)"
-  DTS:DTSID="{2A46AA35-C6F8-4ECD-ABD8-A7984AE3082C}"
+  DTS:Description="Load Facts: dòng của các đơn bị ảnh hưởng -&gt; bảng stage (Lookup khoá dimension, không khớp -&gt; 0) -&gt; MERGE vào fact"
+  DTS:DTSID="{8C0FB9CB-8C84-476B-9AD3-1150A90DA6B9}"
   DTS:ExecutableType="Microsoft.Package"
   DTS:LastModifiedProductVersion="17.0.1000.7"
   DTS:LocaleID="1033"
   DTS:ObjectName="Load_Facts"
   DTS:ProtectionLevel="0"
-  DTS:VersionGUID="{0A8DF15C-66E3-40E5-B3C5-5C5FAE33A2B4}">
+  DTS:VersionGUID="{2E8CAE43-3700-4320-B7D9-41E644514BA5}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -21,7 +21,7 @@
       DTS:refId="Package\DFT fact_order_experience"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{5325FEE8-B0E8-464E-BC56-BB7E4D580862}"
+      DTS:DTSID="{A33686A6-1611-406A-AA13-F69D7CACA735}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT fact_order_experience"
@@ -679,12 +679,12 @@
               </outputs>
             </component>
             <component
-              refId="Package\DFT fact_order_experience\DST fact_order_experience"
+              refId="Package\DFT fact_order_experience\DST fact_order_experience_stage"
               componentClassID="Microsoft.OLEDBDestination"
               contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
               description="OLE DB Destination"
               localeId="1033"
-              name="DST fact_order_experience"
+              name="DST fact_order_experience_stage"
               usesDispositions="true"
               version="4">
               <properties>
@@ -695,7 +695,7 @@
                 <property
                   dataType="System.String"
                   description="Specifies the name of the database object used to open a rowset."
-                  name="OpenRowset">[dwh].[fact_order_experience]</property>
+                  name="OpenRowset">[dwh].[fact_order_experience_stage]</property>
                 <property
                   dataType="System.String"
                   description="Specifies the variable that contains the name of the database object used to open a rowset."
@@ -737,7 +737,7 @@
               </properties>
               <connections>
                 <connection
-                  refId="Package\DFT fact_order_experience\DST fact_order_experience.Connections[OleDbConnection]"
+                  refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Connections[OleDbConnection]"
                   connectionManagerID="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}:external"
                   connectionManagerRefId="Project.ConnectionManagers[OlistDW]"
                   description="The OLE DB runtime connection used to access the database."
@@ -745,471 +745,471 @@
               </connections>
               <inputs>
                 <input
-                  refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input]"
+                  refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input]"
                   errorOrTruncationOperation="Insert"
                   errorRowDisposition="FailComponent"
                   hasSideEffects="true"
                   name="OLE DB Destination Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[order_id]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[order_id]"
                       cachedDataType="wstr"
                       cachedLength="255"
                       cachedName="order_id"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[order_id]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[order_id]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[order_id]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[customer_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[customer_key]"
                       cachedDataType="i4"
                       cachedName="customer_key"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[customer_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[customer_key]"
                       lineageId="Package\DFT fact_order_experience\DER Khoa dimension.Outputs[Derived Column Output].Columns[customer_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[customer_geography_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[customer_geography_key]"
                       cachedDataType="i4"
                       cachedName="customer_geography_key"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[customer_geography_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[customer_geography_key]"
                       lineageId="Package\DFT fact_order_experience\DER Khoa dimension.Outputs[Derived Column Output].Columns[customer_geography_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[status_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[status_key]"
                       cachedDataType="i2"
                       cachedName="status_key"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[status_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[status_key]"
                       lineageId="Package\DFT fact_order_experience\DER Khoa dimension.Outputs[Derived Column Output].Columns[status_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[outcome_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[outcome_key]"
                       cachedDataType="i2"
                       cachedName="outcome_key"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[outcome_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[outcome_key]"
                       lineageId="Package\DFT fact_order_experience\DER Khoa dimension.Outputs[Derived Column Output].Columns[outcome_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[purchase_date_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[purchase_date_key]"
                       cachedDataType="i4"
                       cachedName="purchase_date_key"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[purchase_date_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[purchase_date_key]"
                       lineageId="Package\DFT fact_order_experience\DER Khoa ngay.Outputs[Derived Column Output].Columns[purchase_date_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[approved_date_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[approved_date_key]"
                       cachedDataType="i4"
                       cachedName="approved_date_key"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[approved_date_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[approved_date_key]"
                       lineageId="Package\DFT fact_order_experience\DER Khoa ngay.Outputs[Derived Column Output].Columns[approved_date_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[carrier_date_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[carrier_date_key]"
                       cachedDataType="i4"
                       cachedName="carrier_date_key"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[carrier_date_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[carrier_date_key]"
                       lineageId="Package\DFT fact_order_experience\DER Khoa ngay.Outputs[Derived Column Output].Columns[carrier_date_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[delivered_date_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[delivered_date_key]"
                       cachedDataType="i4"
                       cachedName="delivered_date_key"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[delivered_date_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[delivered_date_key]"
                       lineageId="Package\DFT fact_order_experience\DER Khoa ngay.Outputs[Derived Column Output].Columns[delivered_date_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[estimated_date_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[estimated_date_key]"
                       cachedDataType="i4"
                       cachedName="estimated_date_key"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[estimated_date_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[estimated_date_key]"
                       lineageId="Package\DFT fact_order_experience\DER Khoa ngay.Outputs[Derived Column Output].Columns[estimated_date_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[review_answer_date_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[review_answer_date_key]"
                       cachedDataType="i4"
                       cachedName="review_answer_date_key"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[review_answer_date_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[review_answer_date_key]"
                       lineageId="Package\DFT fact_order_experience\DER Khoa ngay.Outputs[Derived Column Output].Columns[review_answer_date_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[purchase_ts]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[purchase_ts]"
                       cachedDataType="dbTimeStamp2"
                       cachedName="purchase_ts"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[purchase_ts]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[purchase_ts]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[purchase_ts]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[approved_ts]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[approved_ts]"
                       cachedDataType="dbTimeStamp2"
                       cachedName="approved_ts"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[approved_ts]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[approved_ts]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[approved_ts]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[carrier_ts]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[carrier_ts]"
                       cachedDataType="dbTimeStamp2"
                       cachedName="carrier_ts"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[carrier_ts]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[carrier_ts]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[carrier_ts]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[delivered_ts]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[delivered_ts]"
                       cachedDataType="dbTimeStamp2"
                       cachedName="delivered_ts"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[delivered_ts]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[delivered_ts]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[delivered_ts]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[estimated_ts]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[estimated_ts]"
                       cachedDataType="dbTimeStamp2"
                       cachedName="estimated_ts"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[estimated_ts]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[estimated_ts]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[estimated_ts]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[order_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[order_count]"
                       cachedDataType="i2"
                       cachedName="order_count"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[order_count]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[order_count]"
                       lineageId="Package\DFT fact_order_experience\DER Measure.Outputs[Derived Column Output].Columns[order_count]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[delivered_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[delivered_count]"
                       cachedDataType="i2"
                       cachedName="delivered_count"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[delivered_count]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[delivered_count]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[delivered_count]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[delivery_eligible_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[delivery_eligible_count]"
                       cachedDataType="i2"
                       cachedName="delivery_eligible_count"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[delivery_eligible_count]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[delivery_eligible_count]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[delivery_eligible_count]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[late_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[late_count]"
                       cachedDataType="i2"
                       cachedName="late_count"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[late_count]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[late_count]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[late_count]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[on_time_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[on_time_count]"
                       cachedDataType="i2"
                       cachedName="on_time_count"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[on_time_count]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[on_time_count]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[on_time_count]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[approval_seconds]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[approval_seconds]"
                       cachedDataType="i4"
                       cachedName="approval_seconds"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[approval_seconds]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[approval_seconds]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[approval_seconds]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[handling_seconds]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[handling_seconds]"
                       cachedDataType="i4"
                       cachedName="handling_seconds"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[handling_seconds]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[handling_seconds]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[handling_seconds]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[transit_seconds]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[transit_seconds]"
                       cachedDataType="i4"
                       cachedName="transit_seconds"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[transit_seconds]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[transit_seconds]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[transit_seconds]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[delivery_seconds]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[delivery_seconds]"
                       cachedDataType="i4"
                       cachedName="delivery_seconds"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[delivery_seconds]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[delivery_seconds]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[delivery_seconds]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[late_days]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[late_days]"
                       cachedDataType="i4"
                       cachedName="late_days"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[late_days]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[late_days]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[late_days]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[representative_review_score]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[representative_review_score]"
                       cachedDataType="i2"
                       cachedName="representative_review_score"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[representative_review_score]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[representative_review_score]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[representative_review_score]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[reviewed_order_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[reviewed_order_count]"
                       cachedDataType="i2"
                       cachedName="reviewed_order_count"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[reviewed_order_count]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[reviewed_order_count]"
                       lineageId="Package\DFT fact_order_experience\DER Measure.Outputs[Derived Column Output].Columns[reviewed_order_count]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[low_review_order_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[low_review_order_count]"
                       cachedDataType="i2"
                       cachedName="low_review_order_count"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[low_review_order_count]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[low_review_order_count]"
                       lineageId="Package\DFT fact_order_experience\DER Measure.Outputs[Derived Column Output].Columns[low_review_order_count]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[review_record_count_f]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[review_record_count_f]"
                       cachedDataType="i4"
                       cachedName="review_record_count_f"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[review_record_count]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[review_record_count]"
                       lineageId="Package\DFT fact_order_experience\DER Measure.Outputs[Derived Column Output].Columns[review_record_count_f]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[representative_review_id]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[representative_review_id]"
                       cachedDataType="wstr"
                       cachedLength="255"
                       cachedName="representative_review_id"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[representative_review_id]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[representative_review_id]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[representative_review_id]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[representative_review_source_id]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[representative_review_source_id]"
                       cachedDataType="wstr"
                       cachedLength="300"
                       cachedName="representative_review_source_id"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[representative_review_source_id]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[representative_review_source_id]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[representative_review_source_id]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[review_creation_ts]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[review_creation_ts]"
                       cachedDataType="dbTimeStamp2"
                       cachedName="review_creation_ts"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[review_creation_ts]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[review_creation_ts]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[review_creation_ts]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[review_answer_ts]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[review_answer_ts]"
                       cachedDataType="dbTimeStamp2"
                       cachedName="review_answer_ts"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[review_answer_ts]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[review_answer_ts]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[review_answer_ts]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[review_before_delivery_flag]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[review_before_delivery_flag]"
                       cachedDataType="i2"
                       cachedName="review_before_delivery_flag"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[review_before_delivery_flag]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[review_before_delivery_flag]"
                       lineageId="Package\DFT fact_order_experience\DER Measure.Outputs[Derived Column Output].Columns[review_before_delivery_flag]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[item_line_count_f]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[item_line_count_f]"
                       cachedDataType="i4"
                       cachedName="item_line_count_f"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[item_line_count]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[item_line_count]"
                       lineageId="Package\DFT fact_order_experience\DER Measure.Outputs[Derived Column Output].Columns[item_line_count_f]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[seller_count_f]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[seller_count_f]"
                       cachedDataType="i4"
                       cachedName="seller_count_f"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[seller_count]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[seller_count]"
                       lineageId="Package\DFT fact_order_experience\DER Measure.Outputs[Derived Column Output].Columns[seller_count_f]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[invalid_approval_sequence]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[invalid_approval_sequence]"
                       cachedDataType="i2"
                       cachedName="invalid_approval_sequence"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[invalid_approval_sequence]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[invalid_approval_sequence]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[invalid_approval_sequence]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[invalid_handling_sequence]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[invalid_handling_sequence]"
                       cachedDataType="i2"
                       cachedName="invalid_handling_sequence"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[invalid_handling_sequence]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[invalid_handling_sequence]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[invalid_handling_sequence]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[invalid_transit_sequence]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[invalid_transit_sequence]"
                       cachedDataType="i2"
                       cachedName="invalid_transit_sequence"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[invalid_transit_sequence]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[invalid_transit_sequence]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[invalid_transit_sequence]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[invalid_delivery_sequence]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[invalid_delivery_sequence]"
                       cachedDataType="i2"
                       cachedName="invalid_delivery_sequence"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[invalid_delivery_sequence]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[invalid_delivery_sequence]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[invalid_delivery_sequence]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[invalid_estimated_date]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[invalid_estimated_date]"
                       cachedDataType="i2"
                       cachedName="invalid_estimated_date"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[invalid_estimated_date]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[invalid_estimated_date]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[invalid_estimated_date]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[quality_issue_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[quality_issue_count]"
                       cachedDataType="i4"
                       cachedName="quality_issue_count"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[quality_issue_count]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[quality_issue_count]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[quality_issue_count]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].Columns[source_batch_id]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].Columns[source_batch_id]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="100"
                       cachedName="source_batch_id"
-                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[source_batch_id]"
+                      externalMetadataColumnId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[source_batch_id]"
                       lineageId="Package\DFT fact_order_experience\SRC Don hang.Outputs[OLE DB Source Output].Columns[source_batch_id]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[order_id]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[order_id]"
                       dataType="wstr"
                       length="255"
                       name="order_id" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[customer_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[customer_key]"
                       dataType="i4"
                       name="customer_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[customer_geography_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[customer_geography_key]"
                       dataType="i4"
                       name="customer_geography_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[status_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[status_key]"
                       dataType="i2"
                       name="status_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[outcome_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[outcome_key]"
                       dataType="i2"
                       name="outcome_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[purchase_date_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[purchase_date_key]"
                       dataType="i4"
                       name="purchase_date_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[approved_date_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[approved_date_key]"
                       dataType="i4"
                       name="approved_date_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[carrier_date_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[carrier_date_key]"
                       dataType="i4"
                       name="carrier_date_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[delivered_date_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[delivered_date_key]"
                       dataType="i4"
                       name="delivered_date_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[estimated_date_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[estimated_date_key]"
                       dataType="i4"
                       name="estimated_date_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[review_answer_date_key]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[review_answer_date_key]"
                       dataType="i4"
                       name="review_answer_date_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[purchase_ts]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[purchase_ts]"
                       dataType="dbTimeStamp2"
                       name="purchase_ts" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[approved_ts]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[approved_ts]"
                       dataType="dbTimeStamp2"
                       name="approved_ts" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[carrier_ts]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[carrier_ts]"
                       dataType="dbTimeStamp2"
                       name="carrier_ts" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[delivered_ts]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[delivered_ts]"
                       dataType="dbTimeStamp2"
                       name="delivered_ts" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[estimated_ts]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[estimated_ts]"
                       dataType="dbTimeStamp2"
                       name="estimated_ts" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[order_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[order_count]"
                       dataType="i2"
                       name="order_count" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[delivered_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[delivered_count]"
                       dataType="i2"
                       name="delivered_count" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[delivery_eligible_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[delivery_eligible_count]"
                       dataType="i2"
                       name="delivery_eligible_count" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[late_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[late_count]"
                       dataType="i2"
                       name="late_count" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[on_time_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[on_time_count]"
                       dataType="i2"
                       name="on_time_count" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[approval_seconds]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[approval_seconds]"
                       dataType="i4"
                       name="approval_seconds" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[handling_seconds]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[handling_seconds]"
                       dataType="i4"
                       name="handling_seconds" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[transit_seconds]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[transit_seconds]"
                       dataType="i4"
                       name="transit_seconds" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[delivery_seconds]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[delivery_seconds]"
                       dataType="i4"
                       name="delivery_seconds" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[late_days]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[late_days]"
                       dataType="i4"
                       name="late_days" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[representative_review_score]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[representative_review_score]"
                       dataType="i2"
                       name="representative_review_score" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[reviewed_order_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[reviewed_order_count]"
                       dataType="i2"
                       name="reviewed_order_count" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[low_review_order_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[low_review_order_count]"
                       dataType="i2"
                       name="low_review_order_count" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[review_record_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[review_record_count]"
                       dataType="i4"
                       name="review_record_count" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[representative_review_id]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[representative_review_id]"
                       dataType="wstr"
                       length="255"
                       name="representative_review_id" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[representative_review_source_id]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[representative_review_source_id]"
                       dataType="wstr"
                       length="300"
                       name="representative_review_source_id" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[review_creation_ts]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[review_creation_ts]"
                       dataType="dbTimeStamp2"
                       name="review_creation_ts" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[review_answer_ts]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[review_answer_ts]"
                       dataType="dbTimeStamp2"
                       name="review_answer_ts" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[review_before_delivery_flag]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[review_before_delivery_flag]"
                       dataType="i2"
                       name="review_before_delivery_flag" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[item_line_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[item_line_count]"
                       dataType="i4"
                       name="item_line_count" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[seller_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[seller_count]"
                       dataType="i4"
                       name="seller_count" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[invalid_approval_sequence]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[invalid_approval_sequence]"
                       dataType="i2"
                       name="invalid_approval_sequence" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[invalid_handling_sequence]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[invalid_handling_sequence]"
                       dataType="i2"
                       name="invalid_handling_sequence" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[invalid_transit_sequence]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[invalid_transit_sequence]"
                       dataType="i2"
                       name="invalid_transit_sequence" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[invalid_delivery_sequence]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[invalid_delivery_sequence]"
                       dataType="i2"
                       name="invalid_delivery_sequence" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[invalid_estimated_date]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[invalid_estimated_date]"
                       dataType="i2"
                       name="invalid_estimated_date" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[quality_issue_count]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[quality_issue_count]"
                       dataType="i4"
                       name="quality_issue_count" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[source_batch_id]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[source_batch_id]"
                       codePage="1252"
                       dataType="str"
                       length="100"
                       name="source_batch_id" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[dw_created_at]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[dw_created_at]"
                       dataType="dbTimeStamp2"
                       name="dw_created_at" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input].ExternalColumns[dw_updated_at]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input].ExternalColumns[dw_updated_at]"
                       dataType="dbTimeStamp2"
                       name="dw_updated_at" />
                   </externalMetadataColumns>
@@ -1217,22 +1217,22 @@
               </inputs>
               <outputs>
                 <output
-                  refId="Package\DFT fact_order_experience\DST fact_order_experience.Outputs[OLE DB Destination Error Output]"
+                  refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Outputs[OLE DB Destination Error Output]"
                   exclusionGroup="1"
                   isErrorOut="true"
                   name="OLE DB Destination Error Output"
-                  synchronousInputId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input]">
+                  synchronousInputId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
                       dataType="i4"
-                      lineageId="Package\DFT fact_order_experience\DST fact_order_experience.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      lineageId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
                       name="ErrorCode"
                       specialFlags="1" />
                     <outputColumn
-                      refId="Package\DFT fact_order_experience\DST fact_order_experience.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      refId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
                       dataType="i4"
-                      lineageId="Package\DFT fact_order_experience\DST fact_order_experience.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      lineageId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -1903,6 +1903,7 @@
                   description="The SQL command to be executed."
                   name="SqlCommand"
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">-- Load_Facts, nguồn fact_order_experience: grain một dòng cho mỗi đơn.
+-- Chỉ các đơn bị ảnh hưởng trong batch (intermediate.affected_orders; FULL = mọi đơn), sau đó MERGE vào fact.
 -- Ghép các bảng intermediate cùng grain (đơn). Khoá dimension lấy bằng Lookup, khoá ngày tính bằng Derived Column.
 SELECT t.order_id, t.order_status, t.outcome_code,
        t.purchase_ts, t.approved_ts, t.carrier_ts, t.delivered_ts, t.estimated_ts,
@@ -1920,6 +1921,7 @@ FROM intermediate.int_order_timeline t
 LEFT JOIN intermediate.int_order_customer_map cm          ON cm.order_id = t.order_id
 LEFT JOIN intermediate.int_order_review_representative rv ON rv.order_id = t.order_id
 LEFT JOIN intermediate.int_order_item_summary it          ON it.order_id = t.order_id
+WHERE t.order_id IN (SELECT order_id FROM intermediate.affected_orders)
 </property>
                 <property
                   dataType="System.String"
@@ -2726,7 +2728,7 @@ LEFT JOIN intermediate.int_order_item_summary it          ON it.order_id = t.ord
               startId="Package\DFT fact_order_experience\DER Khoa ngay.Outputs[Derived Column Output]" />
             <path
               refId="Package\DFT fact_order_experience.Paths[Derived Column Output2]"
-              endId="Package\DFT fact_order_experience\DST fact_order_experience.Inputs[OLE DB Destination Input]"
+              endId="Package\DFT fact_order_experience\DST fact_order_experience_stage.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
               startId="Package\DFT fact_order_experience\DER Measure.Outputs[Derived Column Output]" />
             <path
@@ -2762,7 +2764,7 @@ LEFT JOIN intermediate.int_order_item_summary it          ON it.order_id = t.ord
       DTS:refId="Package\DFT fact_order_item"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{9AB6C4EA-5300-4AB9-B604-AF1058885D46}"
+      DTS:DTSID="{ED5AC4BA-7FC2-4BA3-AC5A-C0932AB17BCC}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT fact_order_item"
@@ -3086,12 +3088,12 @@ LEFT JOIN intermediate.int_order_item_summary it          ON it.order_id = t.ord
               </outputs>
             </component>
             <component
-              refId="Package\DFT fact_order_item\DST fact_order_item"
+              refId="Package\DFT fact_order_item\DST fact_order_item_stage"
               componentClassID="Microsoft.OLEDBDestination"
               contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
               description="OLE DB Destination"
               localeId="1033"
-              name="DST fact_order_item"
+              name="DST fact_order_item_stage"
               usesDispositions="true"
               version="4">
               <properties>
@@ -3102,7 +3104,7 @@ LEFT JOIN intermediate.int_order_item_summary it          ON it.order_id = t.ord
                 <property
                   dataType="System.String"
                   description="Specifies the name of the database object used to open a rowset."
-                  name="OpenRowset">[dwh].[fact_order_item]</property>
+                  name="OpenRowset">[dwh].[fact_order_item_stage]</property>
                 <property
                   dataType="System.String"
                   description="Specifies the variable that contains the name of the database object used to open a rowset."
@@ -3144,7 +3146,7 @@ LEFT JOIN intermediate.int_order_item_summary it          ON it.order_id = t.ord
               </properties>
               <connections>
                 <connection
-                  refId="Package\DFT fact_order_item\DST fact_order_item.Connections[OleDbConnection]"
+                  refId="Package\DFT fact_order_item\DST fact_order_item_stage.Connections[OleDbConnection]"
                   connectionManagerID="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}:external"
                   connectionManagerRefId="Project.ConnectionManagers[OlistDW]"
                   description="The OLE DB runtime connection used to access the database."
@@ -3152,189 +3154,189 @@ LEFT JOIN intermediate.int_order_item_summary it          ON it.order_id = t.ord
               </connections>
               <inputs>
                 <input
-                  refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input]"
+                  refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input]"
                   errorOrTruncationOperation="Insert"
                   errorRowDisposition="FailComponent"
                   hasSideEffects="true"
                   name="OLE DB Destination Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[order_id]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[order_id]"
                       cachedDataType="wstr"
                       cachedLength="255"
                       cachedName="order_id"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[order_id]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[order_id]"
                       lineageId="Package\DFT fact_order_item\SRC Dong hang.Outputs[OLE DB Source Output].Columns[order_id]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[order_item_id]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[order_item_id]"
                       cachedDataType="i4"
                       cachedName="order_item_id"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[order_item_id]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[order_item_id]"
                       lineageId="Package\DFT fact_order_item\SRC Dong hang.Outputs[OLE DB Source Output].Columns[order_item_id]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[purchase_date_key]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[purchase_date_key]"
                       cachedDataType="i4"
                       cachedName="purchase_date_key"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[purchase_date_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[purchase_date_key]"
                       lineageId="Package\DFT fact_order_item\DER Khoa va measure.Outputs[Derived Column Output].Columns[purchase_date_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[shipping_limit_date_key]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[shipping_limit_date_key]"
                       cachedDataType="i4"
                       cachedName="shipping_limit_date_key"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[shipping_limit_date_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[shipping_limit_date_key]"
                       lineageId="Package\DFT fact_order_item\DER Khoa va measure.Outputs[Derived Column Output].Columns[shipping_limit_date_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[customer_key]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[customer_key]"
                       cachedDataType="i4"
                       cachedName="customer_key"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[customer_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[customer_key]"
                       lineageId="Package\DFT fact_order_item\DER Khoa va measure.Outputs[Derived Column Output].Columns[customer_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[customer_geography_key]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[customer_geography_key]"
                       cachedDataType="i4"
                       cachedName="customer_geography_key"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[customer_geography_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[customer_geography_key]"
                       lineageId="Package\DFT fact_order_item\DER Khoa va measure.Outputs[Derived Column Output].Columns[customer_geography_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[product_key]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[product_key]"
                       cachedDataType="i4"
                       cachedName="product_key"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[product_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[product_key]"
                       lineageId="Package\DFT fact_order_item\DER Khoa va measure.Outputs[Derived Column Output].Columns[product_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[seller_key]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[seller_key]"
                       cachedDataType="i4"
                       cachedName="seller_key"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[seller_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[seller_key]"
                       lineageId="Package\DFT fact_order_item\DER Khoa va measure.Outputs[Derived Column Output].Columns[seller_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[seller_geography_key]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[seller_geography_key]"
                       cachedDataType="i4"
                       cachedName="seller_geography_key"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[seller_geography_key]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[seller_geography_key]"
                       lineageId="Package\DFT fact_order_item\DER Khoa va measure.Outputs[Derived Column Output].Columns[seller_geography_key]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[shipping_limit_ts]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[shipping_limit_ts]"
                       cachedDataType="dbTimeStamp2"
                       cachedName="shipping_limit_ts"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[shipping_limit_ts]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[shipping_limit_ts]"
                       lineageId="Package\DFT fact_order_item\SRC Dong hang.Outputs[OLE DB Source Output].Columns[shipping_limit_ts]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[item_line_count]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[item_line_count]"
                       cachedDataType="i2"
                       cachedName="item_line_count"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[item_line_count]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[item_line_count]"
                       lineageId="Package\DFT fact_order_item\DER Khoa va measure.Outputs[Derived Column Output].Columns[item_line_count]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[price_amount]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[price_amount]"
                       cachedDataType="numeric"
                       cachedName="price_amount"
                       cachedPrecision="18"
                       cachedScale="2"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[price_amount]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[price_amount]"
                       lineageId="Package\DFT fact_order_item\SRC Dong hang.Outputs[OLE DB Source Output].Columns[price_amount]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[freight_amount]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[freight_amount]"
                       cachedDataType="numeric"
                       cachedName="freight_amount"
                       cachedPrecision="18"
                       cachedScale="2"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[freight_amount]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[freight_amount]"
                       lineageId="Package\DFT fact_order_item\SRC Dong hang.Outputs[OLE DB Source Output].Columns[freight_amount]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[item_total_amount]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[item_total_amount]"
                       cachedDataType="numeric"
                       cachedName="item_total_amount"
                       cachedPrecision="18"
                       cachedScale="2"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[item_total_amount]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[item_total_amount]"
                       lineageId="Package\DFT fact_order_item\DER Khoa va measure.Outputs[Derived Column Output].Columns[item_total_amount]" />
                     <inputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].Columns[source_batch_id]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].Columns[source_batch_id]"
                       cachedCodepage="1252"
                       cachedDataType="str"
                       cachedLength="100"
                       cachedName="source_batch_id"
-                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[source_batch_id]"
+                      externalMetadataColumnId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[source_batch_id]"
                       lineageId="Package\DFT fact_order_item\SRC Dong hang.Outputs[OLE DB Source Output].Columns[source_batch_id]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[order_id]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[order_id]"
                       dataType="wstr"
                       length="255"
                       name="order_id" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[order_item_id]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[order_item_id]"
                       dataType="i4"
                       name="order_item_id" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[purchase_date_key]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[purchase_date_key]"
                       dataType="i4"
                       name="purchase_date_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[shipping_limit_date_key]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[shipping_limit_date_key]"
                       dataType="i4"
                       name="shipping_limit_date_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[customer_key]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[customer_key]"
                       dataType="i4"
                       name="customer_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[customer_geography_key]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[customer_geography_key]"
                       dataType="i4"
                       name="customer_geography_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[product_key]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[product_key]"
                       dataType="i4"
                       name="product_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[seller_key]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[seller_key]"
                       dataType="i4"
                       name="seller_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[seller_geography_key]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[seller_geography_key]"
                       dataType="i4"
                       name="seller_geography_key" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[shipping_limit_ts]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[shipping_limit_ts]"
                       dataType="dbTimeStamp2"
                       name="shipping_limit_ts" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[item_line_count]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[item_line_count]"
                       dataType="i2"
                       name="item_line_count" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[price_amount]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[price_amount]"
                       dataType="numeric"
                       name="price_amount"
                       precision="18"
                       scale="2" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[freight_amount]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[freight_amount]"
                       dataType="numeric"
                       name="freight_amount"
                       precision="18"
                       scale="2" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[item_total_amount]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[item_total_amount]"
                       dataType="numeric"
                       name="item_total_amount"
                       precision="18"
                       scale="2" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[source_batch_id]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[source_batch_id]"
                       codePage="1252"
                       dataType="str"
                       length="100"
                       name="source_batch_id" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[dw_created_at]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[dw_created_at]"
                       dataType="dbTimeStamp2"
                       name="dw_created_at" />
                     <externalMetadataColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input].ExternalColumns[dw_updated_at]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input].ExternalColumns[dw_updated_at]"
                       dataType="dbTimeStamp2"
                       name="dw_updated_at" />
                   </externalMetadataColumns>
@@ -3342,22 +3344,22 @@ LEFT JOIN intermediate.int_order_item_summary it          ON it.order_id = t.ord
               </inputs>
               <outputs>
                 <output
-                  refId="Package\DFT fact_order_item\DST fact_order_item.Outputs[OLE DB Destination Error Output]"
+                  refId="Package\DFT fact_order_item\DST fact_order_item_stage.Outputs[OLE DB Destination Error Output]"
                   exclusionGroup="1"
                   isErrorOut="true"
                   name="OLE DB Destination Error Output"
-                  synchronousInputId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input]">
+                  synchronousInputId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input]">
                   <outputColumns>
                     <outputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
                       dataType="i4"
-                      lineageId="Package\DFT fact_order_item\DST fact_order_item.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      lineageId="Package\DFT fact_order_item\DST fact_order_item_stage.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
                       name="ErrorCode"
                       specialFlags="1" />
                     <outputColumn
-                      refId="Package\DFT fact_order_item\DST fact_order_item.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      refId="Package\DFT fact_order_item\DST fact_order_item_stage.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
                       dataType="i4"
-                      lineageId="Package\DFT fact_order_item\DST fact_order_item.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      lineageId="Package\DFT fact_order_item\DST fact_order_item_stage.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
                       name="ErrorColumn"
                       specialFlags="2" />
                   </outputColumns>
@@ -4187,7 +4189,8 @@ LEFT JOIN intermediate.int_order_item_summary it          ON it.order_id = t.ord
                   description="The SQL command to be executed."
                   name="SqlCommand"
                   UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">-- Load_Facts, nguồn fact_order_item: grain một dòng cho mỗi dòng hàng (order_id, order_item_id).
--- Lấy thêm ngày mua của đơn, khách thật và mã bưu chính của đơn, mã bưu chính người bán.
+-- Chỉ dòng hàng của các đơn bị ảnh hưởng trong batch. Lấy thêm ngày mua, khách thật và mã bưu chính của đơn,
+-- mã bưu chính người bán.
 SELECT i.order_id, i.order_item_id, i.product_id, i.seller_id,
        i.shipping_limit_ts, i.shipping_limit_parse_error, i.price_amount, i.freight_amount, i.source_batch_id,
        o.purchase_ts, o.purchase_ts_parse_error,
@@ -4197,6 +4200,7 @@ FROM intermediate.cln_order_items i
 LEFT JOIN intermediate.cln_orders o              ON o.order_id = i.order_id
 LEFT JOIN intermediate.int_order_customer_map cm ON cm.order_id = i.order_id
 LEFT JOIN intermediate.cln_sellers s             ON s.seller_id = i.seller_id
+WHERE i.order_id IN (SELECT order_id FROM intermediate.affected_orders)
 </property>
                 <property
                   dataType="System.String"
@@ -4552,7 +4556,7 @@ LEFT JOIN intermediate.cln_sellers s             ON s.seller_id = i.seller_id
           <paths>
             <path
               refId="Package\DFT fact_order_item.Paths[Derived Column Output]"
-              endId="Package\DFT fact_order_item\DST fact_order_item.Inputs[OLE DB Destination Input]"
+              endId="Package\DFT fact_order_item\DST fact_order_item_stage.Inputs[OLE DB Destination Input]"
               name="Derived Column Output"
               startId="Package\DFT fact_order_item\DER Khoa va measure.Outputs[Derived Column Output]" />
             <path
@@ -4590,41 +4594,25 @@ LEFT JOIN intermediate.cln_sellers s             ON s.seller_id = i.seller_id
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
-      DTS:refId="Package\SQL Don fact"
+      DTS:refId="Package\SQL Don stage"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{BA8A73BC-E239-472C-85E3-B528C0973F53}"
+      DTS:DTSID="{BF62969E-A29F-487D-9E8E-1004B592B266}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
-      DTS:ObjectName="SQL Don fact"
+      DTS:ObjectName="SQL Don stage"
       DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2025; © 2025 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
       DTS:ThreadHint="0">
       <DTS:Variables />
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-          SQLTask:SqlStatementSource="TRUNCATE TABLE dwh.fact_order_experience; TRUNCATE TABLE dwh.fact_order_item;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
-      </DTS:ObjectData>
-    </DTS:Executable>
-    <DTS:Executable
-      DTS:refId="Package\SQL Gan thoi diem nap"
-      DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{81E7D401-B691-4ED7-B1E3-1C7EF4B1764E}"
-      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
-      DTS:LocaleID="-1"
-      DTS:ObjectName="SQL Gan thoi diem nap"
-      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2025; © 2025 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
-      DTS:ThreadHint="0">
-      <DTS:Variables />
-      <DTS:ObjectData>
-        <SQLTask:SqlTaskData
-          SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-          SQLTask:SqlStatementSource="UPDATE dwh.fact_order_experience SET dw_created_at = SYSDATETIME(), dw_updated_at = COALESCE(dw_updated_at, SYSDATETIME()) WHERE dw_created_at IS NULL; UPDATE dwh.fact_order_item SET dw_created_at = SYSDATETIME(), dw_updated_at = COALESCE(dw_updated_at, SYSDATETIME()) WHERE dw_created_at IS NULL;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="TRUNCATE TABLE dwh.fact_order_experience_stage; TRUNCATE TABLE dwh.fact_order_item_stage;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\SQL Ghi audit"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{7DDC2DE8-06D4-49CC-94E5-0142E9C0939B}"
+      DTS:DTSID="{E8BC83E0-E933-4BAD-B3E0-9D3553339947}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL Ghi audit"
@@ -4639,39 +4627,55 @@ LEFT JOIN intermediate.cln_sellers s             ON s.seller_id = i.seller_id
           SQLTask:SqlStatementSource="EXEC audit.usp_log_step N'FULL_001', 'load_fact', 'dwh.fact_order_experience'; EXEC audit.usp_log_step N'FULL_001', 'load_fact', 'dwh.fact_order_item';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL MERGE vao fact"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{639E87F9-1036-4C96-B08F-35884FBB92C6}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL MERGE vao fact"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2025; © 2025 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
+          SQLTask:SqlStatementSource="EXEC audit.usp_merge_facts;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{0033625B-E3A0-46B3-BA7A-C5E3B71D8AC7\}]"
+      DTS:refId="Package.PrecedenceConstraints[{0307E374-3C86-45C2-8633-31F09122672D\}]"
       DTS:CreationName=""
-      DTS:DTSID="{0033625B-E3A0-46B3-BA7A-C5E3B71D8AC7}"
-      DTS:From="Package\SQL Don fact"
+      DTS:DTSID="{0307E374-3C86-45C2-8633-31F09122672D}"
+      DTS:From="Package\SQL Don stage"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{0033625B-E3A0-46B3-BA7A-C5E3B71D8AC7}"
+      DTS:ObjectName="{0307E374-3C86-45C2-8633-31F09122672D}"
       DTS:To="Package\DFT fact_order_experience" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{79AF6EED-9AFE-4E97-817D-E0281D3F09E5\}]"
+      DTS:refId="Package.PrecedenceConstraints[{48A77C16-B7DA-40CC-8953-DDD5E7BBBB1E\}]"
       DTS:CreationName=""
-      DTS:DTSID="{79AF6EED-9AFE-4E97-817D-E0281D3F09E5}"
+      DTS:DTSID="{48A77C16-B7DA-40CC-8953-DDD5E7BBBB1E}"
+      DTS:From="Package\SQL MERGE vao fact"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{48A77C16-B7DA-40CC-8953-DDD5E7BBBB1E}"
+      DTS:To="Package\SQL Ghi audit" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{B4B115EC-D6E4-4539-B3B9-1E3B2970D11D\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{B4B115EC-D6E4-4539-B3B9-1E3B2970D11D}"
       DTS:From="Package\DFT fact_order_item"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{79AF6EED-9AFE-4E97-817D-E0281D3F09E5}"
-      DTS:To="Package\SQL Gan thoi diem nap" />
+      DTS:ObjectName="{B4B115EC-D6E4-4539-B3B9-1E3B2970D11D}"
+      DTS:To="Package\SQL MERGE vao fact" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{BD2C735E-74D1-4113-9701-E8EB1051E967\}]"
+      DTS:refId="Package.PrecedenceConstraints[{BFDCF774-D062-42AC-87C9-E7C526290AC7\}]"
       DTS:CreationName=""
-      DTS:DTSID="{BD2C735E-74D1-4113-9701-E8EB1051E967}"
+      DTS:DTSID="{BFDCF774-D062-42AC-87C9-E7C526290AC7}"
       DTS:From="Package\DFT fact_order_experience"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{BD2C735E-74D1-4113-9701-E8EB1051E967}"
+      DTS:ObjectName="{BFDCF774-D062-42AC-87C9-E7C526290AC7}"
       DTS:To="Package\DFT fact_order_item" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{FA2B873F-0467-4223-B668-3674786A1CE3\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{FA2B873F-0467-4223-B668-3674786A1CE3}"
-      DTS:From="Package\SQL Gan thoi diem nap"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{FA2B873F-0467-4223-B668-3674786A1CE3}"
-      DTS:To="Package\SQL Ghi audit" />
   </DTS:PrecedenceConstraints>
 </DTS:Executable>

@@ -1,4 +1,5 @@
 -- Load_Facts, nguồn fact_order_experience: grain một dòng cho mỗi đơn.
+-- Chỉ các đơn bị ảnh hưởng trong batch (intermediate.affected_orders; FULL = mọi đơn), sau đó MERGE vào fact.
 -- Ghép các bảng intermediate cùng grain (đơn). Khoá dimension lấy bằng Lookup, khoá ngày tính bằng Derived Column.
 SELECT t.order_id, t.order_status, t.outcome_code,
        t.purchase_ts, t.approved_ts, t.carrier_ts, t.delivered_ts, t.estimated_ts,
@@ -16,3 +17,4 @@ FROM intermediate.int_order_timeline t
 LEFT JOIN intermediate.int_order_customer_map cm          ON cm.order_id = t.order_id
 LEFT JOIN intermediate.int_order_review_representative rv ON rv.order_id = t.order_id
 LEFT JOIN intermediate.int_order_item_summary it          ON it.order_id = t.order_id
+WHERE t.order_id IN (SELECT order_id FROM intermediate.affected_orders)

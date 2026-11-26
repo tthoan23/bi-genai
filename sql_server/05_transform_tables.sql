@@ -209,6 +209,12 @@ CREATE TABLE intermediate.int_geography_canonical (
     state_conflict_flag     smallint      NOT NULL,
     coordinate_quality_code nvarchar(20)  NOT NULL
 );
+
+-- Đơn cần tính lại fact trong batch hiện tại (FULL: mọi đơn). Do audit.usp_build_affected_orders điền.
+CREATE TABLE intermediate.affected_orders (
+    order_id nvarchar(255) NOT NULL CONSTRAINT PK_affected_orders PRIMARY KEY,
+    reason   varchar(30)   NOT NULL
+);
 GO
-PRINT N'Đã tạo 9 bảng cln_* và 7 bảng int_* trong schema intermediate.';
+PRINT N'Đã tạo 9 bảng cln_*, 7 bảng int_* và affected_orders trong schema intermediate.';
 GO

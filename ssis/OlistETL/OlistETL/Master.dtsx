@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
-  DTS:CreationDate="11/26/2026 6:44:09 PM"
+  DTS:CreationDate="11/26/2026 7:24:22 PM"
   DTS:CreationName="Microsoft.Package"
   DTS:CreatorComputerName="CHULLZZ"
   DTS:CreatorName="CHULLZZ\USER"
   DTS:Description="Điều phối: Ingest -&gt; Transform -&gt; Load Dimensions -&gt; Load Facts -&gt; Test, ghi trạng thái batch"
-  DTS:DTSID="{EAC28015-A3E0-475A-B259-6485F29CDB88}"
+  DTS:DTSID="{60A01175-1D6C-414A-AE5C-63FBBAD4A308}"
   DTS:ExecutableType="Microsoft.Package"
   DTS:LastModifiedProductVersion="17.0.1000.7"
   DTS:LocaleID="1033"
   DTS:ObjectName="Master"
   DTS:ProtectionLevel="0"
-  DTS:VersionGUID="{01E5BD85-16E2-48D6-A9B4-305865073092}">
+  DTS:VersionGUID="{9C2C546A-FB44-491D-9CB7-E329020AED38}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -20,7 +20,7 @@
     <DTS:Executable
       DTS:refId="Package\EPT Ingest_Staging"
       DTS:CreationName="Microsoft.ExecutePackageTask"
-      DTS:DTSID="{A1219DAF-F798-45ED-8D7A-CA535CE0A7F7}"
+      DTS:DTSID="{E495B23A-80B0-402C-AEDC-B963CB3C14F1}"
       DTS:ExecutableType="Microsoft.ExecutePackageTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="EPT Ingest_Staging"
@@ -36,7 +36,7 @@
     <DTS:Executable
       DTS:refId="Package\EPT Load_Dimensions"
       DTS:CreationName="Microsoft.ExecutePackageTask"
-      DTS:DTSID="{843BB52F-A2D8-4D26-A8B4-3497F4C99AEB}"
+      DTS:DTSID="{F493A7A7-23B4-4633-A76C-0DEC7578D6B6}"
       DTS:ExecutableType="Microsoft.ExecutePackageTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="EPT Load_Dimensions"
@@ -52,7 +52,7 @@
     <DTS:Executable
       DTS:refId="Package\EPT Load_Facts"
       DTS:CreationName="Microsoft.ExecutePackageTask"
-      DTS:DTSID="{F2BE78EF-84B4-4CF0-A417-9C36CEDFD785}"
+      DTS:DTSID="{58D58DF1-0065-4952-B8F5-C3EF95607860}"
       DTS:ExecutableType="Microsoft.ExecutePackageTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="EPT Load_Facts"
@@ -68,7 +68,7 @@
     <DTS:Executable
       DTS:refId="Package\EPT Test_DW"
       DTS:CreationName="Microsoft.ExecutePackageTask"
-      DTS:DTSID="{E4FDEBA4-B3C9-4453-A6DF-299E62B1A6E1}"
+      DTS:DTSID="{0570976B-CB31-42ED-A616-809E92394487}"
       DTS:ExecutableType="Microsoft.ExecutePackageTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="EPT Test_DW"
@@ -84,7 +84,7 @@
     <DTS:Executable
       DTS:refId="Package\EPT Transform_Business"
       DTS:CreationName="Microsoft.ExecutePackageTask"
-      DTS:DTSID="{8E186DF2-C57B-4997-98A9-AF65E407810A}"
+      DTS:DTSID="{E57B62AE-BF6C-4353-B17E-D3F3AFD6B8F3}"
       DTS:ExecutableType="Microsoft.ExecutePackageTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="EPT Transform_Business"
@@ -100,7 +100,7 @@
     <DTS:Executable
       DTS:refId="Package\EPT Transform_Clean"
       DTS:CreationName="Microsoft.ExecutePackageTask"
-      DTS:DTSID="{5C8D1D9C-6845-4EE4-83A6-BB5AF6DB2B90}"
+      DTS:DTSID="{8D6CF973-D73A-4EBE-8E7E-210DE6963763}"
       DTS:ExecutableType="Microsoft.ExecutePackageTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="EPT Transform_Clean"
@@ -116,7 +116,7 @@
     <DTS:Executable
       DTS:refId="Package\SQL Bat dau batch"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{5E19204C-87DF-4603-99CC-9C82437B705C}"
+      DTS:DTSID="{90B217B9-E44E-4382-A4B5-ECD0572AB1FE}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL Bat dau batch"
@@ -124,17 +124,17 @@
       DTS:ThreadHint="0">
       <DTS:Variables />
       <DTS:PropertyExpression
-        DTS:Name="SqlStatementSource">"EXEC audit.usp_start_run N'" + @[$Project::BatchId] + "';"</DTS:PropertyExpression>
+        DTS:Name="SqlStatementSource">"EXEC audit.usp_start_run N'" + @[$Project::BatchId] + "', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "';"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-          SQLTask:SqlStatementSource="EXEC audit.usp_start_run N'FULL_001';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="EXEC audit.usp_start_run N'FULL_001', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\SQL Ket thuc SUCCESS"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{1EFA6F8F-2E81-44B7-B975-D4975D941DE5}"
+      DTS:DTSID="{8E619977-5944-4A5F-BCE8-BEBCC67D3C4B}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL Ket thuc SUCCESS"
@@ -152,67 +152,67 @@
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{1E03A916-BF66-445C-A07D-F5B08A7083F0\}]"
+      DTS:refId="Package.PrecedenceConstraints[{5A5A795C-4C1A-4D62-BD92-ECCF308F1508\}]"
       DTS:CreationName=""
-      DTS:DTSID="{1E03A916-BF66-445C-A07D-F5B08A7083F0}"
-      DTS:From="Package\EPT Load_Dimensions"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{1E03A916-BF66-445C-A07D-F5B08A7083F0}"
-      DTS:To="Package\EPT Load_Facts" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{3080CF22-D765-4C7C-A962-99DA047DB551\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{3080CF22-D765-4C7C-A962-99DA047DB551}"
-      DTS:From="Package\EPT Test_DW"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{3080CF22-D765-4C7C-A962-99DA047DB551}"
-      DTS:To="Package\SQL Ket thuc SUCCESS" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{56D42466-1B68-44DB-AD8D-B232196CDB8D\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{56D42466-1B68-44DB-AD8D-B232196CDB8D}"
-      DTS:From="Package\EPT Transform_Clean"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{56D42466-1B68-44DB-AD8D-B232196CDB8D}"
-      DTS:To="Package\EPT Transform_Business" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{8331B305-B6C6-4563-83AC-B3927C1CCF93\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{8331B305-B6C6-4563-83AC-B3927C1CCF93}"
-      DTS:From="Package\SQL Bat dau batch"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{8331B305-B6C6-4563-83AC-B3927C1CCF93}"
-      DTS:To="Package\EPT Ingest_Staging" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{BE038B3B-CA22-4689-BEC3-EC93E1FA9501\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{BE038B3B-CA22-4689-BEC3-EC93E1FA9501}"
+      DTS:DTSID="{5A5A795C-4C1A-4D62-BD92-ECCF308F1508}"
       DTS:From="Package\EPT Transform_Business"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{BE038B3B-CA22-4689-BEC3-EC93E1FA9501}"
+      DTS:ObjectName="{5A5A795C-4C1A-4D62-BD92-ECCF308F1508}"
       DTS:To="Package\EPT Load_Dimensions" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{ED1F2EAD-340B-4A12-B92B-331ACC4D60BF\}]"
+      DTS:refId="Package.PrecedenceConstraints[{5ECD35E4-C5A1-4981-A8C0-07B3008E306A\}]"
       DTS:CreationName=""
-      DTS:DTSID="{ED1F2EAD-340B-4A12-B92B-331ACC4D60BF}"
-      DTS:From="Package\EPT Ingest_Staging"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{ED1F2EAD-340B-4A12-B92B-331ACC4D60BF}"
-      DTS:To="Package\EPT Transform_Clean" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{FF1A6292-73A9-4799-A5AB-8ED4C5FDDE9F\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{FF1A6292-73A9-4799-A5AB-8ED4C5FDDE9F}"
+      DTS:DTSID="{5ECD35E4-C5A1-4981-A8C0-07B3008E306A}"
       DTS:From="Package\EPT Load_Facts"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{FF1A6292-73A9-4799-A5AB-8ED4C5FDDE9F}"
+      DTS:ObjectName="{5ECD35E4-C5A1-4981-A8C0-07B3008E306A}"
       DTS:To="Package\EPT Test_DW" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{5FD9BDDD-9F79-45A3-B62B-534E8C0E7749\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{5FD9BDDD-9F79-45A3-B62B-534E8C0E7749}"
+      DTS:From="Package\EPT Test_DW"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{5FD9BDDD-9F79-45A3-B62B-534E8C0E7749}"
+      DTS:To="Package\SQL Ket thuc SUCCESS" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{83407EEA-233E-4DAF-9537-B85F76FC6BE5\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{83407EEA-233E-4DAF-9537-B85F76FC6BE5}"
+      DTS:From="Package\EPT Load_Dimensions"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{83407EEA-233E-4DAF-9537-B85F76FC6BE5}"
+      DTS:To="Package\EPT Load_Facts" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{8FEE7F00-8CDB-4DAC-940C-2E5BFB44F5FA\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{8FEE7F00-8CDB-4DAC-940C-2E5BFB44F5FA}"
+      DTS:From="Package\SQL Bat dau batch"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{8FEE7F00-8CDB-4DAC-940C-2E5BFB44F5FA}"
+      DTS:To="Package\EPT Ingest_Staging" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{DFD02089-0A81-4D48-AD8D-15A2A7546011\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{DFD02089-0A81-4D48-AD8D-15A2A7546011}"
+      DTS:From="Package\EPT Transform_Clean"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{DFD02089-0A81-4D48-AD8D-15A2A7546011}"
+      DTS:To="Package\EPT Transform_Business" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{FB1BA65A-BF19-4080-B9BC-365C5628BA5F\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{FB1BA65A-BF19-4080-B9BC-365C5628BA5F}"
+      DTS:From="Package\EPT Ingest_Staging"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{FB1BA65A-BF19-4080-B9BC-365C5628BA5F}"
+      DTS:To="Package\EPT Transform_Clean" />
   </DTS:PrecedenceConstraints>
   <DTS:EventHandlers>
     <DTS:EventHandler
       DTS:refId="Package.EventHandlers[OnError]"
       DTS:CreationName="OnError"
-      DTS:DTSID="{707535AC-917D-4F7D-A19B-74440C66476D}"
+      DTS:DTSID="{281C3415-21F5-4FD6-A207-A0FE19FC9351}"
       DTS:EventID="0"
       DTS:EventName="OnError"
       DTS:LocaleID="-1">
@@ -220,7 +220,7 @@
         <DTS:Variable
           DTS:CreationName=""
           DTS:Description="The propagate property of the event"
-          DTS:DTSID="{EBB5F6A9-2B0B-4CDA-B265-0C8AD6763347}"
+          DTS:DTSID="{25066743-E2D5-45A2-AEE8-B1E6BB0CF82F}"
           DTS:IncludeInDebugDump="6789"
           DTS:Namespace="System"
           DTS:ObjectName="Propagate">
@@ -232,7 +232,7 @@
         <DTS:Executable
           DTS:refId="Package.EventHandlers[OnError]\SQL Danh dau FAILED"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{9FC3739F-B909-4147-A7A9-ECDC5708E4A8}"
+          DTS:DTSID="{4120637A-1D28-41F9-83A1-F4B0DE21404B}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Danh dau FAILED"

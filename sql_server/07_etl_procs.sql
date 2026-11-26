@@ -1,6 +1,67 @@
--- Task 3 (SSIS): thủ tục dùng chung cho các package Transform, Load và Test.
--- Chạy sau 01_audit.sql, 05, 06. Chạy lại nhiều lần vẫn an toàn (CREATE OR ALTER).
+-- Task 3 (SSIS): bảng và thủ tục dùng chung cho Master, Transform, Load, Test (Full và Incremental Load).
+-- Chạy sau 01_audit.sql, 05, 06. Chạy lại nhiều lần vẫn an toàn.
 USE OlistDW;
+GO
+
+-- LSET / CET của từng nguồn có mốc thời gian (Incremental Extract).
+--   LSET: mốc dữ liệu đã lấy tới ở lần chạy thành công trước. CET: mốc của lần chạy hiện tại (đọc từ _cutoff.txt của batch).
+--   Chỉ đẩy LSET = CET khi CẢ pipeline thành công (usp_finish_run), để lỗi giữa chừng không làm mất dữ liệu.
+IF OBJECT_ID(N'audit.etl_metadata', N'U') IS NULL
+CREATE TABLE audit.etl_metadata (
+    source_name      sysname       NOT NULL CONSTRAINT PK_etl_metadata PRIMARY KEY,
+    watermark_column nvarchar(400) NOT NULL,
+    lset             datetime2(0)  NULL,
+    cet              datetime2(0)  NULL,
+    current_batch_id varchar(100)  NULL,
+    last_batch_id    varchar(100)  NULL,
+    updated_at       datetime2(0)  NULL
+);
+IF NOT EXISTS (SELECT 1 FROM audit.etl_metadata)
+    INSERT audit.etl_metadata (source_name, watermark_column) VALUES
+        (N'orders', N'order_purchase_timestamp, order_approved_at, order_delivered_carrier_date, order_delivered_customer_date'),
+        (N'order_reviews', N'review_answer_timestamp');
+
+-- Kết quả trích xuất của từng file trong mỗi LẦN CHẠY (bằng chứng Full / Incremental Load).
+-- Khoá có run_id: chạy lại một batch không ghi đè thống kê của lần chạy trước.
+IF OBJECT_ID(N'audit.extract_stat', N'U') IS NOT NULL AND COL_LENGTH(N'audit.extract_stat', N'run_id') IS NULL
+    DROP TABLE audit.extract_stat;
+IF OBJECT_ID(N'audit.extract_stat', N'U') IS NULL
+CREATE TABLE audit.extract_stat (
+    batch_id                    varchar(100) NOT NULL,
+    run_id                      int          NOT NULL,
+    table_name                  sysname      NOT NULL,
+    load_mode                   varchar(20)  NULL,
+    lset                        datetime2(0) NULL,
+    cet                         datetime2(0) NULL,
+    file_sha256                 char(64)     NULL,
+    file_skipped                bit          NOT NULL,
+    rows_read                   bigint       NULL,   -- số dòng trong file
+    rows_in_window              bigint       NULL,   -- có mốc thời gian trong (LSET, CET]
+    rows_changed_outside_window bigint       NULL,   -- mới / đổi nội dung nhưng không có mốc mới (chỉ mã băm bắt được)
+    rows_extracted              bigint       NULL,   -- số dòng chuyển vào staging
+    rows_unchanged              bigint       NULL,   -- giống batch trước, không chuyển
+    logged_at                   datetime2(0) NOT NULL CONSTRAINT DF_extract_stat_at DEFAULT (SYSDATETIME()),
+    CONSTRAINT PK_extract_stat PRIMARY KEY (batch_id, run_id, table_name)
+);
+
+-- Khoá thay thế đã cấp ở lần chạy thành công gần nhất: Test_DW kiểm tra khoá không bị đổi.
+IF OBJECT_ID(N'audit.dim_key_snapshot', N'U') IS NULL
+CREATE TABLE audit.dim_key_snapshot (
+    dim_name      sysname       NOT NULL,
+    business_key  nvarchar(255) COLLATE Latin1_General_100_BIN2 NOT NULL,
+    surrogate_key int           NOT NULL,
+    CONSTRAINT PK_dim_key_snapshot PRIMARY KEY (dim_name, business_key)
+);
+GO
+
+-- Khoá thay thế hiện tại của 4 dimension cấp khoá IDENTITY.
+CREATE OR ALTER VIEW audit.v_dim_keys
+AS
+SELECT N'dim_customer' AS dim_name, customer_unique_id COLLATE Latin1_General_100_BIN2 AS business_key, customer_key AS surrogate_key
+FROM dwh.dim_customer
+UNION ALL SELECT N'dim_seller', seller_id COLLATE Latin1_General_100_BIN2, seller_key FROM dwh.dim_seller
+UNION ALL SELECT N'dim_product', product_id COLLATE Latin1_General_100_BIN2, product_key FROM dwh.dim_product
+UNION ALL SELECT N'dim_geography', zip_prefix COLLATE Latin1_General_100_BIN2, geography_key FROM dwh.dim_geography;
 GO
 
 -- Lần chạy hiện tại của một batch: lần mới nhất còn RUNNING hoặc INGESTED.
@@ -14,16 +75,25 @@ BEGIN
 END
 GO
 
--- Master.dtsx gọi đầu tiên. Batch chưa có thì tạo (FULL). Đã có lần chạy dở (RUNNING/INGESTED,
--- ví dụ Ingest_Staging vừa nạp xong) thì dùng tiếp lần đó; không thì mở lần chạy mới, attempt + 1.
+-- Master.dtsx và Ingest_Staging.dtsx gọi đầu tiên.
+--   Chế độ: FULL nếu chưa có batch nào khác thành công (lần nạp đầu), ngược lại INCREMENTAL.
+--   Batch đã SUCCESS được chạy lại thì giữ chế độ cũ.
+--   CET: đọc từ <thư mục batch>\_cutoff.txt; không có file thì CET = 9999-12-31 (lấy hết).
+--   Đã có lần chạy dở (RUNNING/INGESTED) thì dùng tiếp; không thì mở lần chạy mới, attempt + 1.
 CREATE OR ALTER PROC audit.usp_start_run
-    @batch_id varchar(100)
+    @batch_id  varchar(100),
+    @batch_dir nvarchar(400) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
+    DECLARE @mode varchar(20) = CASE WHEN EXISTS (SELECT 1 FROM audit.etl_batch
+                                                  WHERE status = 'SUCCESS' AND batch_id <> @batch_id)
+                                     THEN 'INCREMENTAL' ELSE 'FULL' END;
     IF NOT EXISTS (SELECT 1 FROM audit.etl_batch WHERE batch_id = @batch_id)
         INSERT audit.etl_batch (batch_id, batch_type, status, started_at)
-        VALUES (@batch_id, CASE WHEN @batch_id LIKE 'INC%' THEN 'INCREMENTAL' ELSE 'FULL' END, 'RUNNING', SYSDATETIME());
+        VALUES (@batch_id, @mode, 'RUNNING', SYSDATETIME());
+    ELSE
+        UPDATE audit.etl_batch SET batch_type = @mode WHERE batch_id = @batch_id AND status <> 'SUCCESS';
 
     IF audit.fn_current_run_id(@batch_id) IS NULL
         INSERT audit.etl_run (batch_id, attempt, status, started_at)
@@ -31,8 +101,23 @@ BEGIN
         FROM audit.etl_run WHERE batch_id = @batch_id;
     ELSE
         UPDATE audit.etl_run SET status = 'RUNNING' WHERE run_id = audit.fn_current_run_id(@batch_id);
-
     UPDATE audit.etl_batch SET status = 'RUNNING' WHERE batch_id = @batch_id;
+
+    DECLARE @cet datetime2(0), @txt varchar(100), @sql nvarchar(max);
+    IF @batch_dir IS NOT NULL
+    BEGIN
+        SET @sql = N'SELECT @t = BulkColumn FROM OPENROWSET(BULK N'''
+            + REPLACE(@batch_dir + N'\_cutoff.txt', N'''', N'''''') + N''', SINGLE_CLOB) f';
+        BEGIN TRY
+            EXEC sys.sp_executesql @sql, N'@t varchar(100) OUTPUT', @t = @txt OUTPUT;
+            SET @cet = TRY_CONVERT(datetime2(0), LTRIM(RTRIM(REPLACE(REPLACE(@txt, CHAR(13), ''), CHAR(10), ''))), 120);
+        END TRY
+        BEGIN CATCH
+            SET @cet = NULL;   -- không có _cutoff.txt
+        END CATCH
+    END
+    UPDATE audit.etl_metadata
+       SET cet = ISNULL(@cet, '9999-12-31 23:59:59'), current_batch_id = @batch_id, updated_at = SYSDATETIME();
 END
 GO
 
@@ -56,7 +141,8 @@ BEGIN
 END
 GO
 
--- Master.dtsx gọi cuối cùng (SUCCESS) hoặc trong OnError (FAILED).
+-- Master.dtsx gọi cuối cùng (SUCCESS, sau Test_DW) hoặc trong OnError (FAILED).
+-- Chỉ khi SUCCESS: đẩy LSET = CET và lưu ảnh chụp khoá thay thế. FAILED thì LSET giữ nguyên để chạy lại.
 CREATE OR ALTER PROC audit.usp_finish_run
     @batch_id      varchar(100),
     @status        varchar(20),
@@ -64,11 +150,25 @@ CREATE OR ALTER PROC audit.usp_finish_run
 AS
 BEGIN
     SET NOCOUNT ON;
+    SET XACT_ABORT ON;
     DECLARE @run_id int = audit.fn_current_run_id(@batch_id);
-    UPDATE audit.etl_run
-       SET status = @status, ended_at = SYSDATETIME(), error_message = LEFT(@error_message, 4000)
-     WHERE run_id = @run_id;
-    UPDATE audit.etl_batch SET status = @status, ended_at = SYSDATETIME() WHERE batch_id = @batch_id;
+    BEGIN TRAN;
+        IF @status = 'SUCCESS'
+        BEGIN
+            -- LSET chỉ tiến, không lùi (chạy lại một batch cũ không kéo LSET về mốc cũ)
+            UPDATE audit.etl_metadata
+               SET lset = cet, last_batch_id = @batch_id, updated_at = SYSDATETIME()
+             WHERE current_batch_id = @batch_id AND cet IS NOT NULL AND (lset IS NULL OR cet > lset);
+            INSERT audit.dim_key_snapshot (dim_name, business_key, surrogate_key)
+            SELECT k.dim_name, k.business_key, k.surrogate_key FROM audit.v_dim_keys k
+            WHERE NOT EXISTS (SELECT 1 FROM audit.dim_key_snapshot s
+                              WHERE s.dim_name = k.dim_name AND s.business_key = k.business_key);
+        END
+        UPDATE audit.etl_run
+           SET status = @status, ended_at = SYSDATETIME(), error_message = LEFT(@error_message, 4000)
+         WHERE run_id = @run_id;
+        UPDATE audit.etl_batch SET status = @status, ended_at = SYSDATETIME() WHERE batch_id = @batch_id;
+    COMMIT;
 END
 GO
 
@@ -188,6 +288,34 @@ BEGIN
     INSERT #r SELECT 'T13', 'WARN', N'đơn lệch thanh toán quá 0,01 BRL (có chủ đích, mong đợi 303)', COUNT_BIG(*)
     FROM intermediate.int_order_payment_reconciliation WHERE mismatch_gt_threshold = 1;
 
+    -- T08: khoá thay thế không đổi so với lần chạy thành công trước (chạy lại, nạp tăng thêm)
+    INSERT #r SELECT 'T08', 'ERROR', N'khoá thay thế của dimension không đổi qua các lần nạp', COUNT_BIG(*)
+    FROM audit.dim_key_snapshot s
+    WHERE NOT EXISTS (SELECT 1 FROM audit.v_dim_keys k
+                      WHERE k.dim_name = s.dim_name AND k.business_key = s.business_key
+                        AND k.surrogate_key = s.surrogate_key);
+    -- T09: đối chiếu trích xuất của lần chạy này: đọc = lấy + không đổi
+    INSERT #r SELECT 'T09', 'ERROR', N'đối chiếu số dòng trích xuất (đọc = lấy + không đổi)', COUNT_BIG(*)
+    FROM audit.extract_stat
+    WHERE batch_id = @batch_id AND run_id = ISNULL(audit.fn_current_run_id(@batch_id), 0)
+      AND file_skipped = 0 AND rows_read <> rows_extracted + rows_unchanged;
+    -- T10: số dòng staging của batch = số dòng đã lấy ở lần nạp gần nhất (không tính lần bị bỏ qua)
+    INSERT #r SELECT 'T10', 'ERROR', N'số dòng staging của batch khớp số dòng đã lấy', COUNT(*)
+    FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY run_id DESC) AS rn
+          FROM audit.extract_stat WHERE batch_id = @batch_id AND file_skipped = 0) e
+    CROSS APPLY (SELECT CASE e.table_name
+        WHEN N'orders' THEN (SELECT COUNT_BIG(*) FROM staging.orders WHERE source_batch_id = @batch_id)
+        WHEN N'customers' THEN (SELECT COUNT_BIG(*) FROM staging.customers WHERE source_batch_id = @batch_id)
+        WHEN N'order_items' THEN (SELECT COUNT_BIG(*) FROM staging.order_items WHERE source_batch_id = @batch_id)
+        WHEN N'order_reviews' THEN (SELECT COUNT_BIG(*) FROM staging.order_reviews WHERE source_batch_id = @batch_id)
+        WHEN N'order_payments' THEN (SELECT COUNT_BIG(*) FROM staging.order_payments WHERE source_batch_id = @batch_id)
+        WHEN N'products' THEN (SELECT COUNT_BIG(*) FROM staging.products WHERE source_batch_id = @batch_id)
+        WHEN N'sellers' THEN (SELECT COUNT_BIG(*) FROM staging.sellers WHERE source_batch_id = @batch_id)
+        WHEN N'geolocation' THEN (SELECT COUNT_BIG(*) FROM staging.geolocation WHERE source_batch_id = @batch_id)
+        WHEN N'category_translation' THEN (SELECT COUNT_BIG(*) FROM staging.category_translation WHERE source_batch_id = @batch_id)
+        END AS n) c
+    WHERE e.rn = 1 AND c.n <> e.rows_extracted;
+
     DECLARE @run_id int = ISNULL(audit.fn_current_run_id(@batch_id), 0);
     INSERT audit.etl_step_log (run_id, step, table_name, rows_read, rows_loaded, rows_rejected, status, error_message)
     SELECT @run_id, 'test', check_code, NULL, NULL, failed_rows,
@@ -206,6 +334,108 @@ BEGIN
         SET @msg = N'Kiểm thử kho không đạt: ' + @msg;
         THROW 50010, @msg, 1;
     END
+END
+GO
+-- Transform_Business: các đơn cần tính lại fact trong batch này.
+--   FULL: mọi đơn. INCREMENTAL: đơn có dòng mới / đổi ở orders, order_items, order_reviews, order_payments,
+--   đơn của khách đổi thông tin, đơn có dòng hàng của người bán đổi thông tin.
+CREATE OR ALTER PROC audit.usp_build_affected_orders
+    @batch_id varchar(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    TRUNCATE TABLE intermediate.affected_orders;
+    IF (SELECT batch_type FROM audit.etl_batch WHERE batch_id = @batch_id) = 'FULL'
+        INSERT intermediate.affected_orders (order_id, reason)
+        SELECT order_id, 'FULL' FROM intermediate.cln_orders;
+    ELSE
+        INSERT intermediate.affected_orders (order_id, reason)
+        SELECT o.order_id, MIN(x.reason)
+        FROM (
+            SELECT TRIM(order_id) AS order_id, 'orders' AS reason FROM staging.orders WHERE source_batch_id = @batch_id
+            UNION ALL SELECT TRIM(order_id), 'order_items' FROM staging.order_items WHERE source_batch_id = @batch_id
+            UNION ALL SELECT TRIM(order_id), 'order_reviews' FROM staging.order_reviews WHERE source_batch_id = @batch_id
+            UNION ALL SELECT TRIM(order_id), 'order_payments' FROM staging.order_payments WHERE source_batch_id = @batch_id
+            UNION ALL SELECT o2.order_id, 'customers' FROM intermediate.cln_orders o2
+                      JOIN staging.customers c ON TRIM(c.customer_id) = o2.customer_id WHERE c.source_batch_id = @batch_id
+            UNION ALL SELECT i.order_id, 'sellers' FROM intermediate.cln_order_items i
+                      JOIN staging.sellers s ON TRIM(s.seller_id) = i.seller_id WHERE s.source_batch_id = @batch_id
+        ) x
+        JOIN intermediate.cln_orders o ON o.order_id = x.order_id
+        GROUP BY o.order_id;
+END
+GO
+
+-- Load_Facts: đưa bảng stage vào fact trong MỘT transaction.
+--   Đơn đã có: cập nhật khi nội dung đổi (giữ dw_created_at, đổi dw_updated_at); đơn mới: chèn.
+--   Dòng hàng của đơn bị ảnh hưởng mà không còn trong stage: xoá.
+CREATE OR ALTER PROC audit.usp_merge_facts
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+    DECLARE @sql nvarchar(max) = N'';
+    DECLARE @f TABLE (fact sysname, stage sysname, keys nvarchar(200));
+    INSERT @f VALUES (N'fact_order_experience', N'fact_order_experience_stage', N'order_id'),
+                     (N'fact_order_item', N'fact_order_item_stage', N'order_id,order_item_id');
+    DECLARE @fact sysname, @stage sysname, @keys nvarchar(200);
+    DECLARE c CURSOR LOCAL FAST_FORWARD FOR SELECT fact, stage, keys FROM @f;
+    OPEN c;
+    FETCH NEXT FROM c INTO @fact, @stage, @keys;
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        DECLARE @cols nvarchar(max), @set nvarchar(max), @on nvarchar(max), @t nvarchar(max), @s nvarchar(max);
+        SELECT @cols = STRING_AGG(CAST(QUOTENAME(name) AS nvarchar(max)), N', ') WITHIN GROUP (ORDER BY column_id),
+               @t = STRING_AGG(CAST(N't.' + QUOTENAME(name) AS nvarchar(max)), N', ') WITHIN GROUP (ORDER BY column_id),
+               @s = STRING_AGG(CAST(N's.' + QUOTENAME(name) AS nvarchar(max)), N', ') WITHIN GROUP (ORDER BY column_id)
+        FROM sys.columns WHERE object_id = OBJECT_ID(N'dwh.' + @fact) AND name NOT IN (N'dw_created_at', N'dw_updated_at');
+        SELECT @set = STRING_AGG(CAST(N't.' + QUOTENAME(name) + N' = s.' + QUOTENAME(name) AS nvarchar(max)), N', ')
+        FROM sys.columns WHERE object_id = OBJECT_ID(N'dwh.' + @fact)
+          AND name NOT IN (N'dw_created_at', N'dw_updated_at') AND CHARINDEX(N',' + name + N',', N',' + @keys + N',') = 0;
+        SELECT @on = STRING_AGG(CAST(N't.' + value + N' = s.' + value AS nvarchar(max)), N' AND ') FROM STRING_SPLIT(@keys, N',');
+
+        IF @fact = N'fact_order_item'
+            SET @sql += N'DELETE t FROM dwh.fact_order_item t
+                WHERE t.order_id IN (SELECT order_id FROM intermediate.affected_orders)
+                  AND NOT EXISTS (SELECT 1 FROM dwh.fact_order_item_stage s WHERE ' + @on + N');
+                ';
+        SET @sql += N'MERGE dwh.' + QUOTENAME(@fact) + N' AS t USING dwh.' + QUOTENAME(@stage) + N' AS s ON ' + @on + N'
+            WHEN MATCHED AND EXISTS (SELECT ' + @s + N' EXCEPT SELECT ' + @t + N')
+                THEN UPDATE SET ' + @set + N', t.dw_updated_at = SYSDATETIME()
+            WHEN NOT MATCHED BY TARGET
+                THEN INSERT (' + @cols + N', dw_created_at, dw_updated_at) VALUES (' + @s + N', SYSDATETIME(), SYSDATETIME());
+            ';
+        FETCH NEXT FROM c INTO @fact, @stage, @keys;
+    END
+    CLOSE c; DEALLOCATE c;
+
+    BEGIN TRAN;
+        EXEC sys.sp_executesql @sql;
+    COMMIT;
+END
+GO
+
+-- CHỈ DÙNG KHI PHÁT TRIỂN / DEMO: xoá toàn bộ dữ liệu (staging, intermediate, kho, audit) để chạy lại từ FULL_001.
+-- Khoá thay thế được cấp lại từ 1. Cấu trúc bảng, dòng Unknown và 3 ngày đặc biệt giữ nguyên.
+CREATE OR ALTER PROC audit.usp_reset_all
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @sql nvarchar(max) = N'';
+    SELECT @sql += N'TRUNCATE TABLE ' + QUOTENAME(SCHEMA_NAME(schema_id)) + N'.' + QUOTENAME(name) + N';'
+    FROM sys.tables WHERE SCHEMA_NAME(schema_id) IN (N'staging', N'intermediate')
+       OR (SCHEMA_NAME(schema_id) = N'dwh' AND name LIKE N'fact[_]%');
+    EXEC sys.sp_executesql @sql;
+    DELETE dwh.dim_customer WHERE customer_key <> 0;   DBCC CHECKIDENT ('dwh.dim_customer', RESEED, 0) WITH NO_INFOMSGS;
+    DELETE dwh.dim_seller WHERE seller_key <> 0;       DBCC CHECKIDENT ('dwh.dim_seller', RESEED, 0) WITH NO_INFOMSGS;
+    DELETE dwh.dim_product WHERE product_key <> 0;     DBCC CHECKIDENT ('dwh.dim_product', RESEED, 0) WITH NO_INFOMSGS;
+    DELETE dwh.dim_geography WHERE geography_key <> 0; DBCC CHECKIDENT ('dwh.dim_geography', RESEED, 0) WITH NO_INFOMSGS;
+    DELETE dwh.dim_date WHERE date_key > 0;
+    DELETE dwh.dim_order_status WHERE status_key <> 0;
+    DELETE dwh.dim_delivery_outcome WHERE outcome_key <> 0;
+    DELETE audit.etl_step_log; DELETE audit.source_manifest; DELETE audit.extract_stat; DELETE audit.ingest_file;
+    DELETE audit.dim_key_snapshot; DELETE audit.etl_run; DELETE audit.etl_batch;
+    UPDATE audit.etl_metadata SET lset = NULL, cet = NULL, current_batch_id = NULL, last_batch_id = NULL, updated_at = NULL;
 END
 GO
 PRINT N'Đã tạo các thủ tục audit cho package Transform, Load, Test.';

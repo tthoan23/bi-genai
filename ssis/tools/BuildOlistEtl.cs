@@ -47,6 +47,16 @@ class BuildOlistEtl
         return Control.Sql(p, parent, name, sql.Replace("{batch}", "N'FULL_001'"), BatchExpr(sql));
     }
 
+    // Thư mục của batch đang chạy: <RawDir>\<BatchId> (data\batches\FULL_001 ...)
+    static string BatchDir() { return "@[$Project::RawDir] + \"\\\\\" + @[$Project::BatchId]"; }
+
+    // Mở batch: tự chọn FULL (lần nạp đầu) hay INCREMENTAL, đọc CET từ _cutoff.txt của batch
+    static TaskHost StartRun(Package p)
+    {
+        return Control.Sql(p, p, "SQL Bat dau batch", "EXEC audit.usp_start_run N'FULL_001';",
+            "\"EXEC audit.usp_start_run N'\" + " + Batch + " + \"', N'\" + " + BatchDir() + " + \"';\"");
+    }
+
     static TaskHost LogStep(Package p, string step, params string[] tables)
     {
         var sb = new StringBuilder();
@@ -61,7 +71,7 @@ class BuildOlistEtl
     {
         var p = NewPackage("Ingest_Staging", "Extract, Validate, Load Staging: 9 file CSV -> staging.*");
         var steps = new List<Executable>();
-        steps.Add(BatchSql(p, p, "SQL Bat dau batch", "EXEC audit.usp_start_run {batch};"));
+        steps.Add(StartRun(p));
         var files = new[] {
             A("orders", "olist_orders_dataset.csv", "\n"),
             A("customers", "olist_customers_dataset.csv", "\n"),
@@ -86,28 +96,53 @@ class BuildOlistEtl
         foreach (var f in files)
         {
             string table = f[0], file = f[1];
-            string path = "@[$Project::RawDir] + \"\\\\" + file + "\"";
+            string path = BatchDir() + " + \"\\\\" + file + "\"";
+            bool watermark = table == "orders" || table == "order_reviews";
             p.Variables.Add("rows_" + table, false, "User", 0);
+            p.Variables.Add("skip_" + table, false, "User", 0);
+            if (watermark)
+            {
+                p.Variables.Add("lset_" + table, false, "User", "1900-01-01 00:00:00");
+                p.Variables.Add("cet_" + table, false, "User", "9999-12-31 23:59:59");
+            }
             var ffName = "FF " + table;
             Control.FlatFile(p, ffName, path, f[2], columns[table].Split(','), table == "order_reviews" ? 1000 : 255);
 
             var seq = (Sequence)p.Executables.Add("STOCK:SEQUENCE"); seq.Name = "SEQ " + table;
-            var validate = Control.Sql(p, seq, "SQL Validate " + table, "SELECT 1",
-                "\"EXEC audit.usp_validate_source N'" + table + "', N'\" + " + path + " + \"';\"");
+            // Validate: tiêu đề, SHA-256 (file đã nạp thì skip = 1), lấy LSET và CET vào biến
+            var validate = Control.Sql(p, seq, "SQL Validate " + table, "SELECT 0 AS skip, '' AS lset, '' AS cet",
+                "\"EXEC audit.usp_validate_source N'" + table + "', N'\" + " + path + " + \"', N'\" + " + Batch + " + \"';\"");
+            Control.ResultRow(validate, "User::skip_" + table, watermark ? "User::lset_" + table : null,
+                watermark ? "User::cet_" + table : null);
 
             var flow = new Flow(p, seq, "DFT " + table);
             var n = flow.FileSource("FF Source " + table, ffName);
             n = flow.RowCount("Row Count", n, "User::rows_" + table);
-            n = flow.Derive("DER Cot truy vet", n,
+            var trace = new List<Col> {
                 new Col("source_file", "w260", "\"" + file + "\""),
-                new Col("source_batch_id", "s100", Batch));
-            flow.Destination("DST " + table + "_load", n, "[staging].[" + table + "_load]", null,
-                "source_checksum", "source_row_number", "ingested_at");
+                new Col("source_batch_id", "s100", Batch) };
+            if (watermark)
+            {
+                // Incremental Extract: dòng có mốc thời gian nằm trong (LSET, CET]
+                var stamps = table == "orders"
+                    ? A("order_purchase_timestamp", "order_approved_at", "order_delivered_carrier_date", "order_delivered_customer_date")
+                    : A("review_answer_timestamp");
+                var any = new List<string>();
+                foreach (var c in stamps)
+                    any.Add("(REPLACENULL({" + c + "},\"\") > @[User::lset_" + table + "] && REPLACENULL({" + c + "},\"\") <= @[User::cet_" + table + "])");
+                trace.Add(new Col("in_window", "bool", string.Join(" || ", any.ToArray())));
+            }
+            n = flow.Derive("DER Cot truy vet", n, trace.ToArray());
+            var skipped = new List<string> { "source_checksum", "source_row_number", "ingested_at" };
+            if (!watermark) skipped.Add("in_window");
+            flow.Destination("DST " + table + "_load", n, "[staging].[" + table + "_load]", null, skipped.ToArray());
 
             var finish = Control.Sql(p, seq, "SQL Swap va audit " + table, "SELECT 1",
                 "\"EXEC audit.usp_finish_ingest N'\" + " + Batch + " + \"', N'" + table + "', N'\" + " + path +
                 " + \"', \" + (DT_WSTR,20)@[User::rows_" + table + "] + \";\"");
-            Control.Chain(seq, new List<Executable> { validate, flow.Task, finish });
+            // File đã nạp ở batch thành công trước (skip = 1): bỏ qua Data Flow và bước chuyển
+            Control.ChainIf(seq, validate, flow.Task, "@[User::skip_" + table + "] == 0");
+            Control.Chain(seq, new List<Executable> { flow.Task, finish });
             steps.Add(seq);
         }
         steps.Add(BatchSql(p, p, "SQL Danh dau INGESTED", "EXEC audit.usp_finish_staging {batch};"));
@@ -382,7 +417,8 @@ class BuildOlistEtl
                 new Col("coordinate_quality_code", "w20", "{has_valid_coord} == 0 ? \"NO_VALID_COORD\" : \"MEDIAN_OF_VALID\""));
             f.Destination("DST int_geography_canonical", n, "[intermediate].[int_geography_canonical]", null);
         }
-        var names = new List<string>(); foreach (var t in tables) names.Add("intermediate." + t);
+        steps.Add(BatchSql(p, p, "SQL Don hang bi anh huong", "EXEC audit.usp_build_affected_orders {batch};"));
+        var names = new List<string> { "intermediate.affected_orders" }; foreach (var t in tables) names.Add("intermediate." + t);
         steps.Add(LogStep(p, "transform", names.ToArray()));
         Control.Chain(p, steps);
         return p;
@@ -521,8 +557,9 @@ class BuildOlistEtl
 
     static Package Facts()
     {
-        var p = NewPackage("Load_Facts", "Load Facts: nạp lại toàn bộ 2 fact, tra khoá dimension bằng Lookup (không khớp -> khoá 0)");
-        var steps = new List<Executable> { Control.Sql(p, p, "SQL Don fact", "TRUNCATE TABLE dwh.fact_order_experience; TRUNCATE TABLE dwh.fact_order_item;", null) };
+        var p = NewPackage("Load_Facts", "Load Facts: dòng của các đơn bị ảnh hưởng -> bảng stage (Lookup khoá dimension, không khớp -> 0) -> MERGE vào fact");
+        var steps = new List<Executable> { Control.Sql(p, p, "SQL Don stage",
+            "TRUNCATE TABLE dwh.fact_order_experience_stage; TRUNCATE TABLE dwh.fact_order_item_stage;", null) };
         const string customers = "SELECT customer_unique_id, customer_key FROM dwh.dim_customer";
         const string geography = "SELECT zip_prefix, geography_key FROM dwh.dim_geography";
         {
@@ -553,7 +590,7 @@ class BuildOlistEtl
                 new Col("item_line_count_f", "i4", "REPLACENULL({item_line_count},0)"),
                 new Col("seller_count_f", "i4", "REPLACENULL({seller_count},0)") };
             n = f.Derive("DER Measure", n, cols.ToArray());
-            f.Destination("DST fact_order_experience", n, "[dwh].[fact_order_experience]",
+            f.Destination("DST fact_order_experience_stage", n, "[dwh].[fact_order_experience_stage]",
                 A("review_record_count=review_record_count_f", "item_line_count=item_line_count_f", "seller_count=seller_count_f"),
                 "dw_created_at", "dw_updated_at");
         }
@@ -573,9 +610,9 @@ class BuildOlistEtl
                 new Col("item_line_count", "i2", "1"),
                 new Col("item_total_amount", "n18,2", "{price_amount} + {freight_amount}") };
             n = f.Derive("DER Khoa va measure", n, cols.ToArray());
-            f.Destination("DST fact_order_item", n, "[dwh].[fact_order_item]", null, "dw_created_at", "dw_updated_at");
+            f.Destination("DST fact_order_item_stage", n, "[dwh].[fact_order_item_stage]", null, "dw_created_at", "dw_updated_at");
         }
-        steps.Add(StampDates(p, "dwh.fact_order_experience", "dwh.fact_order_item"));
+        steps.Add(Control.Sql(p, p, "SQL MERGE vao fact", "EXEC audit.usp_merge_facts;", null));
         steps.Add(LogStep(p, "load_fact", "dwh.fact_order_experience", "dwh.fact_order_item"));
         Control.Chain(p, steps);
         return p;
@@ -594,7 +631,7 @@ class BuildOlistEtl
     static Package Master()
     {
         var p = NewPackage("Master", "Điều phối: Ingest -> Transform -> Load Dimensions -> Load Facts -> Test, ghi trạng thái batch");
-        var steps = new List<Executable> { BatchSql(p, p, "SQL Bat dau batch", "EXEC audit.usp_start_run {batch};") };
+        var steps = new List<Executable> { StartRun(p) };
         foreach (var child in A("Ingest_Staging", "Transform_Clean", "Transform_Business", "Load_Dimensions", "Load_Facts", "Test_DW"))
         {
             var t = (TaskHost)p.Executables.Add("Microsoft.ExecutePackageTask");
@@ -629,7 +666,7 @@ class BuildOlistEtl
         Func<string, string, Parameter> param = delegate(string n, string v)
         { var x = project.Parameters.Add(n, TypeCode.String); x.Value = v; return x; };
         param("SqlServerName", server); param("DatabaseName", "OlistDW");
-        param("RawDir", Path.Combine(repo, "data", "raw")); param("BatchId", "FULL_001"); param("BatchType", "FULL");
+        param("RawDir", Path.Combine(repo, "data", "batches")); param("BatchId", "FULL_001"); param("BatchType", "FULL");
 
         // Dùng đúng connection manager OlistDW của project (cùng ID) để package tham chiếu tới nó
         var item = project.ConnectionManagerItems.Add("OLEDB", "OlistDW.conmgr");

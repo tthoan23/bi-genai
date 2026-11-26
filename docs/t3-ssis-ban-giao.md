@@ -24,7 +24,7 @@ Cách dựng giống bài HW4 (`HW4/HW4-23127038`): Control Flow gồm các Data
 | Visual Studio | 2022 Community, có extension SSIS. Mở `ssis/OlistETL/OlistETL.sln` (VS 17.11 không mở được `.slnx`) |
 | Project SSIS | `ssis/OlistETL/OlistETL/OlistETL.dtproj` (Task 1 tạo). Project deployment model, `DontSaveSensitive`, target SQL Server 2025 |
 | Connection project | `OlistDW.conmgr` (OLE DB, MSOLEDBSQL), server và database lấy từ project parameter |
-| Project parameter | `SqlServerName`=`localhost\SQLEXPRESS`, `DatabaseName`=`OlistDW`, `RawDir`=`D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw`, `BatchId`=`FULL_001`, `BatchType` |
+| Project parameter | `SqlServerName`=`localhost\SQLEXPRESS`, `DatabaseName`=`OlistDW`, `RawDir`=`D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches`, `BatchId`=`FULL_001`, `BatchType` |
 | Chạy package | **Chỉ chạy được trong Visual Studio (F5)**. Máy chưa cài tính năng Integration Services nên DTExec từ dòng lệnh báo lỗi bản quyền; nhóm đã quyết định không cài |
 
 ## 3. Quy ước nhóm (không tự đổi)
@@ -44,7 +44,7 @@ Cách dựng giống bài HW4 (`HW4/HW4-23127038`): Control Flow gồm các Data
 | Task 4 (đã gộp) | Mô tả cho mô hình dbt, ảnh lineage | Chỉ để tham khảo |
 | Task 3 nhánh `ssis/t3-dbt` | Toàn bộ logic biến đổi đã viết lại bằng T-SQL và **đã kiểm chứng khớp bản DuckDB từng dòng** (`olist_dbt/models/`) | Dùng làm **đặc tả logic** cho Derived Column và câu SQL nguồn |
 
-### Việc Task 3 đã làm trên nhánh này (chưa commit)
+### Việc Task 3 đã làm trên nhánh này
 
 | File | Nội dung |
 |---|---|
@@ -61,24 +61,42 @@ Cách dựng giống bài HW4 (`HW4/HW4-23127038`): Control Flow gồm các Data
 `usp_build_dim_date` (1.317 dòng, khớp bản tham chiếu) và các câu SQL nguồn đã chạy thử.
 Kết quả chạy thật (26/11, Master batch `FULL_001`, 3 lần): mọi tầng khớp bản tham chiếu từng dòng
 (`verify_dw.py`); KPI 99.441 đơn, trễ 6,77%, điểm 4,09, tiền hàng 13.591.643,70 BRL; Test_DW 10 PASS, 1 WARN (T13, 303 đơn);
-chạy lại không đổi số dòng và 151.323 khoá thay thế của dimension. Còn thiếu: incremental load, reject theo dòng.
+chạy lại không đổi số dòng và 151.323 khoá thay thế của dimension (commit `c1915e2`).
+Điểm dừng 2 (incremental) xem mục 5. Còn thiếu: reject theo dòng (điểm dừng 3).
 
 ## 5. Kiến trúc đã dựng
 
-Giữ bước staging theo quy ước nhóm: CSV → `staging` → `intermediate` → `dwh`.
+Giữ bước staging theo quy ước nhóm: CSV → `staging` → `intermediate` → `dwh`. Lần nạp đầu là **Full Load**, các lần
+sau là **Incremental Load**; `audit.usp_start_run` tự chọn chế độ (chưa có batch nào thành công thì FULL).
 
 | Package | Công đoạn | Nguồn → đích | Thành phần chính |
 |---|---|---|---|
-| `Ingest_Staging` | Extract, Validate, Load Staging | CSV `data/raw` → `staging.*` | Mỗi file một Sequence: Execute SQL (kiểm tra tiêu đề) → Data Flow (Flat File Source, Row Count, Derived Column, OLE DB Destination vào `_load`) → Execute SQL (SHA-256, swap, audit) |
-| `Transform_Clean` | Transform (làm sạch) | `staging.*` → `cln_*` | OLE DB Source (bản mới nhất theo batch), Derived Column, Data Conversion, Sort bỏ trùng toạ độ |
-| `Transform_Business` | Transform (nghiệp vụ) | `cln_*` → `int_*` | Lookup, Aggregate, Derived Column; trung vị toạ độ, đánh giá đại diện, full outer join bằng SQL nguồn |
-| `Load_Dimensions` | Load Dimensions | `cln_*`, `int_*`, CSV seed → `dim_*` | Lookup (không khớp thì chèn), Conditional Split và OLE DB Command (SCD 1); `dim_date` bằng thủ tục |
-| `Load_Facts` | Load Facts | `int_*`, `cln_*` → `fact_*` | TRUNCATE, chuỗi Lookup, Derived Column (khoá ngày, measure) |
-| `Test_DW` | Test | kho | `audit.usp_check_dw` (T02–T13) |
-| `Master` | Điều phối | | Execute Package Task theo thứ tự; trạng thái batch SUCCESS/FAILED |
+| `Ingest_Staging` | Extract, Validate, Load Staging | CSV `data/batches/<BatchId>` → `staging.*` | Mỗi file một Sequence: Execute SQL Validate (tiêu đề, SHA-256, trả `skip`, LSET, CET vào biến) → *(chỉ khi skip = 0)* Data Flow (Flat File Source, Row Count, Derived Column cột truy vết và cờ `in_window`, OLE DB Destination vào `_load`) → Execute SQL (kiểm tra số dòng, chọn dòng cần lấy, chuyển sang staging, audit) |
+| `Transform_Clean` | Transform (làm sạch) | `staging.*` → `cln_*` | OLE DB Source (bản mới nhất theo batch), Derived Column, Data Conversion, Sort bỏ trùng toạ độ. Tính lại toàn bộ |
+| `Transform_Business` | Transform (nghiệp vụ) | `cln_*` → `int_*`, `affected_orders` | Lookup, Aggregate, Derived Column; trung vị toạ độ, đánh giá đại diện bằng SQL nguồn; cuối cùng xác định **đơn bị ảnh hưởng** của batch |
+| `Load_Dimensions` | Load Dimensions | `cln_*`, `int_*`, CSV seed → `dim_*` | Lookup (không khớp thì chèn, khoá `IDENTITY` không đổi), Conditional Split và OLE DB Command (SCD 1); `dim_date` bằng thủ tục |
+| `Load_Facts` | Load Facts | `int_*`, `cln_*` → stage → `fact_*` | Chỉ đơn bị ảnh hưởng: chuỗi Lookup, Derived Column → bảng stage → `audit.usp_merge_facts` (MERGE trong một transaction, giữ `dw_created_at`) |
+| `Test_DW` | Test | kho, audit | `audit.usp_check_dw` (T02–T13): thêm T08 khoá không đổi, T09–T10 đối chiếu trích xuất |
+| `Master` | Điều phối | | Execute Package Task theo thứ tự; SUCCESS thì đẩy LSET = CET, lỗi thì FAILED và giữ LSET |
+
+### Incremental Extract và Incremental Load
+
+| Cơ chế | Ở đâu | Làm gì |
+|---|---|---|
+| Không nạp lại file cũ | `usp_validate_source` | File cùng tên, cùng SHA-256 đã nạp ở batch từng thành công thì `skip = 1`, Data Flow không chạy |
+| LSET / CET | `audit.etl_metadata`, biến SSIS, Derived Column `in_window` | `orders`, `order_reviews`: dòng có mốc thời gian trong (LSET, CET]. CET đọc từ `_cutoff.txt` của batch. LSET chỉ tiến khi cả pipeline SUCCESS, không lùi |
+| So mã băm dòng | `usp_finish_ingest` | Mọi bảng: dòng mới hoặc đổi nội dung so với bản mới nhất của các batch trước. Bắt được thay đổi không kèm mốc thời gian (đơn bị huỷ) |
+| Đối chiếu số dòng trước khi ghi | `usp_finish_ingest` | Row Count của Data Flow phải bằng số dòng trong `_load`, nếu không thì không ghi |
+| Đơn bị ảnh hưởng | `usp_build_affected_orders` | FULL: mọi đơn. INCREMENTAL: đơn có dòng mới / đổi ở orders, items, reviews, payments, đơn của khách hoặc người bán đổi thông tin |
+| MERGE fact | `usp_merge_facts` | Cập nhật đơn đổi (giữ `dw_created_at`), chèn đơn mới, xoá dòng hàng không còn |
+| Bằng chứng | `audit.extract_stat` | Mỗi batch, mỗi file: chế độ, LSET, CET, số dòng đọc / trong cửa sổ / đổi ngoài cửa sổ / lấy / không đổi, file bị bỏ qua |
+
+Dữ liệu batch: `python scripts/make_batches.py` tạo `data/batches/FULL_001` (đến 2017-12-31), `INC_001` (đến 2018-04-30),
+`INC_002` (toàn bộ). Giả định mô phỏng ghi ở đầu script. Kết quả sau `INC_002` phải bằng nạp toàn bộ (mục 8).
 
 Khác thiết kế Task 2: kiểm tra file, SHA-256 và số thứ tự dòng làm bằng SQL, không dùng Script Task/Script Component
-(các file `ssis/OlistETL/Scripts/*.cs` chưa dùng). Khác bản dbt: không có bảng `km_*`.
+(các file `ssis/OlistETL/Scripts/*.cs` chưa dùng); không dùng `usp_swap_staging`, `usp_write_ingest_audit` vì incremental
+chỉ chuyển một phần dòng. Khác bản dbt: không có bảng `km_*`.
 
 ### Cài đặt database (một lần, theo đúng thứ tự)
 
@@ -88,13 +106,16 @@ Máy khác: chạy `python ssis/tools/register_packages.py --server <máy chủ>
 
 ### Chạy và kiểm chứng
 
-1. Trong Solution Explorer, nhấp phải package → **Execute Package**. Thứ tự: `Ingest_Staging`, `Transform_Clean`,
-   `Transform_Business`, `Load_Dimensions`, `Load_Facts`, `Test_DW`. Dừng gỡ lỗi (Shift+F5) trước khi chạy package tiếp.
-2. Sau mỗi package: `.venv\Scripts\python.exe -X utf8 ssis\tools\verify_dw.py <staging|cln|int|dim|fact>`.
-3. Cuối cùng chạy `Master.dtsx` hai lần: số dòng và khoá thay thế không đổi.
-4. Lỗi xem ở tab **Progress** (hoặc **Output**) của Visual Studio và `audit.etl_run.error_message`.
+1. Tạo dữ liệu batch: `python scripts/make_batches.py`. Làm lại từ đầu: `EXEC audit.usp_reset_all;` (xoá mọi dữ liệu).
+2. Project parameter `RawDir` = `<repo>\data\batches`; đổi `BatchId` lần lượt `FULL_001`, `INC_001`, `INC_002`.
+   Mỗi lần: nhấp phải `Master.dtsx` → **Execute Package**, chờ xanh, Shift+F5.
+3. Sau mỗi batch xem `SELECT * FROM audit.extract_stat WHERE batch_id = '<batch>'` và `audit.etl_run`.
+4. Sau `INC_002`: `.venv\Scripts\python.exe -X utf8 ssis\tools\verify_dw.py cln int dim fact` phải TẤT CẢ KHỚP.
+5. Chạy lại `INC_002`: mọi file bị bỏ qua (`SKIPPED`), số dòng và khoá không đổi.
+6. Lỗi xem ở tab **Output** (Debug) của Visual Studio và `audit.etl_run.error_message`.
 
-Sửa package: sửa trực tiếp trong Visual Studio. Chạy lại `build.ps1` sẽ ghi đè mọi chỉnh sửa tay.
+Sửa package: sửa `ssis/tools/BuildOlistEtl.cs` rồi chạy `build.ps1` và `register_packages.py` (nguồn gốc là chương trình
+sinh; sửa tay trong Visual Studio sẽ bị ghi đè lần build sau).
 
 ## 6. Đặc điểm file CSV (để cấu hình Flat File Connection)
 

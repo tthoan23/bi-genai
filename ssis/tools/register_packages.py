@@ -1,7 +1,8 @@
-"""Đăng ký các package .dtsx do build.ps1 sinh ra vào OlistETL.dtproj và đặt tham số project.
+r"""Đăng ký các package .dtsx do build.ps1 sinh ra vào OlistETL.dtproj và đặt tham số project.
 Chạy từ thư mục gốc repo (đóng Visual Studio trước, hoặc đóng solution KHÔNG lưu rồi mở lại):
     python ssis/tools/register_packages.py [--server localhost\\SQLEXPRESS]
-Chạy lại nhiều lần vẫn an toàn. RawDir được đặt theo vị trí repo trên máy đang chạy."""
+Chạy lại nhiều lần vẫn an toàn. RawDir = <repo>\data\batches (mỗi batch một thư mục con, tạo bằng
+scripts/make_batches.py); BatchId chọn batch cần nạp."""
 import argparse
 import pathlib
 import re
@@ -53,9 +54,9 @@ write(dtproj, text, bom)
 
 params = project / "Project.params"
 text, bom = read(params)
-for key, value in {"SqlServerName": server, "RawDir": str(repo / "data" / "raw")}.items():
+for key, value in {"SqlServerName": server, "RawDir": str(repo / "data" / "batches")}.items():
     pattern = rf'(<SSIS:Parameter\s+SSIS:Name="{key}">.*?SSIS:Name="Value">)([^<]*)(<)'
     text, n = re.subn(pattern, lambda m: m[1] + value + m[3], text, count=1, flags=re.S)
     assert n == 1, f"Không tìm thấy tham số {key}"
 write(params, text, bom)
-print(f"Đã đăng ký {len(PACKAGES)} package; SqlServerName={server}; RawDir={repo / 'data' / 'raw'}")
+print(f"Đã đăng ký {len(PACKAGES)} package; SqlServerName={server}; RawDir={repo / 'data' / 'batches'}")

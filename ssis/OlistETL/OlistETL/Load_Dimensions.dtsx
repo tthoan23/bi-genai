@@ -1,25 +1,25 @@
 <?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
-  DTS:CreationDate="11/26/2026 6:44:07 PM"
+  DTS:CreationDate="11/26/2026 7:24:20 PM"
   DTS:CreationName="Microsoft.Package"
   DTS:CreatorComputerName="CHULLZZ"
   DTS:CreatorName="CHULLZZ\USER"
   DTS:Description="Load Dimensions: chèn khoá nghiệp vụ mới (khoá IDENTITY không đổi), cập nhật thuộc tính (SCD 1)"
-  DTS:DTSID="{E4240B72-2C94-4AB1-B802-9EE644971170}"
+  DTS:DTSID="{5E066426-D51E-45C3-8EE9-6DBB0A9FD9FA}"
   DTS:ExecutableType="Microsoft.Package"
   DTS:LastModifiedProductVersion="17.0.1000.7"
   DTS:LocaleID="1033"
   DTS:ObjectName="Load_Dimensions"
   DTS:ProtectionLevel="0"
-  DTS:VersionGUID="{D16768D9-39D6-4326-9642-363EA08A323A}">
+  DTS:VersionGUID="{FB86CD57-79C9-47AD-8C46-8E0CE03E1819}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[FF seed_delivery_outcome]"
       DTS:CreationName="FLATFILE"
-      DTS:DTSID="{D318CDE3-80BC-494B-A578-29832C08098E}"
+      DTS:DTSID="{31BBAB1A-9CB2-4E4F-A2E7-D23486B78F16}"
       DTS:ObjectName="FF seed_delivery_outcome">
       <DTS:PropertyExpression
         DTS:Name="ConnectionString">@[$Project::RawDir] + "\\..\\..\\olist_dbt\\seeds\\seed_delivery_outcome.csv"</DTS:PropertyExpression>
@@ -33,7 +33,7 @@
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="65001"
           DTS:AlwaysCheckForRowDelimiters="False"
-          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\..\..\olist_dbt\seeds\seed_delivery_outcome.csv">
+          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\..\..\olist_dbt\seeds\seed_delivery_outcome.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -42,7 +42,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="outcome_key"
-              DTS:DTSID="{E0D5085E-8C5B-45E5-9648-C187279D6B68}"
+              DTS:DTSID="{EBC268D0-05C4-4429-AF59-6FCB262C4510}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -51,7 +51,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="outcome_code"
-              DTS:DTSID="{9097D57A-C4E8-4AD2-AD3F-DDF06A6FE17C}"
+              DTS:DTSID="{DB2EB66B-D487-411B-98A5-D461F433E739}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -60,7 +60,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="outcome_label"
-              DTS:DTSID="{77C7D05C-8217-4F51-AFEE-7615BE3F4AAF}"
+              DTS:DTSID="{DA451A35-6472-4A9E-B7BB-F4A3CD4FD5F8}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -69,7 +69,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="sort_order"
-              DTS:DTSID="{F6C060A5-5ED0-43C4-9BC6-50C66D61F497}"
+              DTS:DTSID="{7773F4E9-7839-46BF-B61A-8B948396CB5F}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -78,7 +78,7 @@
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[FF seed_order_status]"
       DTS:CreationName="FLATFILE"
-      DTS:DTSID="{11D0F3BB-8643-46F7-8D12-122B3986359B}"
+      DTS:DTSID="{DAB1BA49-2322-4B76-9515-F67E4DC1EF49}"
       DTS:ObjectName="FF seed_order_status">
       <DTS:PropertyExpression
         DTS:Name="ConnectionString">@[$Project::RawDir] + "\\..\\..\\olist_dbt\\seeds\\seed_order_status.csv"</DTS:PropertyExpression>
@@ -92,7 +92,7 @@
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="65001"
           DTS:AlwaysCheckForRowDelimiters="False"
-          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\..\..\olist_dbt\seeds\seed_order_status.csv">
+          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\..\..\olist_dbt\seeds\seed_order_status.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -101,7 +101,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="status_key"
-              DTS:DTSID="{D1AA4883-24A2-4B73-9493-4A99F4E753A3}"
+              DTS:DTSID="{4776E728-52A6-4E67-97D2-B7F8325B2833}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -110,7 +110,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="order_status"
-              DTS:DTSID="{CAFAE985-C934-44BB-84AC-0CC3ACE375E2}"
+              DTS:DTSID="{1B06BD99-5FA6-42EA-B8D9-E987232ADD2C}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -119,7 +119,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="status_label"
-              DTS:DTSID="{73DCD6CA-1866-4EA4-8241-21D4EE84B02C}"
+              DTS:DTSID="{6E01AC63-2387-463F-BC2D-B33BD5A25EB4}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -128,7 +128,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="status_group"
-              DTS:DTSID="{26F683D5-9FF5-404D-BD70-BFEED627CFDB}"
+              DTS:DTSID="{65BD0A4C-01BB-46BE-B39B-69689100BBCD}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -141,7 +141,7 @@
       DTS:refId="Package\DFT dim_customer"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{18F42859-75B6-42E3-B886-67B8DF72025B}"
+      DTS:DTSID="{9CCFDF94-0019-4317-BFB6-210293660056}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT dim_customer"
@@ -643,7 +643,7 @@
       DTS:refId="Package\DFT dim_delivery_outcome"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{0D828B7D-42F3-44FC-84CC-C0A290D5E3F9}"
+      DTS:DTSID="{D2BF9DDE-D86C-4090-B107-82B40A8C0F95}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT dim_delivery_outcome"
@@ -1267,7 +1267,7 @@
       DTS:refId="Package\DFT dim_geography"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{A3F90919-38EC-4121-824C-932F03FF40B5}"
+      DTS:DTSID="{FD9272FF-1CF8-45F1-845A-A289770100C1}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT dim_geography"
@@ -2665,7 +2665,7 @@ FROM intermediate.int_geography_canonical ORDER BY zip_prefix</property>
       DTS:refId="Package\DFT dim_order_status"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{F3E96CA3-05F6-4401-9D2A-CD6EFCBCEA6A}"
+      DTS:DTSID="{DC03D264-43DD-4C1D-9961-2CF0A48FC011}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT dim_order_status"
@@ -3238,7 +3238,7 @@ FROM intermediate.int_geography_canonical ORDER BY zip_prefix</property>
       DTS:refId="Package\DFT dim_product"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{F6161D7F-8C1D-4CF8-8836-CDBBD52E5F86}"
+      DTS:DTSID="{432B37F2-DAE0-4AD6-9470-9CB88A77A890}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT dim_product"
@@ -4777,7 +4777,7 @@ FROM intermediate.cln_products ORDER BY product_id</property>
       DTS:refId="Package\DFT dim_seller"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{E8977439-BD18-4F98-A044-F9DC8CC960BE}"
+      DTS:DTSID="{C6AE17C1-B530-470A-9E7A-8537980A5681}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT dim_seller"
@@ -5278,7 +5278,7 @@ FROM intermediate.cln_products ORDER BY product_id</property>
     <DTS:Executable
       DTS:refId="Package\SQL Dung dim_date"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{403FCAF8-7334-4FF2-9979-F7BAA4CB1781}"
+      DTS:DTSID="{2985FA96-9519-4728-9F19-9875E4E316DD}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL Dung dim_date"
@@ -5294,7 +5294,7 @@ FROM intermediate.cln_products ORDER BY product_id</property>
     <DTS:Executable
       DTS:refId="Package\SQL Gan thoi diem nap"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{FE125330-BE3C-4EC2-AEA6-9FA4193FE9FB}"
+      DTS:DTSID="{D951AB0E-5FC4-45BA-8593-F4599F136490}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL Gan thoi diem nap"
@@ -5310,7 +5310,7 @@ FROM intermediate.cln_products ORDER BY product_id</property>
     <DTS:Executable
       DTS:refId="Package\SQL Ghi audit"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{E2A29207-6E4D-4729-8403-D6833230E1F2}"
+      DTS:DTSID="{F08231FE-D00C-490E-B8EF-52B7A895C061}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL Ghi audit"
@@ -5328,68 +5328,68 @@ FROM intermediate.cln_products ORDER BY product_id</property>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{238B035D-3B77-456A-B97E-18FCFC4592B4\}]"
+      DTS:refId="Package.PrecedenceConstraints[{18117726-3D02-4128-A722-BB9392786412\}]"
       DTS:CreationName=""
-      DTS:DTSID="{238B035D-3B77-456A-B97E-18FCFC4592B4}"
-      DTS:From="Package\DFT dim_customer"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{238B035D-3B77-456A-B97E-18FCFC4592B4}"
-      DTS:To="Package\DFT dim_seller" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{3783D3BD-FE79-4ED8-AEF4-3EB47AA5A7B8\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{3783D3BD-FE79-4ED8-AEF4-3EB47AA5A7B8}"
-      DTS:From="Package\DFT dim_delivery_outcome"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{3783D3BD-FE79-4ED8-AEF4-3EB47AA5A7B8}"
-      DTS:To="Package\SQL Dung dim_date" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{49687A2E-D28C-4570-949E-B786B81C6F78\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{49687A2E-D28C-4570-949E-B786B81C6F78}"
-      DTS:From="Package\DFT dim_geography"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{49687A2E-D28C-4570-949E-B786B81C6F78}"
-      DTS:To="Package\SQL Gan thoi diem nap" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{554973F1-9DAF-4B6D-A7EE-5FFC46804FDF\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{554973F1-9DAF-4B6D-A7EE-5FFC46804FDF}"
-      DTS:From="Package\DFT dim_seller"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{554973F1-9DAF-4B6D-A7EE-5FFC46804FDF}"
-      DTS:To="Package\DFT dim_product" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{8312DA2D-9C2A-4467-B806-69FBD807324F\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{8312DA2D-9C2A-4467-B806-69FBD807324F}"
+      DTS:DTSID="{18117726-3D02-4128-A722-BB9392786412}"
       DTS:From="Package\SQL Dung dim_date"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{8312DA2D-9C2A-4467-B806-69FBD807324F}"
+      DTS:ObjectName="{18117726-3D02-4128-A722-BB9392786412}"
       DTS:To="Package\DFT dim_customer" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{B678F074-AD39-4B4B-B472-B4DA634A1999\}]"
+      DTS:refId="Package.PrecedenceConstraints[{5A2E3E12-D34B-46E8-B33E-697902BD22E7\}]"
       DTS:CreationName=""
-      DTS:DTSID="{B678F074-AD39-4B4B-B472-B4DA634A1999}"
-      DTS:From="Package\SQL Gan thoi diem nap"
+      DTS:DTSID="{5A2E3E12-D34B-46E8-B33E-697902BD22E7}"
+      DTS:From="Package\DFT dim_delivery_outcome"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{B678F074-AD39-4B4B-B472-B4DA634A1999}"
-      DTS:To="Package\SQL Ghi audit" />
+      DTS:ObjectName="{5A2E3E12-D34B-46E8-B33E-697902BD22E7}"
+      DTS:To="Package\SQL Dung dim_date" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{BFCD3F8B-3D29-4F17-B0D8-69E36E760BEF\}]"
+      DTS:refId="Package.PrecedenceConstraints[{5E699F7E-5A81-44FF-B325-4660B32B208F\}]"
       DTS:CreationName=""
-      DTS:DTSID="{BFCD3F8B-3D29-4F17-B0D8-69E36E760BEF}"
-      DTS:From="Package\DFT dim_order_status"
+      DTS:DTSID="{5E699F7E-5A81-44FF-B325-4660B32B208F}"
+      DTS:From="Package\DFT dim_geography"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{BFCD3F8B-3D29-4F17-B0D8-69E36E760BEF}"
-      DTS:To="Package\DFT dim_delivery_outcome" />
+      DTS:ObjectName="{5E699F7E-5A81-44FF-B325-4660B32B208F}"
+      DTS:To="Package\SQL Gan thoi diem nap" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{D3DC871C-12F3-4D92-BD0D-31FCD98D69F4\}]"
+      DTS:refId="Package.PrecedenceConstraints[{67783A30-65D4-47D3-B994-2CAB0F5C7FF2\}]"
       DTS:CreationName=""
-      DTS:DTSID="{D3DC871C-12F3-4D92-BD0D-31FCD98D69F4}"
+      DTS:DTSID="{67783A30-65D4-47D3-B994-2CAB0F5C7FF2}"
       DTS:From="Package\DFT dim_product"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{D3DC871C-12F3-4D92-BD0D-31FCD98D69F4}"
+      DTS:ObjectName="{67783A30-65D4-47D3-B994-2CAB0F5C7FF2}"
       DTS:To="Package\DFT dim_geography" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{73A3E262-B5DB-4F88-9156-1D09C44B81EA\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{73A3E262-B5DB-4F88-9156-1D09C44B81EA}"
+      DTS:From="Package\DFT dim_seller"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{73A3E262-B5DB-4F88-9156-1D09C44B81EA}"
+      DTS:To="Package\DFT dim_product" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{77D3825D-96AF-4395-B264-DF9A9A0A9EFA\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{77D3825D-96AF-4395-B264-DF9A9A0A9EFA}"
+      DTS:From="Package\SQL Gan thoi diem nap"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{77D3825D-96AF-4395-B264-DF9A9A0A9EFA}"
+      DTS:To="Package\SQL Ghi audit" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{BAEFEBE9-4FC3-4920-8540-EA30DB9E6DB8\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{BAEFEBE9-4FC3-4920-8540-EA30DB9E6DB8}"
+      DTS:From="Package\DFT dim_customer"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{BAEFEBE9-4FC3-4920-8540-EA30DB9E6DB8}"
+      DTS:To="Package\DFT dim_seller" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{D63BEF38-78ED-4638-8828-C91A239CB938\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{D63BEF38-78ED-4638-8828-C91A239CB938}"
+      DTS:From="Package\DFT dim_order_status"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{D63BEF38-78ED-4638-8828-C91A239CB938}"
+      DTS:To="Package\DFT dim_delivery_outcome" />
   </DTS:PrecedenceConstraints>
 </DTS:Executable>

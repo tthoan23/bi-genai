@@ -202,5 +202,12 @@ CREATE TABLE dwh.fact_order_item (
     CONSTRAINT PK_fact_order_item PRIMARY KEY (order_id, order_item_id)
 );
 GO
-PRINT N'Đã tạo 7 dimension (có dòng Unknown) và 2 fact trong schema dwh.';
+
+-- Bảng stage của fact: Load_Facts ghi dòng của các đơn bị ảnh hưởng vào đây, rồi usp_merge_facts MERGE vào fact.
+IF OBJECT_ID(N'dwh.fact_order_experience_stage', N'U') IS NULL
+    SELECT TOP (0) * INTO dwh.fact_order_experience_stage FROM dwh.fact_order_experience;
+IF OBJECT_ID(N'dwh.fact_order_item_stage', N'U') IS NULL
+    SELECT TOP (0) * INTO dwh.fact_order_item_stage FROM dwh.fact_order_item;
+GO
+PRINT N'Đã tạo 7 dimension (có dòng Unknown), 2 fact và 2 bảng stage trong schema dwh.';
 GO

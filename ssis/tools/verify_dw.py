@@ -2,7 +2,8 @@
 Chỉ là công cụ kiểm chứng, không thuộc luồng ETL. Chạy từ thư mục gốc repo sau khi chạy package:
     .venv\\Scripts\\python.exe ssis\\tools\\verify_dw.py              (mọi tầng)
     .venv\\Scripts\\python.exe ssis\\tools\\verify_dw.py staging      (staging | cln | int | dim | fact)
-So theo khoá nghiệp vụ và measure, KHÔNG so khoá thay thế. Toạ độ so với trung vị tính lại (bảng DuckDB lưu sẵn bị sai)."""
+So theo khoá nghiệp vụ và measure, KHÔNG so khoá thay thế, không so cột truy vết (batch, vị trí dòng).
+Toạ độ so với trung vị tính lại (bảng DuckDB lưu sẵn bị sai). Tầng staging chỉ so được sau một lần nạp đầy đủ từ data/raw."""
 import decimal
 import pathlib
 import re
@@ -54,7 +55,13 @@ def columns(schema, table, exclude=()):
         schema, table).fetchall() if r[0] not in exclude]
 
 
+# Cột truy vết phụ thuộc batch và vị trí dòng trong file batch: không so (nạp tăng dần cho giá trị khác bản tham chiếu)
+TRACE = ("source_file", "source_row_number", "source_batch_id", "representative_review_source_id")
+
+
 def same(label, duck_table, schema, table, exclude=(), where_ms=""):
+    if schema != "staging":
+        exclude = tuple(exclude) + TRACE
     cols = ", ".join(columns(schema, table, exclude))
     compare(label, f"select {cols} from {duck_table}", f"select {cols} from {schema}.{table} {where_ms}")
 
@@ -116,7 +123,7 @@ def dim():
 
 
 def fact():
-    skip = ("dw_created_at", "dw_updated_at", "source_batch_id")
+    skip = ("dw_created_at", "dw_updated_at") + TRACE
     keys = {"customer_key": ("dc.customer_unique_id", "dwh.dim_customer dc on dc.customer_key = f.customer_key"),
             "customer_geography_key": ("cg.zip_prefix", "dwh.dim_geography cg on cg.geography_key = f.customer_geography_key"),
             "seller_geography_key": ("sg.zip_prefix", "dwh.dim_geography sg on sg.geography_key = f.seller_geography_key"),

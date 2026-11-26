@@ -1,28 +1,28 @@
 <?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
-  DTS:CreationDate="11/26/2026 6:44:03 PM"
+  DTS:CreationDate="11/26/2026 7:24:17 PM"
   DTS:CreationName="Microsoft.Package"
   DTS:CreatorComputerName="CHULLZZ"
   DTS:CreatorName="CHULLZZ\USER"
   DTS:Description="Extract, Validate, Load Staging: 9 file CSV -&gt; staging.*"
-  DTS:DTSID="{1B7B8C43-F4A8-4C9A-89FB-D5F66F9573DC}"
+  DTS:DTSID="{0BE31378-E390-4ACC-9C8A-2D6DCF2436DC}"
   DTS:ExecutableType="Microsoft.Package"
   DTS:LastModifiedProductVersion="17.0.1000.7"
   DTS:LocaleID="1033"
   DTS:ObjectName="Ingest_Staging"
   DTS:ProtectionLevel="0"
-  DTS:VersionGUID="{3F50493A-6D2A-45F6-9192-D3AFE0482107}">
+  DTS:VersionGUID="{7E58E988-F5C9-4884-9E99-8B90E8464F2D}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[FF category_translation]"
       DTS:CreationName="FLATFILE"
-      DTS:DTSID="{9989EC08-31B8-4EFD-BC97-539EA4A44C77}"
+      DTS:DTSID="{3D44B39C-BED6-425D-BAEE-73B6617896AE}"
       DTS:ObjectName="FF category_translation">
       <DTS:PropertyExpression
-        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\product_category_name_translation.csv"</DTS:PropertyExpression>
+        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\product_category_name_translation.csv"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:Format="Delimited"
@@ -33,7 +33,7 @@
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="65001"
           DTS:AlwaysCheckForRowDelimiters="False"
-          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\product_category_name_translation.csv">
+          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\product_category_name_translation.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -42,7 +42,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="product_category_name"
-              DTS:DTSID="{FE0C0EBB-0589-441E-A708-2EC163890F09}"
+              DTS:DTSID="{45EABF13-8314-46F3-9224-1BC636AD71B5}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -51,7 +51,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="product_category_name_english"
-              DTS:DTSID="{5B965FA4-EFB4-4C99-8E47-DEABDB7B184E}"
+              DTS:DTSID="{0201A767-05EF-4998-967B-D55568A9D06F}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -60,10 +60,10 @@
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[FF customers]"
       DTS:CreationName="FLATFILE"
-      DTS:DTSID="{F28C28E2-28BE-44CC-B339-6A56B6C4E917}"
+      DTS:DTSID="{5923B450-2354-40DF-8074-B41CD583AED5}"
       DTS:ObjectName="FF customers">
       <DTS:PropertyExpression
-        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\olist_customers_dataset.csv"</DTS:PropertyExpression>
+        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_customers_dataset.csv"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:Format="Delimited"
@@ -74,7 +74,7 @@
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="65001"
           DTS:AlwaysCheckForRowDelimiters="False"
-          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_customers_dataset.csv">
+          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_customers_dataset.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -83,7 +83,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="customer_id"
-              DTS:DTSID="{ECDB416B-D036-4233-9A6D-A182145DB10C}"
+              DTS:DTSID="{C9B83840-0D81-43D8-8028-4753B82F10EA}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -92,7 +92,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="customer_unique_id"
-              DTS:DTSID="{9A1BF16E-6C73-417C-AEF9-B7B4F01F652C}"
+              DTS:DTSID="{AFC1AB17-237A-4B25-A2F8-1E1A75A9F527}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -101,7 +101,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="customer_zip_code_prefix"
-              DTS:DTSID="{37068CA0-DA8F-4E6E-A71F-E99DD892A179}"
+              DTS:DTSID="{8F6EC8E1-4A05-4438-9912-2756972E63C6}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -110,7 +110,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="customer_city"
-              DTS:DTSID="{0D4753EA-7225-479E-9449-E6822F98EACB}"
+              DTS:DTSID="{9AEB13FA-7A0A-40AA-B77D-A6C3CDC5EB31}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -119,7 +119,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="customer_state"
-              DTS:DTSID="{78C5277F-4084-4C3D-BDF4-2494698FE704}"
+              DTS:DTSID="{C5C81035-9384-4E8E-BFFB-29E786EFC53E}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -128,10 +128,10 @@
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[FF geolocation]"
       DTS:CreationName="FLATFILE"
-      DTS:DTSID="{B8752384-F95F-43BF-8009-CE7F2C1BAA47}"
+      DTS:DTSID="{A2555FA8-A683-406D-AA74-2ADFCC051CA2}"
       DTS:ObjectName="FF geolocation">
       <DTS:PropertyExpression
-        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\olist_geolocation_dataset.csv"</DTS:PropertyExpression>
+        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_geolocation_dataset.csv"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:Format="Delimited"
@@ -142,7 +142,7 @@
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="65001"
           DTS:AlwaysCheckForRowDelimiters="False"
-          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_geolocation_dataset.csv">
+          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_geolocation_dataset.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -151,7 +151,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="geolocation_zip_code_prefix"
-              DTS:DTSID="{60B852C6-CECF-4EE5-9CCE-DC2DC0A1443F}"
+              DTS:DTSID="{5FC6F92A-2EDE-425B-ACCC-391382AFE7C1}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -160,7 +160,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="geolocation_lat"
-              DTS:DTSID="{9D84F062-9131-4BDC-B383-2A3BABB37109}"
+              DTS:DTSID="{6D86D5AE-B329-4308-8D04-90E8C00DC431}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -169,7 +169,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="geolocation_lng"
-              DTS:DTSID="{2B8F5670-10A8-44A0-8112-D7366583A61A}"
+              DTS:DTSID="{844C4D03-345C-428E-9058-3B8EA04F8DF1}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -178,7 +178,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="geolocation_city"
-              DTS:DTSID="{F1C366EC-33AF-4498-905F-0E6EFD0428E7}"
+              DTS:DTSID="{B9257E3D-E671-4A37-BE55-47C36DEAD93F}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -187,7 +187,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="geolocation_state"
-              DTS:DTSID="{EB3070C8-B51D-4636-9FE5-1223FE40A3B5}"
+              DTS:DTSID="{6D82DC5D-D4AA-4393-A2E9-BA8B03E26C52}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -196,10 +196,10 @@
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[FF orders]"
       DTS:CreationName="FLATFILE"
-      DTS:DTSID="{58765A9C-986F-4FFF-BD0F-795C6E506D2A}"
+      DTS:DTSID="{A233D124-FBBB-4B9A-B385-05A31BD0A284}"
       DTS:ObjectName="FF orders">
       <DTS:PropertyExpression
-        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\olist_orders_dataset.csv"</DTS:PropertyExpression>
+        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_orders_dataset.csv"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:Format="Delimited"
@@ -210,7 +210,7 @@
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="65001"
           DTS:AlwaysCheckForRowDelimiters="False"
-          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_orders_dataset.csv">
+          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_orders_dataset.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -219,7 +219,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="order_id"
-              DTS:DTSID="{FDC509D3-2BD5-4F7E-BA89-72324A07443E}"
+              DTS:DTSID="{299CFE28-75CB-411E-A375-D3DCC174A473}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -228,7 +228,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="customer_id"
-              DTS:DTSID="{358D276D-743A-4CC2-83E5-6EE62C13AF15}"
+              DTS:DTSID="{CA0C9F02-5D3B-4D3D-83C3-AE22ACDA46A3}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -237,7 +237,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="order_status"
-              DTS:DTSID="{9D21E075-99F5-4695-A6D7-3FE02F126755}"
+              DTS:DTSID="{065D9925-B6FA-4F4D-AFB3-7DBD3C620A0A}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -246,7 +246,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="order_purchase_timestamp"
-              DTS:DTSID="{508162DE-C6B4-46E8-8763-C75F0C195A77}"
+              DTS:DTSID="{C847B5F8-F999-47C7-9E1D-D49EA9098B74}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -255,7 +255,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="order_approved_at"
-              DTS:DTSID="{17A1F83F-4878-4454-A08B-8647077B6026}"
+              DTS:DTSID="{F5D9FBF2-FE96-4A2A-9A3A-EB7E0522C70E}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -264,7 +264,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="order_delivered_carrier_date"
-              DTS:DTSID="{89A82F51-EF62-42F0-9C15-7C6B5A9299BA}"
+              DTS:DTSID="{F6FF1CFA-BEE8-48D3-8B04-B1F01E70CD96}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -273,7 +273,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="order_delivered_customer_date"
-              DTS:DTSID="{77632CC6-137D-45FA-B955-1FA654A00F35}"
+              DTS:DTSID="{1D0E269C-FA97-452B-92D4-34410E847F3F}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -282,7 +282,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="order_estimated_delivery_date"
-              DTS:DTSID="{AE377BF6-D2CD-4234-A9A6-49CBEF7F0D90}"
+              DTS:DTSID="{4286CA2C-3768-4A77-B27A-127B0DC9C1EC}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -291,10 +291,10 @@
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[FF order_items]"
       DTS:CreationName="FLATFILE"
-      DTS:DTSID="{105C05F1-460D-40A5-A210-BAEBB46D29AA}"
+      DTS:DTSID="{FE7C1BBB-D39E-466C-8520-5BA4767A5717}"
       DTS:ObjectName="FF order_items">
       <DTS:PropertyExpression
-        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\olist_order_items_dataset.csv"</DTS:PropertyExpression>
+        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_order_items_dataset.csv"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:Format="Delimited"
@@ -305,7 +305,7 @@
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="65001"
           DTS:AlwaysCheckForRowDelimiters="False"
-          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_order_items_dataset.csv">
+          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_order_items_dataset.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -314,7 +314,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="order_id"
-              DTS:DTSID="{E298801D-0732-4A03-8349-47F1CD2598C7}"
+              DTS:DTSID="{FD95263A-FEA6-4CE2-BC49-26CEBA9CD8B9}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -323,7 +323,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="order_item_id"
-              DTS:DTSID="{34B4D28E-16E0-47AA-9372-254DCC3BDFFE}"
+              DTS:DTSID="{761BBC31-8FDE-4C69-802F-E1C37C1E6E85}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -332,7 +332,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="product_id"
-              DTS:DTSID="{54E6B72C-0655-4C81-B06E-0483AD312BBD}"
+              DTS:DTSID="{29A2901F-4D9D-4C51-BBAE-D7CD6999631B}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -341,7 +341,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="seller_id"
-              DTS:DTSID="{D15CE111-FE2E-4273-AD49-8D87C6D2896F}"
+              DTS:DTSID="{E77B1F23-BA3A-461F-ADF5-6220B5935128}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -350,7 +350,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="shipping_limit_date"
-              DTS:DTSID="{3C371D84-B910-4CE2-9496-00DE527D6DAD}"
+              DTS:DTSID="{77C056E9-BE02-45E7-8BC8-3C0FC656444D}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -359,7 +359,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="price"
-              DTS:DTSID="{E29AB8CB-8C35-465A-94E8-1A6CAFBAF115}"
+              DTS:DTSID="{5F748D81-B4D2-4285-AD9E-06A9FDC4A4C7}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -368,7 +368,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="freight_value"
-              DTS:DTSID="{8F1CCC4C-3FC0-4D26-B6C1-51CC887E34D6}"
+              DTS:DTSID="{D569F82B-8DF9-4F9C-8B14-DA9FA974A7B3}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -377,10 +377,10 @@
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[FF order_payments]"
       DTS:CreationName="FLATFILE"
-      DTS:DTSID="{51B45F6E-2AB6-419F-96F6-DF8B3C62DDF9}"
+      DTS:DTSID="{60581805-A052-4E94-999B-382D6ABCD844}"
       DTS:ObjectName="FF order_payments">
       <DTS:PropertyExpression
-        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\olist_order_payments_dataset.csv"</DTS:PropertyExpression>
+        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_order_payments_dataset.csv"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:Format="Delimited"
@@ -391,7 +391,7 @@
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="65001"
           DTS:AlwaysCheckForRowDelimiters="False"
-          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_order_payments_dataset.csv">
+          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_order_payments_dataset.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -400,7 +400,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="order_id"
-              DTS:DTSID="{4BF651C1-D677-4F87-8D12-1D17B8F0A8BA}"
+              DTS:DTSID="{2F3E31B7-16D2-48BD-A917-FE1B5D408DCC}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -409,7 +409,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="payment_sequential"
-              DTS:DTSID="{6CAFFF5D-71A0-4CD4-9C1D-9A09FE068794}"
+              DTS:DTSID="{CC397E36-EFBB-4AE4-A93C-ECA4DA71E234}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -418,7 +418,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="payment_type"
-              DTS:DTSID="{8EF952C0-D6EF-4444-8B05-C68316E9A156}"
+              DTS:DTSID="{9BFC9BB4-51C0-4358-9527-2CB058330272}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -427,7 +427,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="payment_installments"
-              DTS:DTSID="{744B7B75-68C8-4ABF-9FBD-F0454EB72B8A}"
+              DTS:DTSID="{63429542-82DE-4532-B600-E4D11C0351F0}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -436,7 +436,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="payment_value"
-              DTS:DTSID="{4AD4BCBD-3436-4DA5-9C59-685B459AB362}"
+              DTS:DTSID="{440ACF74-AF37-451C-9017-078CBFC58414}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -445,10 +445,10 @@
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[FF order_reviews]"
       DTS:CreationName="FLATFILE"
-      DTS:DTSID="{D8EBB4F8-AEF5-4878-87BE-2465C2C662D5}"
+      DTS:DTSID="{34078CB8-71E1-4E31-8F93-9A9A32FF4A17}"
       DTS:ObjectName="FF order_reviews">
       <DTS:PropertyExpression
-        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\olist_order_reviews_dataset.csv"</DTS:PropertyExpression>
+        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_order_reviews_dataset.csv"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:Format="Delimited"
@@ -459,7 +459,7 @@
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="65001"
           DTS:AlwaysCheckForRowDelimiters="False"
-          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_order_reviews_dataset.csv">
+          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_order_reviews_dataset.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -468,7 +468,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="review_id"
-              DTS:DTSID="{1B203F1D-6595-4AB1-BE3F-6B429F62F34A}"
+              DTS:DTSID="{15DD0F54-84DD-4C80-8034-256D40DA1DCE}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -477,7 +477,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="order_id"
-              DTS:DTSID="{2CC4F88A-B800-4980-8E03-8BAE466C4442}"
+              DTS:DTSID="{241537C1-DE19-4718-9C50-18869D1246F1}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -486,7 +486,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="review_score"
-              DTS:DTSID="{707F2F3A-DF5B-481C-B9DE-3C56757CF853}"
+              DTS:DTSID="{BE48A3C5-B9B2-4A7B-8148-9612FA179F66}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -495,7 +495,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="review_comment_title"
-              DTS:DTSID="{AD58E509-3633-4E6E-96F3-C67EC6FC0E61}"
+              DTS:DTSID="{0FE2A34B-A97B-4E23-A668-F9687AD2A0A2}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -504,7 +504,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="review_comment_message"
-              DTS:DTSID="{009A8A86-5AD5-48C5-99E9-AD50CD4DE1E8}"
+              DTS:DTSID="{14C361FA-3FB4-449A-8ABE-82321286A188}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -513,7 +513,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="review_creation_date"
-              DTS:DTSID="{DF2EE636-6A1A-4D7E-8002-617E63A744EE}"
+              DTS:DTSID="{BAB8F9C5-34CF-44C3-B434-8F1236DA7872}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -522,7 +522,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="review_answer_timestamp"
-              DTS:DTSID="{A86F0CF7-A12D-4E15-A01D-CE94C08F2386}"
+              DTS:DTSID="{51458086-6A3E-473E-9608-53A6987CE0C5}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -531,10 +531,10 @@
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[FF products]"
       DTS:CreationName="FLATFILE"
-      DTS:DTSID="{486C9BD0-97AE-45D7-AE32-0A7866EBCF6B}"
+      DTS:DTSID="{09C5F2C8-8F11-41DA-B226-BAEB6D7A9FC0}"
       DTS:ObjectName="FF products">
       <DTS:PropertyExpression
-        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\olist_products_dataset.csv"</DTS:PropertyExpression>
+        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_products_dataset.csv"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:Format="Delimited"
@@ -545,7 +545,7 @@
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="65001"
           DTS:AlwaysCheckForRowDelimiters="False"
-          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_products_dataset.csv">
+          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_products_dataset.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -554,7 +554,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="product_id"
-              DTS:DTSID="{18CBEF75-AF6C-4D58-9FD0-0CABA7A87F80}"
+              DTS:DTSID="{D9B7CE7C-1CAD-4C2C-9D0E-1D505CAB1ACC}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -563,7 +563,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="product_category_name"
-              DTS:DTSID="{7B79F5FF-2B68-425C-B03B-79E421D76306}"
+              DTS:DTSID="{63DE5ECF-7A1C-4328-9102-5A9B1FB26D7D}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -572,7 +572,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="product_name_lenght"
-              DTS:DTSID="{30D3E73C-E807-4D2D-BA07-D0CE91F92BD9}"
+              DTS:DTSID="{EFE3B190-7FC2-45F1-82EE-FB3E9475BA5F}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -581,7 +581,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="product_description_lenght"
-              DTS:DTSID="{A8779228-6233-48D7-8A37-84B032F4A1B6}"
+              DTS:DTSID="{D91ACB79-8B16-4993-886E-6D78F842BFE5}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -590,7 +590,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="product_photos_qty"
-              DTS:DTSID="{2ABB3EC2-3994-464D-AC97-22E95FEAF959}"
+              DTS:DTSID="{6F23D33D-E5C7-4627-BA50-B7224B8A73C2}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -599,7 +599,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="product_weight_g"
-              DTS:DTSID="{4FA3F088-5C95-4D9D-952A-FD88D51C6EC5}"
+              DTS:DTSID="{79EBC9B4-D088-4973-AE1E-7AF6170820C7}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -608,7 +608,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="product_length_cm"
-              DTS:DTSID="{7160BFBE-80B4-4D8F-96D2-9826153AEEC9}"
+              DTS:DTSID="{E6D01593-799A-411B-AEB8-2FE0021867F3}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -617,7 +617,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="product_height_cm"
-              DTS:DTSID="{65B905CC-A710-44AD-90CB-D2EEA2081DED}"
+              DTS:DTSID="{25B271FC-CBEE-4202-892B-645ADDE1F9AB}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -626,7 +626,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="product_width_cm"
-              DTS:DTSID="{8BD828FA-047D-495B-949B-3F7C2D53286D}"
+              DTS:DTSID="{050E50B1-39C3-4518-82DE-13727414A0C0}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -635,10 +635,10 @@
     <DTS:ConnectionManager
       DTS:refId="Package.ConnectionManagers[FF sellers]"
       DTS:CreationName="FLATFILE"
-      DTS:DTSID="{76FA94E1-656B-472D-B5E1-826D26AFE171}"
+      DTS:DTSID="{788148BB-FEF6-4D4C-A807-DF5B9CE25499}"
       DTS:ObjectName="FF sellers">
       <DTS:PropertyExpression
-        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\olist_sellers_dataset.csv"</DTS:PropertyExpression>
+        DTS:Name="ConnectionString">@[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_sellers_dataset.csv"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <DTS:ConnectionManager
           DTS:Format="Delimited"
@@ -649,7 +649,7 @@
           DTS:TextQualifier="_x0022_"
           DTS:CodePage="65001"
           DTS:AlwaysCheckForRowDelimiters="False"
-          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_sellers_dataset.csv">
+          DTS:ConnectionString="D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_sellers_dataset.csv">
           <DTS:FlatFileColumns>
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -658,7 +658,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="seller_id"
-              DTS:DTSID="{D16367FA-2C16-462A-A328-9CCAD7836AF4}"
+              DTS:DTSID="{37BBEF1B-32FE-4D30-94CC-72B06474AB32}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -667,7 +667,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="seller_zip_code_prefix"
-              DTS:DTSID="{F4A03135-497D-47F0-BA4E-55A48BC2CF90}"
+              DTS:DTSID="{7FC891DD-47A5-42EA-AF4C-5445C690C49C}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -676,7 +676,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="seller_city"
-              DTS:DTSID="{8E8B0F04-885F-49AC-96EF-AE641FD40B0D}"
+              DTS:DTSID="{54103BB1-6983-44A6-8EF4-A9CE5DCC6BB4}"
               DTS:CreationName="" />
             <DTS:FlatFileColumn
               DTS:ColumnType="Delimited"
@@ -685,7 +685,7 @@
               DTS:DataType="130"
               DTS:TextQualified="True"
               DTS:ObjectName="seller_state"
-              DTS:DTSID="{E4D8693F-FD0B-4E9B-9B9F-133904B0B062}"
+              DTS:DTSID="{486CED06-7641-4537-BBA8-5A71082EF8E2}"
               DTS:CreationName="" />
           </DTS:FlatFileColumns>
         </DTS:ConnectionManager>
@@ -695,7 +695,43 @@
   <DTS:Variables>
     <DTS:Variable
       DTS:CreationName=""
-      DTS:DTSID="{DA10A329-A07A-4801-82BA-865A1ED4FC2F}"
+      DTS:DTSID="{768C4A95-FFE4-49DA-9721-604992884044}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="cet_orders">
+      <DTS:VariableValue
+        DTS:DataType="8">9999-12-31 23:59:59</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{CEFEADB1-53A2-4A0B-B086-D4CB7AA0ECFF}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="cet_order_reviews">
+      <DTS:VariableValue
+        DTS:DataType="8">9999-12-31 23:59:59</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{EA11D72A-39EA-40AC-80B5-D791E7D292DD}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="lset_orders">
+      <DTS:VariableValue
+        DTS:DataType="8">1900-01-01 00:00:00</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{74CAE05A-A055-4066-B514-5D8C44DD2545}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="lset_order_reviews">
+      <DTS:VariableValue
+        DTS:DataType="8">1900-01-01 00:00:00</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A9B573DF-0745-4D4A-B33A-EF20DFA1378E}"
       DTS:IncludeInDebugDump="6789"
       DTS:Namespace="User"
       DTS:ObjectName="rows_category_translation">
@@ -704,7 +740,7 @@
     </DTS:Variable>
     <DTS:Variable
       DTS:CreationName=""
-      DTS:DTSID="{6EDF8E8F-585B-408C-AC62-61CCEC04F61F}"
+      DTS:DTSID="{452C36B7-4425-4E44-AAE5-DD064408D57F}"
       DTS:IncludeInDebugDump="6789"
       DTS:Namespace="User"
       DTS:ObjectName="rows_customers">
@@ -713,7 +749,7 @@
     </DTS:Variable>
     <DTS:Variable
       DTS:CreationName=""
-      DTS:DTSID="{C055F9F1-59A9-4AE2-AAC8-7183E586E2ED}"
+      DTS:DTSID="{22A15E40-6547-4FA7-8B35-B81A16DD6A09}"
       DTS:IncludeInDebugDump="6789"
       DTS:Namespace="User"
       DTS:ObjectName="rows_geolocation">
@@ -722,7 +758,7 @@
     </DTS:Variable>
     <DTS:Variable
       DTS:CreationName=""
-      DTS:DTSID="{63EA5C3A-C4AC-4C8E-AF32-C338A29B892C}"
+      DTS:DTSID="{638C73A5-3281-4292-A3B3-13BD130A193C}"
       DTS:IncludeInDebugDump="6789"
       DTS:Namespace="User"
       DTS:ObjectName="rows_orders">
@@ -731,7 +767,7 @@
     </DTS:Variable>
     <DTS:Variable
       DTS:CreationName=""
-      DTS:DTSID="{A4254C02-0F6D-471D-9D3F-DC130324A82F}"
+      DTS:DTSID="{45136939-49A2-48DF-B613-6240A1A67CBE}"
       DTS:IncludeInDebugDump="6789"
       DTS:Namespace="User"
       DTS:ObjectName="rows_order_items">
@@ -740,7 +776,7 @@
     </DTS:Variable>
     <DTS:Variable
       DTS:CreationName=""
-      DTS:DTSID="{E13834FA-5AF1-4904-8A32-AEA87512AE12}"
+      DTS:DTSID="{B810D811-BDE4-4F8C-81F4-A4D256E24114}"
       DTS:IncludeInDebugDump="6789"
       DTS:Namespace="User"
       DTS:ObjectName="rows_order_payments">
@@ -749,7 +785,7 @@
     </DTS:Variable>
     <DTS:Variable
       DTS:CreationName=""
-      DTS:DTSID="{6DDB4291-7F42-47FF-8F25-A66BA8F9C7FC}"
+      DTS:DTSID="{FD4E0EEE-388A-4128-85AA-AE92BA4D0F6A}"
       DTS:IncludeInDebugDump="6789"
       DTS:Namespace="User"
       DTS:ObjectName="rows_order_reviews">
@@ -758,7 +794,7 @@
     </DTS:Variable>
     <DTS:Variable
       DTS:CreationName=""
-      DTS:DTSID="{38B002D9-9AA7-46A7-8FFC-92A845A7F742}"
+      DTS:DTSID="{0A2E2BA1-0166-4367-A442-3E88C1BE1757}"
       DTS:IncludeInDebugDump="6789"
       DTS:Namespace="User"
       DTS:ObjectName="rows_products">
@@ -767,10 +803,91 @@
     </DTS:Variable>
     <DTS:Variable
       DTS:CreationName=""
-      DTS:DTSID="{76A7B04D-73FB-4D6B-804B-05F421F79A61}"
+      DTS:DTSID="{11481231-B4D6-46EE-9D1F-A66B12E53B0B}"
       DTS:IncludeInDebugDump="6789"
       DTS:Namespace="User"
       DTS:ObjectName="rows_sellers">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{B1E8988A-4C44-47F0-9DA0-A07ECB838C38}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="skip_category_translation">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{711CDC94-B7AC-474A-A9AA-21A0454BD987}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="skip_customers">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1817B688-7128-4581-92AC-D674A5EDDFF7}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="skip_geolocation">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1EB0CE7D-538A-4691-B631-4F91DEA893E1}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="skip_orders">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{7B1FF86C-581E-47DF-9028-97A57808C1B4}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="skip_order_items">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{0AED2971-952B-47DE-BB16-62E0CAB6CD2C}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="skip_order_payments">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{8557E2B6-2154-43C7-9465-7DBEDB9C004B}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="skip_order_reviews">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{674096CB-3375-4DD0-8227-865D7EA9D99E}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="skip_products">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{BBC30C4E-0856-4B74-A0D3-7BCC3CD04AF8}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="skip_sellers">
       <DTS:VariableValue
         DTS:DataType="3">0</DTS:VariableValue>
     </DTS:Variable>
@@ -779,7 +896,7 @@
     <DTS:Executable
       DTS:refId="Package\SEQ category_translation"
       DTS:CreationName="STOCK:SEQUENCE"
-      DTS:DTSID="{E4DBD390-D0D1-433F-BE74-BC33F03C08C0}"
+      DTS:DTSID="{6A0016E6-77E9-48A3-8B76-8748BE920E90}"
       DTS:ExecutableType="STOCK:SEQUENCE"
       DTS:LocaleID="-1"
       DTS:ObjectName="SEQ category_translation">
@@ -789,7 +906,7 @@
           DTS:refId="Package\SEQ category_translation\DFT category_translation"
           DTS:CreationName="Microsoft.Pipeline"
           DTS:DelayValidation="True"
-          DTS:DTSID="{C6DAA3C7-36D9-49EC-897A-FFA3C5F3A9F8}"
+          DTS:DTSID="{C2601099-3A4A-4AD1-B2C3-5642081B26D9}"
           DTS:ExecutableType="Microsoft.Pipeline"
           DTS:LocaleID="1033"
           DTS:ObjectName="DFT category_translation"
@@ -1038,6 +1155,10 @@
                           refId="Package\SEQ category_translation\DFT category_translation\DST category_translation_load.Inputs[OLE DB Destination Input].ExternalColumns[ingested_at]"
                           dataType="dbTimeStamp2"
                           name="ingested_at" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ category_translation\DFT category_translation\DST category_translation_load.Inputs[OLE DB Destination Input].ExternalColumns[in_window]"
+                          dataType="bool"
+                          name="in_window" />
                       </externalMetadataColumns>
                     </input>
                   </inputs>
@@ -1237,7 +1358,7 @@
         <DTS:Executable
           DTS:refId="Package\SEQ category_translation\SQL Swap va audit category_translation"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{B943610B-A2F2-45C4-A9B7-F17D6149524F}"
+          DTS:DTSID="{63EEC7F7-4439-4E13-BA3F-B575B75B920D}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Swap va audit category_translation"
@@ -1245,17 +1366,17 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'category_translation', N'" + @[$Project::RawDir] + "\\product_category_name_translation.csv" + "', " + (DT_WSTR,20)@[User::rows_category_translation] + ";"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'category_translation', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\product_category_name_translation.csv" + "', " + (DT_WSTR,20)@[User::rows_category_translation] + ";"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'category_translation', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\product_category_name_translation.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'category_translation', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\product_category_name_translation.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
           DTS:refId="Package\SEQ category_translation\SQL Validate category_translation"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{EAD882A6-F27B-40EB-A5FD-015D274A9589}"
+          DTS:DTSID="{BD8694A8-C8BA-46AF-8354-9D4F7CFAAEB3}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Validate category_translation"
@@ -1263,37 +1384,44 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'category_translation', N'" + @[$Project::RawDir] + "\\product_category_name_translation.csv" + "';"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'category_translation', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\product_category_name_translation.csv" + "', N'" + @[$Project::BatchId] + "';"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'category_translation', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\product_category_name_translation.csv';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'category_translation', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\product_category_name_translation.csv', N'FULL_001';"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="0"
+                SQLTask:DtsVariableName="User::skip_category_translation" />
+            </SQLTask:SqlTaskData>
           </DTS:ObjectData>
         </DTS:Executable>
       </DTS:Executables>
       <DTS:PrecedenceConstraints>
         <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ category_translation.PrecedenceConstraints[{90498157-C9ED-46A9-9E4F-BE31359B6A13\}]"
+          DTS:refId="Package\SEQ category_translation.PrecedenceConstraints[{7530F205-2EDD-4F33-B604-3E3197785B1F\}]"
           DTS:CreationName=""
-          DTS:DTSID="{90498157-C9ED-46A9-9E4F-BE31359B6A13}"
-          DTS:From="Package\SEQ category_translation\SQL Validate category_translation"
-          DTS:LogicalAnd="True"
-          DTS:ObjectName="{90498157-C9ED-46A9-9E4F-BE31359B6A13}"
-          DTS:To="Package\SEQ category_translation\DFT category_translation" />
-        <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ category_translation.PrecedenceConstraints[{B2A4CB28-8F55-4F4A-831A-8704FD292345\}]"
-          DTS:CreationName=""
-          DTS:DTSID="{B2A4CB28-8F55-4F4A-831A-8704FD292345}"
+          DTS:DTSID="{7530F205-2EDD-4F33-B604-3E3197785B1F}"
           DTS:From="Package\SEQ category_translation\DFT category_translation"
           DTS:LogicalAnd="True"
-          DTS:ObjectName="{B2A4CB28-8F55-4F4A-831A-8704FD292345}"
+          DTS:ObjectName="{7530F205-2EDD-4F33-B604-3E3197785B1F}"
           DTS:To="Package\SEQ category_translation\SQL Swap va audit category_translation" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ category_translation.PrecedenceConstraints[{F7B4B964-3438-413B-975D-A7DB781ECA93\}]"
+          DTS:CreationName=""
+          DTS:DTSID="{F7B4B964-3438-413B-975D-A7DB781ECA93}"
+          DTS:EvalOp="3"
+          DTS:Expression="@[User::skip_category_translation] == 0"
+          DTS:From="Package\SEQ category_translation\SQL Validate category_translation"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="{F7B4B964-3438-413B-975D-A7DB781ECA93}"
+          DTS:To="Package\SEQ category_translation\DFT category_translation" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\SEQ customers"
       DTS:CreationName="STOCK:SEQUENCE"
-      DTS:DTSID="{56C9AEFD-28D6-475A-99A3-037C1B0D903F}"
+      DTS:DTSID="{9301F3B7-184A-4212-90C2-16CD6D74E6E4}"
       DTS:ExecutableType="STOCK:SEQUENCE"
       DTS:LocaleID="-1"
       DTS:ObjectName="SEQ customers">
@@ -1303,7 +1431,7 @@
           DTS:refId="Package\SEQ customers\DFT customers"
           DTS:CreationName="Microsoft.Pipeline"
           DTS:DelayValidation="True"
-          DTS:DTSID="{A8506ABF-06A5-43B9-B9C4-EF7140BD3B8D}"
+          DTS:DTSID="{3265BE21-4C51-4625-85A9-3DBA13B31346}"
           DTS:ExecutableType="Microsoft.Pipeline"
           DTS:LocaleID="1033"
           DTS:ObjectName="DFT customers"
@@ -1588,6 +1716,10 @@
                           refId="Package\SEQ customers\DFT customers\DST customers_load.Inputs[OLE DB Destination Input].ExternalColumns[ingested_at]"
                           dataType="dbTimeStamp2"
                           name="ingested_at" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ customers\DFT customers\DST customers_load.Inputs[OLE DB Destination Input].ExternalColumns[in_window]"
+                          dataType="bool"
+                          name="in_window" />
                       </externalMetadataColumns>
                     </input>
                   </inputs>
@@ -1865,7 +1997,7 @@
         <DTS:Executable
           DTS:refId="Package\SEQ customers\SQL Swap va audit customers"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{45E403DC-B935-4C0C-A734-95304DB42C91}"
+          DTS:DTSID="{EA282A82-68A1-4ACD-8B78-FC38F83DDDC9}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Swap va audit customers"
@@ -1873,17 +2005,17 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'customers', N'" + @[$Project::RawDir] + "\\olist_customers_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_customers] + ";"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'customers', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_customers_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_customers] + ";"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'customers', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_customers_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'customers', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_customers_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
           DTS:refId="Package\SEQ customers\SQL Validate customers"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{C2C06E6F-F465-4B8E-87D9-646A0F2DC6CE}"
+          DTS:DTSID="{D0E0FFDB-0677-4EA1-890A-2479D8CAC349}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Validate customers"
@@ -1891,37 +2023,44 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'customers', N'" + @[$Project::RawDir] + "\\olist_customers_dataset.csv" + "';"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'customers', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_customers_dataset.csv" + "', N'" + @[$Project::BatchId] + "';"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'customers', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_customers_dataset.csv';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'customers', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_customers_dataset.csv', N'FULL_001';"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="0"
+                SQLTask:DtsVariableName="User::skip_customers" />
+            </SQLTask:SqlTaskData>
           </DTS:ObjectData>
         </DTS:Executable>
       </DTS:Executables>
       <DTS:PrecedenceConstraints>
         <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ customers.PrecedenceConstraints[{CDD0C64A-14D9-4547-8E7B-D6D2644BE79A\}]"
+          DTS:refId="Package\SEQ customers.PrecedenceConstraints[{0B7935F7-5405-429A-8C1D-2764CCB3DFF2\}]"
           DTS:CreationName=""
-          DTS:DTSID="{CDD0C64A-14D9-4547-8E7B-D6D2644BE79A}"
+          DTS:DTSID="{0B7935F7-5405-429A-8C1D-2764CCB3DFF2}"
           DTS:From="Package\SEQ customers\DFT customers"
           DTS:LogicalAnd="True"
-          DTS:ObjectName="{CDD0C64A-14D9-4547-8E7B-D6D2644BE79A}"
+          DTS:ObjectName="{0B7935F7-5405-429A-8C1D-2764CCB3DFF2}"
           DTS:To="Package\SEQ customers\SQL Swap va audit customers" />
         <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ customers.PrecedenceConstraints[{E30A1465-8897-4C69-897C-692D7EBAC973\}]"
+          DTS:refId="Package\SEQ customers.PrecedenceConstraints[{C63FA8D4-2262-48B6-86F1-2E5A78489CF4\}]"
           DTS:CreationName=""
-          DTS:DTSID="{E30A1465-8897-4C69-897C-692D7EBAC973}"
+          DTS:DTSID="{C63FA8D4-2262-48B6-86F1-2E5A78489CF4}"
+          DTS:EvalOp="3"
+          DTS:Expression="@[User::skip_customers] == 0"
           DTS:From="Package\SEQ customers\SQL Validate customers"
           DTS:LogicalAnd="True"
-          DTS:ObjectName="{E30A1465-8897-4C69-897C-692D7EBAC973}"
+          DTS:ObjectName="{C63FA8D4-2262-48B6-86F1-2E5A78489CF4}"
           DTS:To="Package\SEQ customers\DFT customers" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\SEQ geolocation"
       DTS:CreationName="STOCK:SEQUENCE"
-      DTS:DTSID="{466CCF75-9496-407E-9999-B36B761648DE}"
+      DTS:DTSID="{DB8F4659-4A2C-4988-9BA2-41670AABFFD3}"
       DTS:ExecutableType="STOCK:SEQUENCE"
       DTS:LocaleID="-1"
       DTS:ObjectName="SEQ geolocation">
@@ -1931,7 +2070,7 @@
           DTS:refId="Package\SEQ geolocation\DFT geolocation"
           DTS:CreationName="Microsoft.Pipeline"
           DTS:DelayValidation="True"
-          DTS:DTSID="{54D44752-DEC4-422B-B1F0-59FDDA6635B1}"
+          DTS:DTSID="{C6589F9F-DDAE-4840-A36B-89961D28DC62}"
           DTS:ExecutableType="Microsoft.Pipeline"
           DTS:LocaleID="1033"
           DTS:ObjectName="DFT geolocation"
@@ -2216,6 +2355,10 @@
                           refId="Package\SEQ geolocation\DFT geolocation\DST geolocation_load.Inputs[OLE DB Destination Input].ExternalColumns[ingested_at]"
                           dataType="dbTimeStamp2"
                           name="ingested_at" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ geolocation\DFT geolocation\DST geolocation_load.Inputs[OLE DB Destination Input].ExternalColumns[in_window]"
+                          dataType="bool"
+                          name="in_window" />
                       </externalMetadataColumns>
                     </input>
                   </inputs>
@@ -2493,7 +2636,7 @@
         <DTS:Executable
           DTS:refId="Package\SEQ geolocation\SQL Swap va audit geolocation"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{0F9196B1-65EE-4555-BEB6-F23AA085F451}"
+          DTS:DTSID="{A6420629-B643-4C9F-9666-4281A2D49F6C}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Swap va audit geolocation"
@@ -2501,17 +2644,17 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'geolocation', N'" + @[$Project::RawDir] + "\\olist_geolocation_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_geolocation] + ";"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'geolocation', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_geolocation_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_geolocation] + ";"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'geolocation', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_geolocation_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'geolocation', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_geolocation_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
           DTS:refId="Package\SEQ geolocation\SQL Validate geolocation"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{9FC6F045-EA5E-4337-BD30-96E4C49040D8}"
+          DTS:DTSID="{208DA353-E54E-490C-83BB-0E15778D0038}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Validate geolocation"
@@ -2519,37 +2662,44 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'geolocation', N'" + @[$Project::RawDir] + "\\olist_geolocation_dataset.csv" + "';"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'geolocation', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_geolocation_dataset.csv" + "', N'" + @[$Project::BatchId] + "';"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'geolocation', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_geolocation_dataset.csv';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'geolocation', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_geolocation_dataset.csv', N'FULL_001';"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="0"
+                SQLTask:DtsVariableName="User::skip_geolocation" />
+            </SQLTask:SqlTaskData>
           </DTS:ObjectData>
         </DTS:Executable>
       </DTS:Executables>
       <DTS:PrecedenceConstraints>
         <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ geolocation.PrecedenceConstraints[{850E188A-AB69-43FD-9909-F288FABF59B8\}]"
+          DTS:refId="Package\SEQ geolocation.PrecedenceConstraints[{ABB164D3-FA04-4A73-87D3-6EDDA730D08C\}]"
           DTS:CreationName=""
-          DTS:DTSID="{850E188A-AB69-43FD-9909-F288FABF59B8}"
-          DTS:From="Package\SEQ geolocation\DFT geolocation"
-          DTS:LogicalAnd="True"
-          DTS:ObjectName="{850E188A-AB69-43FD-9909-F288FABF59B8}"
-          DTS:To="Package\SEQ geolocation\SQL Swap va audit geolocation" />
-        <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ geolocation.PrecedenceConstraints[{D1697C27-A80D-4FCB-8A4A-DB171D7BED26\}]"
-          DTS:CreationName=""
-          DTS:DTSID="{D1697C27-A80D-4FCB-8A4A-DB171D7BED26}"
+          DTS:DTSID="{ABB164D3-FA04-4A73-87D3-6EDDA730D08C}"
+          DTS:EvalOp="3"
+          DTS:Expression="@[User::skip_geolocation] == 0"
           DTS:From="Package\SEQ geolocation\SQL Validate geolocation"
           DTS:LogicalAnd="True"
-          DTS:ObjectName="{D1697C27-A80D-4FCB-8A4A-DB171D7BED26}"
+          DTS:ObjectName="{ABB164D3-FA04-4A73-87D3-6EDDA730D08C}"
           DTS:To="Package\SEQ geolocation\DFT geolocation" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ geolocation.PrecedenceConstraints[{B44EE8D1-7468-4C8D-B418-0BB2CD609591\}]"
+          DTS:CreationName=""
+          DTS:DTSID="{B44EE8D1-7468-4C8D-B418-0BB2CD609591}"
+          DTS:From="Package\SEQ geolocation\DFT geolocation"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="{B44EE8D1-7468-4C8D-B418-0BB2CD609591}"
+          DTS:To="Package\SEQ geolocation\SQL Swap va audit geolocation" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\SEQ orders"
       DTS:CreationName="STOCK:SEQUENCE"
-      DTS:DTSID="{29C3B06B-CBE0-484A-963F-4925E04F3343}"
+      DTS:DTSID="{D0A9E958-A798-4560-AD14-0FB3D633FB86}"
       DTS:ExecutableType="STOCK:SEQUENCE"
       DTS:LocaleID="-1"
       DTS:ObjectName="SEQ orders">
@@ -2559,7 +2709,7 @@
           DTS:refId="Package\SEQ orders\DFT orders"
           DTS:CreationName="Microsoft.Pipeline"
           DTS:DelayValidation="True"
-          DTS:DTSID="{F8BA9019-161F-4948-9DBB-0416557A8DDD}"
+          DTS:DTSID="{CBC70F98-A6BA-4310-925F-8A29A1CEDC04}"
           DTS:ExecutableType="Microsoft.Pipeline"
           DTS:LocaleID="1033"
           DTS:ObjectName="DFT orders"
@@ -2582,6 +2732,32 @@
                       refId="Package\SEQ orders\DFT orders\DER Cot truy vet.Inputs[Derived Column Input]"
                       description="Input to the Derived Column Transformation"
                       name="Derived Column Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\SEQ orders\DFT orders\DER Cot truy vet.Inputs[Derived Column Input].Columns[order_purchase_timestamp]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="order_purchase_timestamp"
+                          lineageId="Package\SEQ orders\DFT orders\FF Source orders.Outputs[Flat File Source Output].Columns[order_purchase_timestamp]" />
+                        <inputColumn
+                          refId="Package\SEQ orders\DFT orders\DER Cot truy vet.Inputs[Derived Column Input].Columns[order_approved_at]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="order_approved_at"
+                          lineageId="Package\SEQ orders\DFT orders\FF Source orders.Outputs[Flat File Source Output].Columns[order_approved_at]" />
+                        <inputColumn
+                          refId="Package\SEQ orders\DFT orders\DER Cot truy vet.Inputs[Derived Column Input].Columns[order_delivered_carrier_date]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="order_delivered_carrier_date"
+                          lineageId="Package\SEQ orders\DFT orders\FF Source orders.Outputs[Flat File Source Output].Columns[order_delivered_carrier_date]" />
+                        <inputColumn
+                          refId="Package\SEQ orders\DFT orders\DER Cot truy vet.Inputs[Derived Column Input].Columns[order_delivered_customer_date]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="order_delivered_customer_date"
+                          lineageId="Package\SEQ orders\DFT orders\FF Source orders.Outputs[Flat File Source Output].Columns[order_delivered_customer_date]" />
+                      </inputColumns>
                       <externalMetadataColumns />
                     </input>
                   </inputs>
@@ -2638,6 +2814,28 @@
                               description="Derived Column Friendly Expression"
                               expressionType="Notify"
                               name="FriendlyExpression">(DT_STR,100,1252)(@[$Project::BatchId])</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\SEQ orders\DFT orders\DER Cot truy vet.Outputs[Derived Column Output].Columns[in_window]"
+                          dataType="bool"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\SEQ orders\DFT orders\DER Cot truy vet.Outputs[Derived Column Output].Columns[in_window]"
+                          name="in_window"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">(DT_BOOL)((REPLACENULL(#{Package\SEQ orders\DFT orders\FF Source orders.Outputs[Flat File Source Output].Columns[order_purchase_timestamp]},"") &gt; @[User::lset_orders] &amp;&amp; REPLACENULL(#{Package\SEQ orders\DFT orders\FF Source orders.Outputs[Flat File Source Output].Columns[order_purchase_timestamp]},"") &lt;= @[User::cet_orders]) || (REPLACENULL(#{Package\SEQ orders\DFT orders\FF Source orders.Outputs[Flat File Source Output].Columns[order_approved_at]},"") &gt; @[User::lset_orders] &amp;&amp; REPLACENULL(#{Package\SEQ orders\DFT orders\FF Source orders.Outputs[Flat File Source Output].Columns[order_approved_at]},"") &lt;= @[User::cet_orders]) || (REPLACENULL(#{Package\SEQ orders\DFT orders\FF Source orders.Outputs[Flat File Source Output].Columns[order_delivered_carrier_date]},"") &gt; @[User::lset_orders] &amp;&amp; REPLACENULL(#{Package\SEQ orders\DFT orders\FF Source orders.Outputs[Flat File Source Output].Columns[order_delivered_carrier_date]},"") &lt;= @[User::cet_orders]) || (REPLACENULL(#{Package\SEQ orders\DFT orders\FF Source orders.Outputs[Flat File Source Output].Columns[order_delivered_customer_date]},"") &gt; @[User::lset_orders] &amp;&amp; REPLACENULL(#{Package\SEQ orders\DFT orders\FF Source orders.Outputs[Flat File Source Output].Columns[order_delivered_customer_date]},"") &lt;= @[User::cet_orders]))</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">(DT_BOOL)((REPLACENULL(order_purchase_timestamp,"") &gt; @[User::lset_orders] &amp;&amp; REPLACENULL(order_purchase_timestamp,"") &lt;= @[User::cet_orders]) || (REPLACENULL(order_approved_at,"") &gt; @[User::lset_orders] &amp;&amp; REPLACENULL(order_approved_at,"") &lt;= @[User::cet_orders]) || (REPLACENULL(order_delivered_carrier_date,"") &gt; @[User::lset_orders] &amp;&amp; REPLACENULL(order_delivered_carrier_date,"") &lt;= @[User::cet_orders]) || (REPLACENULL(order_delivered_customer_date,"") &gt; @[User::lset_orders] &amp;&amp; REPLACENULL(order_delivered_customer_date,"") &lt;= @[User::cet_orders]))</property>
                           </properties>
                         </outputColumn>
                       </outputColumns>
@@ -2812,6 +3010,12 @@
                           cachedName="source_batch_id"
                           externalMetadataColumnId="Package\SEQ orders\DFT orders\DST orders_load.Inputs[OLE DB Destination Input].ExternalColumns[source_batch_id]"
                           lineageId="Package\SEQ orders\DFT orders\DER Cot truy vet.Outputs[Derived Column Output].Columns[source_batch_id]" />
+                        <inputColumn
+                          refId="Package\SEQ orders\DFT orders\DST orders_load.Inputs[OLE DB Destination Input].Columns[in_window]"
+                          cachedDataType="bool"
+                          cachedName="in_window"
+                          externalMetadataColumnId="Package\SEQ orders\DFT orders\DST orders_load.Inputs[OLE DB Destination Input].ExternalColumns[in_window]"
+                          lineageId="Package\SEQ orders\DFT orders\DER Cot truy vet.Outputs[Derived Column Output].Columns[in_window]" />
                       </inputColumns>
                       <externalMetadataColumns
                         isUsed="True">
@@ -2880,6 +3084,10 @@
                           refId="Package\SEQ orders\DFT orders\DST orders_load.Inputs[OLE DB Destination Input].ExternalColumns[ingested_at]"
                           dataType="dbTimeStamp2"
                           name="ingested_at" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ orders\DFT orders\DST orders_load.Inputs[OLE DB Destination Input].ExternalColumns[in_window]"
+                          dataType="bool"
+                          name="in_window" />
                       </externalMetadataColumns>
                     </input>
                   </inputs>
@@ -3235,7 +3443,7 @@
         <DTS:Executable
           DTS:refId="Package\SEQ orders\SQL Swap va audit orders"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{ACE9C251-D96D-4E98-8C8F-3E911F30D55F}"
+          DTS:DTSID="{28CC9AFB-98A7-4E9F-8E35-59603336F22B}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Swap va audit orders"
@@ -3243,17 +3451,17 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'orders', N'" + @[$Project::RawDir] + "\\olist_orders_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_orders] + ";"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'orders', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_orders_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_orders] + ";"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'orders', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_orders_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'orders', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_orders_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
           DTS:refId="Package\SEQ orders\SQL Validate orders"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{DB4EC4E9-D2AA-49C1-9523-468781AFFA6E}"
+          DTS:DTSID="{3034240F-EB11-4C5F-8F9A-DE4D56C49B9C}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Validate orders"
@@ -3261,37 +3469,50 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'orders', N'" + @[$Project::RawDir] + "\\olist_orders_dataset.csv" + "';"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'orders', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_orders_dataset.csv" + "', N'" + @[$Project::BatchId] + "';"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'orders', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_orders_dataset.csv';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'orders', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_orders_dataset.csv', N'FULL_001';"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="0"
+                SQLTask:DtsVariableName="User::skip_orders" />
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="1"
+                SQLTask:DtsVariableName="User::lset_orders" />
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="2"
+                SQLTask:DtsVariableName="User::cet_orders" />
+            </SQLTask:SqlTaskData>
           </DTS:ObjectData>
         </DTS:Executable>
       </DTS:Executables>
       <DTS:PrecedenceConstraints>
         <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ orders.PrecedenceConstraints[{21091172-FF47-4BE7-90E5-60B1A74AF7F2\}]"
+          DTS:refId="Package\SEQ orders.PrecedenceConstraints[{C4B68F96-9127-4AFE-8A59-11B16C6FF013\}]"
           DTS:CreationName=""
-          DTS:DTSID="{21091172-FF47-4BE7-90E5-60B1A74AF7F2}"
+          DTS:DTSID="{C4B68F96-9127-4AFE-8A59-11B16C6FF013}"
           DTS:From="Package\SEQ orders\DFT orders"
           DTS:LogicalAnd="True"
-          DTS:ObjectName="{21091172-FF47-4BE7-90E5-60B1A74AF7F2}"
+          DTS:ObjectName="{C4B68F96-9127-4AFE-8A59-11B16C6FF013}"
           DTS:To="Package\SEQ orders\SQL Swap va audit orders" />
         <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ orders.PrecedenceConstraints[{3220FE24-72B8-4D16-A5B7-C88306F9F27E\}]"
+          DTS:refId="Package\SEQ orders.PrecedenceConstraints[{E1E624D7-5CAF-481B-9117-6172E906382E\}]"
           DTS:CreationName=""
-          DTS:DTSID="{3220FE24-72B8-4D16-A5B7-C88306F9F27E}"
+          DTS:DTSID="{E1E624D7-5CAF-481B-9117-6172E906382E}"
+          DTS:EvalOp="3"
+          DTS:Expression="@[User::skip_orders] == 0"
           DTS:From="Package\SEQ orders\SQL Validate orders"
           DTS:LogicalAnd="True"
-          DTS:ObjectName="{3220FE24-72B8-4D16-A5B7-C88306F9F27E}"
+          DTS:ObjectName="{E1E624D7-5CAF-481B-9117-6172E906382E}"
           DTS:To="Package\SEQ orders\DFT orders" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\SEQ order_items"
       DTS:CreationName="STOCK:SEQUENCE"
-      DTS:DTSID="{270684A7-863F-4B8C-8059-4B4E7AE5320F}"
+      DTS:DTSID="{CF77E989-3C4A-4094-82F3-417631F81B56}"
       DTS:ExecutableType="STOCK:SEQUENCE"
       DTS:LocaleID="-1"
       DTS:ObjectName="SEQ order_items">
@@ -3301,7 +3522,7 @@
           DTS:refId="Package\SEQ order_items\DFT order_items"
           DTS:CreationName="Microsoft.Pipeline"
           DTS:DelayValidation="True"
-          DTS:DTSID="{3692235C-62C5-4035-9B98-EB9D50351997}"
+          DTS:DTSID="{5858C06A-7F4C-41B0-B1E4-882A6E379E2A}"
           DTS:ExecutableType="Microsoft.Pipeline"
           DTS:LocaleID="1033"
           DTS:ObjectName="DFT order_items"
@@ -3610,6 +3831,10 @@
                           refId="Package\SEQ order_items\DFT order_items\DST order_items_load.Inputs[OLE DB Destination Input].ExternalColumns[ingested_at]"
                           dataType="dbTimeStamp2"
                           name="ingested_at" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ order_items\DFT order_items\DST order_items_load.Inputs[OLE DB Destination Input].ExternalColumns[in_window]"
+                          dataType="bool"
+                          name="in_window" />
                       </externalMetadataColumns>
                     </input>
                   </inputs>
@@ -3939,7 +4164,7 @@
         <DTS:Executable
           DTS:refId="Package\SEQ order_items\SQL Swap va audit order_items"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{34B44307-C60D-4EF8-87B9-89B4AA8FD46C}"
+          DTS:DTSID="{15C81891-3689-4968-BF5C-87D793BFAB48}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Swap va audit order_items"
@@ -3947,17 +4172,17 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'order_items', N'" + @[$Project::RawDir] + "\\olist_order_items_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_order_items] + ";"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'order_items', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_order_items_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_order_items] + ";"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'order_items', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_order_items_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'order_items', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_order_items_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
           DTS:refId="Package\SEQ order_items\SQL Validate order_items"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{362EF103-1307-4F96-840A-842305D516FD}"
+          DTS:DTSID="{20A2D207-5B6D-4825-8648-2709E8BDA4F2}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Validate order_items"
@@ -3965,37 +4190,44 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'order_items', N'" + @[$Project::RawDir] + "\\olist_order_items_dataset.csv" + "';"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'order_items', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_order_items_dataset.csv" + "', N'" + @[$Project::BatchId] + "';"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'order_items', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_order_items_dataset.csv';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'order_items', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_order_items_dataset.csv', N'FULL_001';"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="0"
+                SQLTask:DtsVariableName="User::skip_order_items" />
+            </SQLTask:SqlTaskData>
           </DTS:ObjectData>
         </DTS:Executable>
       </DTS:Executables>
       <DTS:PrecedenceConstraints>
         <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ order_items.PrecedenceConstraints[{649B7533-1081-4966-9877-31200A463891\}]"
+          DTS:refId="Package\SEQ order_items.PrecedenceConstraints[{5420748B-AD35-4E10-9C4E-BE3A26D29572\}]"
           DTS:CreationName=""
-          DTS:DTSID="{649B7533-1081-4966-9877-31200A463891}"
+          DTS:DTSID="{5420748B-AD35-4E10-9C4E-BE3A26D29572}"
           DTS:From="Package\SEQ order_items\DFT order_items"
           DTS:LogicalAnd="True"
-          DTS:ObjectName="{649B7533-1081-4966-9877-31200A463891}"
+          DTS:ObjectName="{5420748B-AD35-4E10-9C4E-BE3A26D29572}"
           DTS:To="Package\SEQ order_items\SQL Swap va audit order_items" />
         <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ order_items.PrecedenceConstraints[{F6362F8F-42CF-4E1D-BC00-CF48B05B62F2\}]"
+          DTS:refId="Package\SEQ order_items.PrecedenceConstraints[{7D6DABEF-E8B2-4D74-8CFC-8724D8736658\}]"
           DTS:CreationName=""
-          DTS:DTSID="{F6362F8F-42CF-4E1D-BC00-CF48B05B62F2}"
+          DTS:DTSID="{7D6DABEF-E8B2-4D74-8CFC-8724D8736658}"
+          DTS:EvalOp="3"
+          DTS:Expression="@[User::skip_order_items] == 0"
           DTS:From="Package\SEQ order_items\SQL Validate order_items"
           DTS:LogicalAnd="True"
-          DTS:ObjectName="{F6362F8F-42CF-4E1D-BC00-CF48B05B62F2}"
+          DTS:ObjectName="{7D6DABEF-E8B2-4D74-8CFC-8724D8736658}"
           DTS:To="Package\SEQ order_items\DFT order_items" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\SEQ order_payments"
       DTS:CreationName="STOCK:SEQUENCE"
-      DTS:DTSID="{11829A81-A9FC-4420-A6AC-27882D10542A}"
+      DTS:DTSID="{0CAF9A1A-32AC-483E-B3AE-15F799D56FAB}"
       DTS:ExecutableType="STOCK:SEQUENCE"
       DTS:LocaleID="-1"
       DTS:ObjectName="SEQ order_payments">
@@ -4005,7 +4237,7 @@
           DTS:refId="Package\SEQ order_payments\DFT order_payments"
           DTS:CreationName="Microsoft.Pipeline"
           DTS:DelayValidation="True"
-          DTS:DTSID="{8E5B662F-4AB2-4E3D-89A9-A07E5084305B}"
+          DTS:DTSID="{332AC398-0196-4537-9A99-84B17BCBCED3}"
           DTS:ExecutableType="Microsoft.Pipeline"
           DTS:LocaleID="1033"
           DTS:ObjectName="DFT order_payments"
@@ -4290,6 +4522,10 @@
                           refId="Package\SEQ order_payments\DFT order_payments\DST order_payments_load.Inputs[OLE DB Destination Input].ExternalColumns[ingested_at]"
                           dataType="dbTimeStamp2"
                           name="ingested_at" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ order_payments\DFT order_payments\DST order_payments_load.Inputs[OLE DB Destination Input].ExternalColumns[in_window]"
+                          dataType="bool"
+                          name="in_window" />
                       </externalMetadataColumns>
                     </input>
                   </inputs>
@@ -4567,7 +4803,7 @@
         <DTS:Executable
           DTS:refId="Package\SEQ order_payments\SQL Swap va audit order_payments"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{54BDF9D5-CB50-413A-A242-184F261B5D36}"
+          DTS:DTSID="{95C7DCC7-43AB-442B-A275-B3FD3D307684}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Swap va audit order_payments"
@@ -4575,17 +4811,17 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'order_payments', N'" + @[$Project::RawDir] + "\\olist_order_payments_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_order_payments] + ";"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'order_payments', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_order_payments_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_order_payments] + ";"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'order_payments', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_order_payments_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'order_payments', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_order_payments_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
           DTS:refId="Package\SEQ order_payments\SQL Validate order_payments"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{DA53E4FC-5BB0-45C0-9CBA-D35B67248EA3}"
+          DTS:DTSID="{221E76F8-071E-40ED-83BA-33A1DCC040A6}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Validate order_payments"
@@ -4593,37 +4829,44 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'order_payments', N'" + @[$Project::RawDir] + "\\olist_order_payments_dataset.csv" + "';"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'order_payments', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_order_payments_dataset.csv" + "', N'" + @[$Project::BatchId] + "';"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'order_payments', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_order_payments_dataset.csv';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'order_payments', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_order_payments_dataset.csv', N'FULL_001';"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="0"
+                SQLTask:DtsVariableName="User::skip_order_payments" />
+            </SQLTask:SqlTaskData>
           </DTS:ObjectData>
         </DTS:Executable>
       </DTS:Executables>
       <DTS:PrecedenceConstraints>
         <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ order_payments.PrecedenceConstraints[{9464A925-86B3-48A9-8600-84D48D8E2D14\}]"
+          DTS:refId="Package\SEQ order_payments.PrecedenceConstraints[{AC525C1C-8DF6-47B0-987D-D3664AF6602F\}]"
           DTS:CreationName=""
-          DTS:DTSID="{9464A925-86B3-48A9-8600-84D48D8E2D14}"
+          DTS:DTSID="{AC525C1C-8DF6-47B0-987D-D3664AF6602F}"
+          DTS:EvalOp="3"
+          DTS:Expression="@[User::skip_order_payments] == 0"
           DTS:From="Package\SEQ order_payments\SQL Validate order_payments"
           DTS:LogicalAnd="True"
-          DTS:ObjectName="{9464A925-86B3-48A9-8600-84D48D8E2D14}"
+          DTS:ObjectName="{AC525C1C-8DF6-47B0-987D-D3664AF6602F}"
           DTS:To="Package\SEQ order_payments\DFT order_payments" />
         <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ order_payments.PrecedenceConstraints[{A6765594-43A3-4F17-B870-9E6E9F101861\}]"
+          DTS:refId="Package\SEQ order_payments.PrecedenceConstraints[{DF542A71-4443-4607-A02C-15E6DBEFD6EE\}]"
           DTS:CreationName=""
-          DTS:DTSID="{A6765594-43A3-4F17-B870-9E6E9F101861}"
+          DTS:DTSID="{DF542A71-4443-4607-A02C-15E6DBEFD6EE}"
           DTS:From="Package\SEQ order_payments\DFT order_payments"
           DTS:LogicalAnd="True"
-          DTS:ObjectName="{A6765594-43A3-4F17-B870-9E6E9F101861}"
+          DTS:ObjectName="{DF542A71-4443-4607-A02C-15E6DBEFD6EE}"
           DTS:To="Package\SEQ order_payments\SQL Swap va audit order_payments" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\SEQ order_reviews"
       DTS:CreationName="STOCK:SEQUENCE"
-      DTS:DTSID="{D3342444-98A5-4C16-B32B-205AA232929F}"
+      DTS:DTSID="{CA9DE176-E415-4B71-89DD-06DF7950D335}"
       DTS:ExecutableType="STOCK:SEQUENCE"
       DTS:LocaleID="-1"
       DTS:ObjectName="SEQ order_reviews">
@@ -4633,7 +4876,7 @@
           DTS:refId="Package\SEQ order_reviews\DFT order_reviews"
           DTS:CreationName="Microsoft.Pipeline"
           DTS:DelayValidation="True"
-          DTS:DTSID="{A1F06D57-1720-435A-8817-7C98DBCA817D}"
+          DTS:DTSID="{ED6FFDCE-848B-4C3E-B572-C09938569B5D}"
           DTS:ExecutableType="Microsoft.Pipeline"
           DTS:LocaleID="1033"
           DTS:ObjectName="DFT order_reviews"
@@ -4656,6 +4899,14 @@
                       refId="Package\SEQ order_reviews\DFT order_reviews\DER Cot truy vet.Inputs[Derived Column Input]"
                       description="Input to the Derived Column Transformation"
                       name="Derived Column Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\SEQ order_reviews\DFT order_reviews\DER Cot truy vet.Inputs[Derived Column Input].Columns[review_answer_timestamp]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="review_answer_timestamp"
+                          lineageId="Package\SEQ order_reviews\DFT order_reviews\FF Source order_reviews.Outputs[Flat File Source Output].Columns[review_answer_timestamp]" />
+                      </inputColumns>
                       <externalMetadataColumns />
                     </input>
                   </inputs>
@@ -4712,6 +4963,28 @@
                               description="Derived Column Friendly Expression"
                               expressionType="Notify"
                               name="FriendlyExpression">(DT_STR,100,1252)(@[$Project::BatchId])</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\SEQ order_reviews\DFT order_reviews\DER Cot truy vet.Outputs[Derived Column Output].Columns[in_window]"
+                          dataType="bool"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\SEQ order_reviews\DFT order_reviews\DER Cot truy vet.Outputs[Derived Column Output].Columns[in_window]"
+                          name="in_window"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">(DT_BOOL)((REPLACENULL(#{Package\SEQ order_reviews\DFT order_reviews\FF Source order_reviews.Outputs[Flat File Source Output].Columns[review_answer_timestamp]},"") &gt; @[User::lset_order_reviews] &amp;&amp; REPLACENULL(#{Package\SEQ order_reviews\DFT order_reviews\FF Source order_reviews.Outputs[Flat File Source Output].Columns[review_answer_timestamp]},"") &lt;= @[User::cet_order_reviews]))</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">(DT_BOOL)((REPLACENULL(review_answer_timestamp,"") &gt; @[User::lset_order_reviews] &amp;&amp; REPLACENULL(review_answer_timestamp,"") &lt;= @[User::cet_order_reviews]))</property>
                           </properties>
                         </outputColumn>
                       </outputColumns>
@@ -4879,6 +5152,12 @@
                           cachedName="source_batch_id"
                           externalMetadataColumnId="Package\SEQ order_reviews\DFT order_reviews\DST order_reviews_load.Inputs[OLE DB Destination Input].ExternalColumns[source_batch_id]"
                           lineageId="Package\SEQ order_reviews\DFT order_reviews\DER Cot truy vet.Outputs[Derived Column Output].Columns[source_batch_id]" />
+                        <inputColumn
+                          refId="Package\SEQ order_reviews\DFT order_reviews\DST order_reviews_load.Inputs[OLE DB Destination Input].Columns[in_window]"
+                          cachedDataType="bool"
+                          cachedName="in_window"
+                          externalMetadataColumnId="Package\SEQ order_reviews\DFT order_reviews\DST order_reviews_load.Inputs[OLE DB Destination Input].ExternalColumns[in_window]"
+                          lineageId="Package\SEQ order_reviews\DFT order_reviews\DER Cot truy vet.Outputs[Derived Column Output].Columns[in_window]" />
                       </inputColumns>
                       <externalMetadataColumns
                         isUsed="True">
@@ -4942,6 +5221,10 @@
                           refId="Package\SEQ order_reviews\DFT order_reviews\DST order_reviews_load.Inputs[OLE DB Destination Input].ExternalColumns[ingested_at]"
                           dataType="dbTimeStamp2"
                           name="ingested_at" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ order_reviews\DFT order_reviews\DST order_reviews_load.Inputs[OLE DB Destination Input].ExternalColumns[in_window]"
+                          dataType="bool"
+                          name="in_window" />
                       </externalMetadataColumns>
                     </input>
                   </inputs>
@@ -5271,7 +5554,7 @@
         <DTS:Executable
           DTS:refId="Package\SEQ order_reviews\SQL Swap va audit order_reviews"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{259FF4F1-3A93-49BE-A5B0-9579A90167D4}"
+          DTS:DTSID="{A5435B1D-71BC-47DE-B911-DAD7CC2BE9D3}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Swap va audit order_reviews"
@@ -5279,17 +5562,17 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'order_reviews', N'" + @[$Project::RawDir] + "\\olist_order_reviews_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_order_reviews] + ";"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'order_reviews', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_order_reviews_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_order_reviews] + ";"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'order_reviews', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_order_reviews_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'order_reviews', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_order_reviews_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
           DTS:refId="Package\SEQ order_reviews\SQL Validate order_reviews"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{82C8E507-BD73-44DE-A8F4-7FFD4289F27C}"
+          DTS:DTSID="{073780B6-A959-4CB3-B42C-7771115D5AD3}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Validate order_reviews"
@@ -5297,37 +5580,50 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'order_reviews', N'" + @[$Project::RawDir] + "\\olist_order_reviews_dataset.csv" + "';"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'order_reviews', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_order_reviews_dataset.csv" + "', N'" + @[$Project::BatchId] + "';"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'order_reviews', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_order_reviews_dataset.csv';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'order_reviews', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_order_reviews_dataset.csv', N'FULL_001';"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="0"
+                SQLTask:DtsVariableName="User::skip_order_reviews" />
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="1"
+                SQLTask:DtsVariableName="User::lset_order_reviews" />
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="2"
+                SQLTask:DtsVariableName="User::cet_order_reviews" />
+            </SQLTask:SqlTaskData>
           </DTS:ObjectData>
         </DTS:Executable>
       </DTS:Executables>
       <DTS:PrecedenceConstraints>
         <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ order_reviews.PrecedenceConstraints[{335DC9F8-B4C2-4DAC-9DDD-4B63E5024234\}]"
+          DTS:refId="Package\SEQ order_reviews.PrecedenceConstraints[{4C1D241E-88D7-422B-AD5F-58409828B874\}]"
           DTS:CreationName=""
-          DTS:DTSID="{335DC9F8-B4C2-4DAC-9DDD-4B63E5024234}"
-          DTS:From="Package\SEQ order_reviews\DFT order_reviews"
-          DTS:LogicalAnd="True"
-          DTS:ObjectName="{335DC9F8-B4C2-4DAC-9DDD-4B63E5024234}"
-          DTS:To="Package\SEQ order_reviews\SQL Swap va audit order_reviews" />
-        <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ order_reviews.PrecedenceConstraints[{B656967F-4805-448B-B14C-1CD1C624A997\}]"
-          DTS:CreationName=""
-          DTS:DTSID="{B656967F-4805-448B-B14C-1CD1C624A997}"
+          DTS:DTSID="{4C1D241E-88D7-422B-AD5F-58409828B874}"
+          DTS:EvalOp="3"
+          DTS:Expression="@[User::skip_order_reviews] == 0"
           DTS:From="Package\SEQ order_reviews\SQL Validate order_reviews"
           DTS:LogicalAnd="True"
-          DTS:ObjectName="{B656967F-4805-448B-B14C-1CD1C624A997}"
+          DTS:ObjectName="{4C1D241E-88D7-422B-AD5F-58409828B874}"
           DTS:To="Package\SEQ order_reviews\DFT order_reviews" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ order_reviews.PrecedenceConstraints[{823934D9-3996-48F8-82EA-58BED4A2C345\}]"
+          DTS:CreationName=""
+          DTS:DTSID="{823934D9-3996-48F8-82EA-58BED4A2C345}"
+          DTS:From="Package\SEQ order_reviews\DFT order_reviews"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="{823934D9-3996-48F8-82EA-58BED4A2C345}"
+          DTS:To="Package\SEQ order_reviews\SQL Swap va audit order_reviews" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\SEQ products"
       DTS:CreationName="STOCK:SEQUENCE"
-      DTS:DTSID="{3DCB29D1-01B8-4C5F-8682-8499BDF245CE}"
+      DTS:DTSID="{76482D3C-22B2-4070-8B65-D8B2A210F20E}"
       DTS:ExecutableType="STOCK:SEQUENCE"
       DTS:LocaleID="-1"
       DTS:ObjectName="SEQ products">
@@ -5337,7 +5633,7 @@
           DTS:refId="Package\SEQ products\DFT products"
           DTS:CreationName="Microsoft.Pipeline"
           DTS:DelayValidation="True"
-          DTS:DTSID="{257DC1C8-1D50-4B3D-B624-22B9435FE5A7}"
+          DTS:DTSID="{15C76E77-4D37-4476-9EED-47C2E29FB28B}"
           DTS:ExecutableType="Microsoft.Pipeline"
           DTS:LocaleID="1033"
           DTS:ObjectName="DFT products"
@@ -5670,6 +5966,10 @@
                           refId="Package\SEQ products\DFT products\DST products_load.Inputs[OLE DB Destination Input].ExternalColumns[ingested_at]"
                           dataType="dbTimeStamp2"
                           name="ingested_at" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ products\DFT products\DST products_load.Inputs[OLE DB Destination Input].ExternalColumns[in_window]"
+                          dataType="bool"
+                          name="in_window" />
                       </externalMetadataColumns>
                     </input>
                   </inputs>
@@ -6051,7 +6351,7 @@
         <DTS:Executable
           DTS:refId="Package\SEQ products\SQL Swap va audit products"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{8D3906A5-4D5D-453D-9AFC-E2E7B52080BD}"
+          DTS:DTSID="{5C872772-9738-4858-AD97-F038F63645D2}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Swap va audit products"
@@ -6059,17 +6359,17 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'products', N'" + @[$Project::RawDir] + "\\olist_products_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_products] + ";"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'products', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_products_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_products] + ";"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'products', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_products_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'products', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_products_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
           DTS:refId="Package\SEQ products\SQL Validate products"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{E7CE0557-5409-4534-8C21-1A1FC42F488F}"
+          DTS:DTSID="{C5D74221-A542-4DCD-A7DA-EECC9DDA9B85}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Validate products"
@@ -6077,37 +6377,44 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'products', N'" + @[$Project::RawDir] + "\\olist_products_dataset.csv" + "';"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'products', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_products_dataset.csv" + "', N'" + @[$Project::BatchId] + "';"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'products', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_products_dataset.csv';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'products', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_products_dataset.csv', N'FULL_001';"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="0"
+                SQLTask:DtsVariableName="User::skip_products" />
+            </SQLTask:SqlTaskData>
           </DTS:ObjectData>
         </DTS:Executable>
       </DTS:Executables>
       <DTS:PrecedenceConstraints>
         <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ products.PrecedenceConstraints[{52648C6E-2574-4F54-ADEC-77759705B4AF\}]"
+          DTS:refId="Package\SEQ products.PrecedenceConstraints[{69F2AB2A-84D5-4B97-9324-F16FB77A6A92\}]"
           DTS:CreationName=""
-          DTS:DTSID="{52648C6E-2574-4F54-ADEC-77759705B4AF}"
-          DTS:From="Package\SEQ products\DFT products"
-          DTS:LogicalAnd="True"
-          DTS:ObjectName="{52648C6E-2574-4F54-ADEC-77759705B4AF}"
-          DTS:To="Package\SEQ products\SQL Swap va audit products" />
-        <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ products.PrecedenceConstraints[{8A9E09E2-7C23-4752-A954-2475D2467ED6\}]"
-          DTS:CreationName=""
-          DTS:DTSID="{8A9E09E2-7C23-4752-A954-2475D2467ED6}"
+          DTS:DTSID="{69F2AB2A-84D5-4B97-9324-F16FB77A6A92}"
+          DTS:EvalOp="3"
+          DTS:Expression="@[User::skip_products] == 0"
           DTS:From="Package\SEQ products\SQL Validate products"
           DTS:LogicalAnd="True"
-          DTS:ObjectName="{8A9E09E2-7C23-4752-A954-2475D2467ED6}"
+          DTS:ObjectName="{69F2AB2A-84D5-4B97-9324-F16FB77A6A92}"
           DTS:To="Package\SEQ products\DFT products" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ products.PrecedenceConstraints[{AD54D731-2B48-40CF-9D0E-9B42DAB2BDC5\}]"
+          DTS:CreationName=""
+          DTS:DTSID="{AD54D731-2B48-40CF-9D0E-9B42DAB2BDC5}"
+          DTS:From="Package\SEQ products\DFT products"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="{AD54D731-2B48-40CF-9D0E-9B42DAB2BDC5}"
+          DTS:To="Package\SEQ products\SQL Swap va audit products" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\SEQ sellers"
       DTS:CreationName="STOCK:SEQUENCE"
-      DTS:DTSID="{71587AE5-4B1D-4EFF-9D2F-D26CA102947D}"
+      DTS:DTSID="{60D64184-6C79-487F-9BA7-AD91BDB13270}"
       DTS:ExecutableType="STOCK:SEQUENCE"
       DTS:LocaleID="-1"
       DTS:ObjectName="SEQ sellers">
@@ -6117,7 +6424,7 @@
           DTS:refId="Package\SEQ sellers\DFT sellers"
           DTS:CreationName="Microsoft.Pipeline"
           DTS:DelayValidation="True"
-          DTS:DTSID="{57EFD7A1-C50C-46F5-AC0F-025DC1314D01}"
+          DTS:DTSID="{9A167E58-49F2-4716-9901-7CA9E3233320}"
           DTS:ExecutableType="Microsoft.Pipeline"
           DTS:LocaleID="1033"
           DTS:ObjectName="DFT sellers"
@@ -6390,6 +6697,10 @@
                           refId="Package\SEQ sellers\DFT sellers\DST sellers_load.Inputs[OLE DB Destination Input].ExternalColumns[ingested_at]"
                           dataType="dbTimeStamp2"
                           name="ingested_at" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ sellers\DFT sellers\DST sellers_load.Inputs[OLE DB Destination Input].ExternalColumns[in_window]"
+                          dataType="bool"
+                          name="in_window" />
                       </externalMetadataColumns>
                     </input>
                   </inputs>
@@ -6641,7 +6952,7 @@
         <DTS:Executable
           DTS:refId="Package\SEQ sellers\SQL Swap va audit sellers"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{3AB702F0-D0F3-444D-BAB3-1EAA520A9388}"
+          DTS:DTSID="{635B262D-2985-4FD1-A1C0-82B9A8E0F065}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Swap va audit sellers"
@@ -6649,17 +6960,17 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'sellers', N'" + @[$Project::RawDir] + "\\olist_sellers_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_sellers] + ";"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_finish_ingest N'" + @[$Project::BatchId] + "', N'sellers', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_sellers_dataset.csv" + "', " + (DT_WSTR,20)@[User::rows_sellers] + ";"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'sellers', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_sellers_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_finish_ingest N'FULL_001', N'sellers', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_sellers_dataset.csv', 0;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
           </DTS:ObjectData>
         </DTS:Executable>
         <DTS:Executable
           DTS:refId="Package\SEQ sellers\SQL Validate sellers"
           DTS:CreationName="Microsoft.ExecuteSQLTask"
-          DTS:DTSID="{45E50BB3-A807-422E-BDF6-B395E9A71C10}"
+          DTS:DTSID="{688A0517-8E8C-4907-8FA5-5062FCE4F73B}"
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="SQL Validate sellers"
@@ -6667,37 +6978,44 @@
           DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:PropertyExpression
-            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'sellers', N'" + @[$Project::RawDir] + "\\olist_sellers_dataset.csv" + "';"</DTS:PropertyExpression>
+            DTS:Name="SqlStatementSource">"EXEC audit.usp_validate_source N'sellers', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "\\olist_sellers_dataset.csv" + "', N'" + @[$Project::BatchId] + "';"</DTS:PropertyExpression>
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'sellers', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\raw\olist_sellers_dataset.csv';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              SQLTask:SqlStatementSource="EXEC audit.usp_validate_source N'sellers', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001\olist_sellers_dataset.csv', N'FULL_001';"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="0"
+                SQLTask:DtsVariableName="User::skip_sellers" />
+            </SQLTask:SqlTaskData>
           </DTS:ObjectData>
         </DTS:Executable>
       </DTS:Executables>
       <DTS:PrecedenceConstraints>
         <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ sellers.PrecedenceConstraints[{4FAFBAA5-53C0-453E-A29A-2553CF29E98E\}]"
+          DTS:refId="Package\SEQ sellers.PrecedenceConstraints[{98674B46-6D32-447C-9135-3A536736612E\}]"
           DTS:CreationName=""
-          DTS:DTSID="{4FAFBAA5-53C0-453E-A29A-2553CF29E98E}"
+          DTS:DTSID="{98674B46-6D32-447C-9135-3A536736612E}"
+          DTS:EvalOp="3"
+          DTS:Expression="@[User::skip_sellers] == 0"
           DTS:From="Package\SEQ sellers\SQL Validate sellers"
           DTS:LogicalAnd="True"
-          DTS:ObjectName="{4FAFBAA5-53C0-453E-A29A-2553CF29E98E}"
+          DTS:ObjectName="{98674B46-6D32-447C-9135-3A536736612E}"
           DTS:To="Package\SEQ sellers\DFT sellers" />
         <DTS:PrecedenceConstraint
-          DTS:refId="Package\SEQ sellers.PrecedenceConstraints[{FC9C2E3F-F332-4800-B3E4-25B05D6202BB\}]"
+          DTS:refId="Package\SEQ sellers.PrecedenceConstraints[{BD64FDB4-7B33-4C64-8001-1B8849875AFB\}]"
           DTS:CreationName=""
-          DTS:DTSID="{FC9C2E3F-F332-4800-B3E4-25B05D6202BB}"
+          DTS:DTSID="{BD64FDB4-7B33-4C64-8001-1B8849875AFB}"
           DTS:From="Package\SEQ sellers\DFT sellers"
           DTS:LogicalAnd="True"
-          DTS:ObjectName="{FC9C2E3F-F332-4800-B3E4-25B05D6202BB}"
+          DTS:ObjectName="{BD64FDB4-7B33-4C64-8001-1B8849875AFB}"
           DTS:To="Package\SEQ sellers\SQL Swap va audit sellers" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\SQL Bat dau batch"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{1D6F4B20-CB38-4987-8E81-8FED2B84FC5D}"
+      DTS:DTSID="{BEE14BB5-F718-4100-9641-1DEA589E431E}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL Bat dau batch"
@@ -6705,17 +7023,17 @@
       DTS:ThreadHint="0">
       <DTS:Variables />
       <DTS:PropertyExpression
-        DTS:Name="SqlStatementSource">"EXEC audit.usp_start_run N'" + @[$Project::BatchId] + "';"</DTS:PropertyExpression>
+        DTS:Name="SqlStatementSource">"EXEC audit.usp_start_run N'" + @[$Project::BatchId] + "', N'" + @[$Project::RawDir] + "\\" + @[$Project::BatchId] + "';"</DTS:PropertyExpression>
       <DTS:ObjectData>
         <SQLTask:SqlTaskData
           SQLTask:Connection="{B9BE11C9-0172-4B6A-8B80-E95B5D65C2D5}"
-          SQLTask:SqlStatementSource="EXEC audit.usp_start_run N'FULL_001';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          SQLTask:SqlStatementSource="EXEC audit.usp_start_run N'FULL_001', N'D:\uni\nam4ky1\IS_for_BI\minipro\repo_code\data\batches\FULL_001';" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
       DTS:refId="Package\SQL Danh dau INGESTED"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{BEDD0B80-6EE1-4FA6-B7A7-2ACBD9635A29}"
+      DTS:DTSID="{3F3CD482-269F-470D-9CE6-18F81EC9D121}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL Danh dau INGESTED"
@@ -6733,84 +7051,84 @@
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{31477A91-6BB3-4DE2-AAD5-3E5C3DC73359\}]"
+      DTS:refId="Package.PrecedenceConstraints[{0809ED31-2CA8-4187-AF5F-A6FD5C00C8B1\}]"
       DTS:CreationName=""
-      DTS:DTSID="{31477A91-6BB3-4DE2-AAD5-3E5C3DC73359}"
-      DTS:From="Package\SEQ category_translation"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{31477A91-6BB3-4DE2-AAD5-3E5C3DC73359}"
-      DTS:To="Package\SQL Danh dau INGESTED" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{423461CC-7CE3-4905-BD45-DA9A9DDAF754\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{423461CC-7CE3-4905-BD45-DA9A9DDAF754}"
-      DTS:From="Package\SEQ sellers"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{423461CC-7CE3-4905-BD45-DA9A9DDAF754}"
-      DTS:To="Package\SEQ geolocation" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{5D7D26B7-5391-4D3F-987D-2FCA0CAFBB5F\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{5D7D26B7-5391-4D3F-987D-2FCA0CAFBB5F}"
-      DTS:From="Package\SEQ order_reviews"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{5D7D26B7-5391-4D3F-987D-2FCA0CAFBB5F}"
-      DTS:To="Package\SEQ order_payments" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{6DA2E1E3-E189-414B-A51A-E1AAA73BB3B4\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{6DA2E1E3-E189-414B-A51A-E1AAA73BB3B4}"
+      DTS:DTSID="{0809ED31-2CA8-4187-AF5F-A6FD5C00C8B1}"
       DTS:From="Package\SEQ orders"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{6DA2E1E3-E189-414B-A51A-E1AAA73BB3B4}"
+      DTS:ObjectName="{0809ED31-2CA8-4187-AF5F-A6FD5C00C8B1}"
       DTS:To="Package\SEQ customers" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{73D2767A-2F59-4E1C-B344-815123FA5683\}]"
+      DTS:refId="Package.PrecedenceConstraints[{088677F3-DD7A-4577-8A5E-39A08EFAF886\}]"
       DTS:CreationName=""
-      DTS:DTSID="{73D2767A-2F59-4E1C-B344-815123FA5683}"
+      DTS:DTSID="{088677F3-DD7A-4577-8A5E-39A08EFAF886}"
       DTS:From="Package\SEQ order_payments"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{73D2767A-2F59-4E1C-B344-815123FA5683}"
+      DTS:ObjectName="{088677F3-DD7A-4577-8A5E-39A08EFAF886}"
       DTS:To="Package\SEQ products" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{87B4047D-88B5-40D4-B291-C2C2DAC87144\}]"
+      DTS:refId="Package.PrecedenceConstraints[{317E4AAA-5E0E-49A2-8B49-6E673E2ADB08\}]"
       DTS:CreationName=""
-      DTS:DTSID="{87B4047D-88B5-40D4-B291-C2C2DAC87144}"
+      DTS:DTSID="{317E4AAA-5E0E-49A2-8B49-6E673E2ADB08}"
+      DTS:From="Package\SEQ order_reviews"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{317E4AAA-5E0E-49A2-8B49-6E673E2ADB08}"
+      DTS:To="Package\SEQ order_payments" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{5A67CE6D-6773-4D19-8F42-A8B17BE36095\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{5A67CE6D-6773-4D19-8F42-A8B17BE36095}"
+      DTS:From="Package\SEQ sellers"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{5A67CE6D-6773-4D19-8F42-A8B17BE36095}"
+      DTS:To="Package\SEQ geolocation" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{668893FF-F7BD-4CBF-BB1B-0E824FF158EB\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{668893FF-F7BD-4CBF-BB1B-0E824FF158EB}"
       DTS:From="Package\SEQ products"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{87B4047D-88B5-40D4-B291-C2C2DAC87144}"
+      DTS:ObjectName="{668893FF-F7BD-4CBF-BB1B-0E824FF158EB}"
       DTS:To="Package\SEQ sellers" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{8BDD30F8-3739-4F42-96BA-B4B94579F990\}]"
+      DTS:refId="Package.PrecedenceConstraints[{714AE743-19BE-490C-B8BD-E8DBB796283E\}]"
       DTS:CreationName=""
-      DTS:DTSID="{8BDD30F8-3739-4F42-96BA-B4B94579F990}"
-      DTS:From="Package\SEQ order_items"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{8BDD30F8-3739-4F42-96BA-B4B94579F990}"
-      DTS:To="Package\SEQ order_reviews" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{8CA78151-C47F-4974-8DFD-76253A311CCE\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{8CA78151-C47F-4974-8DFD-76253A311CCE}"
+      DTS:DTSID="{714AE743-19BE-490C-B8BD-E8DBB796283E}"
       DTS:From="Package\SQL Bat dau batch"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{8CA78151-C47F-4974-8DFD-76253A311CCE}"
+      DTS:ObjectName="{714AE743-19BE-490C-B8BD-E8DBB796283E}"
       DTS:To="Package\SEQ orders" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{D3423472-E68B-44DB-BC22-F9119EB8C43C\}]"
+      DTS:refId="Package.PrecedenceConstraints[{799814BE-EBEF-43D3-A17D-00198BB581B2\}]"
       DTS:CreationName=""
-      DTS:DTSID="{D3423472-E68B-44DB-BC22-F9119EB8C43C}"
+      DTS:DTSID="{799814BE-EBEF-43D3-A17D-00198BB581B2}"
       DTS:From="Package\SEQ customers"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{D3423472-E68B-44DB-BC22-F9119EB8C43C}"
+      DTS:ObjectName="{799814BE-EBEF-43D3-A17D-00198BB581B2}"
       DTS:To="Package\SEQ order_items" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{ECF0DAC5-979B-4288-95EC-674C7240DD32\}]"
+      DTS:refId="Package.PrecedenceConstraints[{96F3AED9-377C-48B0-8C99-BFE67263C9B5\}]"
       DTS:CreationName=""
-      DTS:DTSID="{ECF0DAC5-979B-4288-95EC-674C7240DD32}"
+      DTS:DTSID="{96F3AED9-377C-48B0-8C99-BFE67263C9B5}"
+      DTS:From="Package\SEQ category_translation"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{96F3AED9-377C-48B0-8C99-BFE67263C9B5}"
+      DTS:To="Package\SQL Danh dau INGESTED" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{985FA154-6A16-424D-AA2A-90AFCFA497A4\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{985FA154-6A16-424D-AA2A-90AFCFA497A4}"
       DTS:From="Package\SEQ geolocation"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{ECF0DAC5-979B-4288-95EC-674C7240DD32}"
+      DTS:ObjectName="{985FA154-6A16-424D-AA2A-90AFCFA497A4}"
       DTS:To="Package\SEQ category_translation" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{A01085EF-8615-487C-87E5-687CE2E10C7F\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{A01085EF-8615-487C-87E5-687CE2E10C7F}"
+      DTS:From="Package\SEQ order_items"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{A01085EF-8615-487C-87E5-687CE2E10C7F}"
+      DTS:To="Package\SEQ order_reviews" />
   </DTS:PrecedenceConstraints>
 </DTS:Executable>

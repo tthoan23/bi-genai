@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using Microsoft.SqlServer.Dts.Runtime;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using RW = Microsoft.SqlServer.Dts.Runtime.Wrapper;
+using Microsoft.SqlServer.Dts.Tasks.ExecuteSQLTask;
 
 // Kiểu dữ liệu viết gọn: w255 (DT_WSTR), s100 (DT_STR), i2, i4, n18,2 (DT_NUMERIC), date, ts (DT_DBTIMESTAMP2(0))
 public class TypeSpec
@@ -17,6 +18,7 @@ public class TypeSpec
         var t = new TypeSpec();
         if (s == "i2") { t.Type = RW.DataType.DT_I2; t.Cast = "(DT_I2)"; }
         else if (s == "i4") { t.Type = RW.DataType.DT_I4; t.Cast = "(DT_I4)"; }
+        else if (s == "bool") { t.Type = RW.DataType.DT_BOOL; t.Cast = "(DT_BOOL)"; }
         else if (s == "date") { t.Type = RW.DataType.DT_DBDATE; t.Cast = "(DT_DBDATE)"; }
         else if (s == "ts") { t.Type = RW.DataType.DT_DBTIMESTAMP2; t.Scale = 0; t.Cast = "(DT_DBTIMESTAMP2,0)"; }
         else if (s.StartsWith("w")) { t.Type = RW.DataType.DT_WSTR; t.Length = int.Parse(s.Substring(1)); t.Cast = "(DT_WSTR," + t.Length + ")"; }
@@ -368,6 +370,29 @@ public static class Control
         t.Properties["SqlStatementSource"].SetValue(t, statement);
         if (expression != null) t.SetExpression("SqlStatementSource", expression);
         return t;
+    }
+
+    // Execute SQL Task trả về một dòng: cột thứ k gán vào biến thứ k (null = bỏ qua cột đó)
+    public static void ResultRow(TaskHost t, params string[] variables)
+    {
+        var sql = (ExecuteSQLTask)t.InnerObject;
+        sql.ResultSetType = ResultSetType.ResultSetType_SingleRow;
+        for (int k = 0; k < variables.Length; k++)
+        {
+            if (variables[k] == null) continue;
+            var b = (IDTSResultBinding)sql.ResultSetBindings.Add();
+            b.ResultName = k.ToString();
+            b.DtsVariableName = variables[k];
+        }
+    }
+
+    // Ràng buộc "thành công VÀ biểu thức đúng"
+    public static void ChainIf(IDTSSequence parent, Executable from, Executable to, string expression)
+    {
+        var pc = parent.PrecedenceConstraints.Add(from, to);
+        pc.Value = DTSExecResult.Success;
+        pc.EvalOp = DTSPrecedenceEvalOp.ExpressionAndConstraint;
+        pc.Expression = expression;
     }
 
     public static void Chain(IDTSSequence parent, IList<Executable> steps)
