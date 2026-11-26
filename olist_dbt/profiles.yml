@@ -1,8 +1,32 @@
-# Cách dbt kết nối tới kho dữ liệu: một file DuckDB, đường dẫn lấy từ biến DUCKDB_PATH (docker-compose.yml).
+# Cách dbt kết nối tới kho dữ liệu. Mặc định (dev): file DuckDB, đường dẫn lấy từ DUCKDB_PATH (docker-compose.yml).
+# SQL Server: thêm --target sqlserver hoặc --target sqlserver_sql.
 olist_dbt:
   target: dev
   outputs:
     dev:
       type: duckdb
       path: "{{ env_var('DUCKDB_PATH', '/home/src/warehouse/olist.duckdb') }}"
+      threads: 4
+    # SQL Server, đăng nhập Windows (bản cài trên máy). Named instance: đặt MSSQL_HOST, ví dụ localhost\SQLEXPRESS
+    sqlserver:
+      type: sqlserver
+      driver: 'ODBC Driver 18 for SQL Server'
+      server: "{{ env_var('MSSQL_HOST', 'localhost') }}"
+      port: 1433                  # bỏ qua khi server là named instance
+      database: OlistDW
+      schema: dbo
+      windows_login: true
+      trust_cert: true
+      threads: 4
+    # SQL Server, đăng nhập bằng tài khoản SQL (ví dụ chạy bằng Docker)
+    sqlserver_sql:
+      type: sqlserver
+      driver: 'ODBC Driver 18 for SQL Server'
+      server: "{{ env_var('MSSQL_HOST', 'localhost') }}"
+      port: 1433
+      database: OlistDW
+      schema: dbo
+      user: "{{ env_var('MSSQL_USER') }}"
+      password: "{{ env_var('MSSQL_PASSWORD') }}"
+      trust_cert: true
       threads: 4
