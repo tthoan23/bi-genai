@@ -82,7 +82,7 @@ Không chạy `03_staging_load.sql`, vì `08` đã tạo bảng `_load` thay cho
 | `SqlServerName` | Tên máy chủ SQL, ví dụ `localhost\SQLEXPRESS` hoặc `localhost` |
 | `DatabaseName` | `OlistDW` |
 | `RawDir` | Đường dẫn **tuyệt đối** tới `data\batches` của repo, ví dụ `D:\bi-genai\data\batches` |
-| `BatchId` | `FULL_001` |
+| `BatchId` | `FULL_001` (lưu ý: giá trị mặc định trong `Project.params` trên repo hiện đang để sẵn `INC_003` cho kịch bản test lỗi; nếu chạy mới từ đầu cần chỉnh lại thành `FULL_001`) |
 
    Cách khác: đóng VS rồi chạy `python ssis\tools\register_packages.py --server "localhost\SQLEXPRESS"`
    (tự đặt `SqlServerName` và `RawDir` theo vị trí repo).
