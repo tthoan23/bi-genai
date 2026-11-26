@@ -9,8 +9,8 @@ ranked as (
     v.*,
     row_number() over (
       partition by order_id
-      order by review_answer_ts desc nulls last,
-               review_creation_ts desc nulls last,
+      order by review_answer_ts desc,
+               review_creation_ts desc,
                review_id, source_batch_id, source_row_number
     ) as rk,
     count(*) over (partition by order_id) as review_record_count
@@ -19,11 +19,11 @@ ranked as (
 select
   order_id,
   review_id                                         as representative_review_id,
-  source_file || ':' || source_row_number::varchar  as representative_review_source_id,
+  source_file + ':' + cast(source_row_number as varchar(20)) as representative_review_source_id,
   review_score                                      as representative_review_score,
   review_creation_ts,
   review_answer_ts,
-  review_record_count::int                          as review_record_count,
+  review_record_count,
   source_batch_id
 from ranked
 where rk = 1
