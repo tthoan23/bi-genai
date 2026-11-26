@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
-  DTS:CreationDate="11/26/2026 7:24:19 PM"
+  DTS:CreationDate="11/26/2026 8:09:20 PM"
   DTS:CreationName="Microsoft.Package"
   DTS:CreatorComputerName="CHULLZZ"
   DTS:CreatorName="CHULLZZ\USER"
   DTS:Description="Transform (nghiệp vụ): intermediate.cln_* -&gt; intermediate.int_*"
-  DTS:DTSID="{416FF9C6-C195-4338-8C49-CB4E79B1DAEF}"
+  DTS:DTSID="{EDFD546E-05DB-4441-B7C2-3B29D08FFB17}"
   DTS:ExecutableType="Microsoft.Package"
   DTS:LastModifiedProductVersion="17.0.1000.7"
   DTS:LocaleID="1033"
   DTS:ObjectName="Transform_Business"
   DTS:ProtectionLevel="0"
-  DTS:VersionGUID="{60F08354-E57F-4433-A6C4-DF42FED1EF5C}">
+  DTS:VersionGUID="{FA8DF3EE-7830-4A7E-8DFC-E12504C29F20}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -21,7 +21,7 @@
       DTS:refId="Package\DFT int_geography_canonical"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{872DE3D1-9B5D-4F31-A408-C177DE6113CA}"
+      DTS:DTSID="{B34D27DC-F8C1-420A-AB46-B340F7DB6907}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT int_geography_canonical"
@@ -775,7 +775,7 @@ LEFT JOIN coords c          ON c.zip_prefix = z.zip_prefix
       DTS:refId="Package\DFT int_order_customer_map"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{7979B401-CCCD-46AF-AC19-1EE0CA76D3F5}"
+      DTS:DTSID="{3B6274E0-87D8-4F95-AC78-1B250B9AA678}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT int_order_customer_map"
@@ -1375,7 +1375,7 @@ LEFT JOIN coords c          ON c.zip_prefix = z.zip_prefix
       DTS:refId="Package\DFT int_order_item_summary"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{59B87382-42D8-487B-8FA2-3F75324F6858}"
+      DTS:DTSID="{4F79B2F9-3155-41AA-B681-442E722D8B84}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT int_order_item_summary"
@@ -2323,7 +2323,7 @@ LEFT JOIN coords c          ON c.zip_prefix = z.zip_prefix
       DTS:refId="Package\DFT int_order_payment_reconciliation"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{48343F03-FD24-4341-975F-E2E95C3D5620}"
+      DTS:DTSID="{EA5C4EBD-C4BB-4E6E-A2F3-461A2E59D58A}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT int_order_payment_reconciliation"
@@ -2999,7 +2999,7 @@ FULL OUTER JOIN intermediate.int_order_item_summary i ON i.order_id = p.order_id
       DTS:refId="Package\DFT int_order_payment_summary"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{78DB736C-508D-47C7-BD6F-49248E0849D0}"
+      DTS:DTSID="{A93A3F85-A9EA-4212-AEF5-F0AF4ECAABCE}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT int_order_payment_summary"
@@ -3672,7 +3672,7 @@ FULL OUTER JOIN intermediate.int_order_item_summary i ON i.order_id = p.order_id
       DTS:refId="Package\DFT int_order_review_representative"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{DC5F055A-F5A3-40CD-BFD0-79D3F898A845}"
+      DTS:DTSID="{EB7E3D57-D2E8-4040-B564-A298F71D5F82}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT int_order_review_representative"
@@ -4266,7 +4266,7 @@ WHERE rk = 1
       DTS:refId="Package\DFT int_order_timeline"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{52E0F449-B083-4E3F-9AFF-5B1C458EA3BC}"
+      DTS:DTSID="{2ABC7570-32FC-40FE-94A7-3617E23C46A5}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT int_order_timeline"
@@ -5726,7 +5726,7 @@ FROM intermediate.cln_orders</property>
     <DTS:Executable
       DTS:refId="Package\SQL Don bang int"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{A8EEDA06-38C9-43E3-9D10-9AF63CF7F8B9}"
+      DTS:DTSID="{4D7ED71E-2F60-4FCE-9959-4421925CECDE}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL Don bang int"
@@ -5742,7 +5742,7 @@ FROM intermediate.cln_orders</property>
     <DTS:Executable
       DTS:refId="Package\SQL Don hang bi anh huong"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{7189E308-DA42-4277-A42D-0D42AFE68DBA}"
+      DTS:DTSID="{720C9F1C-7917-4EFE-B016-1870F5431BCF}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL Don hang bi anh huong"
@@ -5760,7 +5760,7 @@ FROM intermediate.cln_orders</property>
     <DTS:Executable
       DTS:refId="Package\SQL Ghi audit"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{4712C616-4813-4B49-989E-BAB49D8A6F8F}"
+      DTS:DTSID="{7A02744E-4B69-4597-972E-79A4F082B5A8}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL Ghi audit"
@@ -5778,76 +5778,76 @@ FROM intermediate.cln_orders</property>
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{073BB535-7C81-44F0-A439-6ABA2DC593C9\}]"
+      DTS:refId="Package.PrecedenceConstraints[{0172E752-2251-4599-88CA-923EA3ABF10D\}]"
       DTS:CreationName=""
-      DTS:DTSID="{073BB535-7C81-44F0-A439-6ABA2DC593C9}"
+      DTS:DTSID="{0172E752-2251-4599-88CA-923EA3ABF10D}"
       DTS:From="Package\DFT int_geography_canonical"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{073BB535-7C81-44F0-A439-6ABA2DC593C9}"
+      DTS:ObjectName="{0172E752-2251-4599-88CA-923EA3ABF10D}"
       DTS:To="Package\SQL Don hang bi anh huong" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{08BAD55E-DCAF-4132-99FB-51A6323BE7DB\}]"
+      DTS:refId="Package.PrecedenceConstraints[{1F6FFBB5-EB73-4F1E-B162-FA81E82425B1\}]"
       DTS:CreationName=""
-      DTS:DTSID="{08BAD55E-DCAF-4132-99FB-51A6323BE7DB}"
-      DTS:From="Package\DFT int_order_payment_summary"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{08BAD55E-DCAF-4132-99FB-51A6323BE7DB}"
-      DTS:To="Package\DFT int_order_payment_reconciliation" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{0F011A23-5798-46FD-839A-4DA138C6DA2C\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{0F011A23-5798-46FD-839A-4DA138C6DA2C}"
-      DTS:From="Package\DFT int_order_payment_reconciliation"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{0F011A23-5798-46FD-839A-4DA138C6DA2C}"
-      DTS:To="Package\DFT int_order_timeline" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{17666866-2041-4C66-BFCF-AAE29F21575F\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{17666866-2041-4C66-BFCF-AAE29F21575F}"
-      DTS:From="Package\SQL Don bang int"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{17666866-2041-4C66-BFCF-AAE29F21575F}"
-      DTS:To="Package\DFT int_order_customer_map" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{2F823416-A1CE-48B8-9BB6-2891939D0B3D\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{2F823416-A1CE-48B8-9BB6-2891939D0B3D}"
+      DTS:DTSID="{1F6FFBB5-EB73-4F1E-B162-FA81E82425B1}"
       DTS:From="Package\SQL Don hang bi anh huong"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{2F823416-A1CE-48B8-9BB6-2891939D0B3D}"
+      DTS:ObjectName="{1F6FFBB5-EB73-4F1E-B162-FA81E82425B1}"
       DTS:To="Package\SQL Ghi audit" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{4A39EEC6-8D0B-462D-ADBC-1761580744DE\}]"
+      DTS:refId="Package.PrecedenceConstraints[{6D066CA2-F796-4322-9D88-A402226E0817\}]"
       DTS:CreationName=""
-      DTS:DTSID="{4A39EEC6-8D0B-462D-ADBC-1761580744DE}"
-      DTS:From="Package\DFT int_order_customer_map"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{4A39EEC6-8D0B-462D-ADBC-1761580744DE}"
-      DTS:To="Package\DFT int_order_item_summary" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{829AE282-9CC0-4F5B-886D-9901A4F412AB\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{829AE282-9CC0-4F5B-886D-9901A4F412AB}"
+      DTS:DTSID="{6D066CA2-F796-4322-9D88-A402226E0817}"
       DTS:From="Package\DFT int_order_item_summary"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{829AE282-9CC0-4F5B-886D-9901A4F412AB}"
+      DTS:ObjectName="{6D066CA2-F796-4322-9D88-A402226E0817}"
       DTS:To="Package\DFT int_order_payment_summary" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{9CE0CD63-2AF7-4C90-9557-092C5290354B\}]"
+      DTS:refId="Package.PrecedenceConstraints[{77688719-A2E7-490C-A32F-E0156D0FDA03\}]"
       DTS:CreationName=""
-      DTS:DTSID="{9CE0CD63-2AF7-4C90-9557-092C5290354B}"
-      DTS:From="Package\DFT int_order_review_representative"
+      DTS:DTSID="{77688719-A2E7-490C-A32F-E0156D0FDA03}"
+      DTS:From="Package\SQL Don bang int"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{9CE0CD63-2AF7-4C90-9557-092C5290354B}"
-      DTS:To="Package\DFT int_geography_canonical" />
+      DTS:ObjectName="{77688719-A2E7-490C-A32F-E0156D0FDA03}"
+      DTS:To="Package\DFT int_order_customer_map" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{E87871F7-FFCE-45E5-8057-547E29612070\}]"
+      DTS:refId="Package.PrecedenceConstraints[{8720187E-3425-4F61-9D2B-9515A9D6DE4E\}]"
       DTS:CreationName=""
-      DTS:DTSID="{E87871F7-FFCE-45E5-8057-547E29612070}"
+      DTS:DTSID="{8720187E-3425-4F61-9D2B-9515A9D6DE4E}"
+      DTS:From="Package\DFT int_order_payment_summary"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{8720187E-3425-4F61-9D2B-9515A9D6DE4E}"
+      DTS:To="Package\DFT int_order_payment_reconciliation" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{B2457AD0-6906-4071-BEFB-C242A4B614A9\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{B2457AD0-6906-4071-BEFB-C242A4B614A9}"
+      DTS:From="Package\DFT int_order_customer_map"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{B2457AD0-6906-4071-BEFB-C242A4B614A9}"
+      DTS:To="Package\DFT int_order_item_summary" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{B7DB91D4-AD0B-4BCA-9A11-A0768E902267\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{B7DB91D4-AD0B-4BCA-9A11-A0768E902267}"
       DTS:From="Package\DFT int_order_timeline"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{E87871F7-FFCE-45E5-8057-547E29612070}"
+      DTS:ObjectName="{B7DB91D4-AD0B-4BCA-9A11-A0768E902267}"
       DTS:To="Package\DFT int_order_review_representative" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{BDEF932A-957A-4A7A-A7FE-AC222ED929C1\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{BDEF932A-957A-4A7A-A7FE-AC222ED929C1}"
+      DTS:From="Package\DFT int_order_review_representative"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{BDEF932A-957A-4A7A-A7FE-AC222ED929C1}"
+      DTS:To="Package\DFT int_geography_canonical" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{DBC3829C-994F-44C5-9D40-5759BBDC3C3A\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{DBC3829C-994F-44C5-9D40-5759BBDC3C3A}"
+      DTS:From="Package\DFT int_order_payment_reconciliation"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{DBC3829C-994F-44C5-9D40-5759BBDC3C3A}"
+      DTS:To="Package\DFT int_order_timeline" />
   </DTS:PrecedenceConstraints>
 </DTS:Executable>

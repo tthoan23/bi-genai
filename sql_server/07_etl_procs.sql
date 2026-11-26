@@ -52,6 +52,26 @@ CREATE TABLE audit.dim_key_snapshot (
     surrogate_key int           NOT NULL,
     CONSTRAINT PK_dim_key_snapshot PRIMARY KEY (dim_name, business_key)
 );
+
+-- Dòng bị loại (không làm dừng cả bảng): giữ nội dung gốc và lý do để sửa rồi nạp lại.
+--   stage 'extract'  : Flat File Source không đọc được dòng (sai cấu trúc, giá trị dài quá cột) -> Error Output
+--   stage 'transform': dòng thiếu khoá nghiệp vụ, không đưa được vào tầng làm sạch
+IF OBJECT_ID(N'audit.reject_row', N'U') IS NULL
+CREATE TABLE audit.reject_row (
+    reject_id         bigint IDENTITY(1,1) NOT NULL CONSTRAINT PK_reject_row PRIMARY KEY,
+    batch_id          varchar(100)   NOT NULL,
+    run_id            int            NULL,          -- điền khi bước Load Staging chốt
+    table_name        nvarchar(128)  NOT NULL,
+    stage             varchar(20)    NOT NULL,
+    source_row_number int            NULL,
+    error_code        int            NULL,          -- mã lỗi SSIS
+    error_column      int            NULL,          -- lineage ID của cột lỗi trong Data Flow
+    error_description nvarchar(400)  NULL,
+    raw_data          nvarchar(max)  NULL,
+    rejected_at       datetime2(0)   NULL
+);
+IF COL_LENGTH(N'audit.extract_stat', N'rows_rejected') IS NULL
+    ALTER TABLE audit.extract_stat ADD rows_rejected bigint NULL;   -- dòng Flat File Source chuyển sang reject_row
 GO
 
 -- Khoá thay thế hiện tại của 4 dimension cấp khoá IDENTITY.
@@ -288,6 +308,30 @@ BEGIN
     INSERT #r SELECT 'T13', 'WARN', N'đơn lệch thanh toán quá 0,01 BRL (có chủ đích, mong đợi 303)', COUNT_BIG(*)
     FROM intermediate.int_order_payment_reconciliation WHERE mismatch_gt_threshold = 1;
 
+    -- T11: khoá nghiệp vụ của bảng làm sạch không trùng (bảng không có khoá chính trong database)
+    INSERT #r SELECT 'T11', 'ERROR', N'khoá không trùng: cln_order_items, cln_order_payments, cln_category_translation',
+        (SELECT COUNT_BIG(*) FROM (SELECT order_id, order_item_id FROM intermediate.cln_order_items
+                                   GROUP BY order_id, order_item_id HAVING COUNT(*) > 1) x)
+      + (SELECT COUNT_BIG(*) FROM (SELECT order_id, payment_sequential FROM intermediate.cln_order_payments
+                                   GROUP BY order_id, payment_sequential HAVING COUNT(*) > 1) x)
+      + (SELECT COUNT_BIG(*) FROM (SELECT category_name FROM intermediate.cln_category_translation
+                                   GROUP BY category_name HAVING COUNT(*) > 1) x);
+    -- T12: cột bắt buộc không trống
+    INSERT #r SELECT 'T12', 'ERROR', N'không trống: order_item_id, customer_unique_id, mã sản phẩm và người bán của dòng hàng',
+        (SELECT COUNT_BIG(*) FROM intermediate.cln_order_items WHERE order_item_id IS NULL OR product_id IS NULL OR seller_id IS NULL)
+      + (SELECT COUNT_BIG(*) FROM intermediate.cln_customers WHERE customer_unique_id IS NULL);
+    -- T14: giá trị hợp lệ
+    INSERT #r SELECT 'T14', 'ERROR', N'giá trị hợp lệ: trạng thái đơn (8 giá trị), điểm đánh giá 1–5',
+        (SELECT COUNT_BIG(*) FROM intermediate.cln_orders
+         WHERE order_status NOT IN (N'delivered', N'shipped', N'canceled', N'unavailable', N'invoiced', N'processing', N'created', N'approved'))
+      + (SELECT COUNT_BIG(*) FROM intermediate.cln_order_reviews WHERE review_score NOT BETWEEN 1 AND 5);
+    -- T15 (WARN): đơn không tìm thấy khách (fact dùng khách Unknown khoá 0)
+    INSERT #r SELECT 'T15', 'WARN', N'đơn không tìm thấy khách (gán khách Unknown)', COUNT_BIG(*)
+    FROM intermediate.int_order_customer_map WHERE missing_customer_flag = 1;
+    -- T16 (WARN): dòng bị loại trong lần chạy này (xem audit.reject_row)
+    INSERT #r SELECT 'T16', 'WARN', N'dòng bị loại vào audit.reject_row trong lần chạy này', COUNT_BIG(*)
+    FROM audit.reject_row WHERE batch_id = @batch_id AND run_id = ISNULL(audit.fn_current_run_id(@batch_id), 0);
+
     -- T08: khoá thay thế không đổi so với lần chạy thành công trước (chạy lại, nạp tăng thêm)
     INSERT #r SELECT 'T08', 'ERROR', N'khoá thay thế của dimension không đổi qua các lần nạp', COUNT_BIG(*)
     FROM audit.dim_key_snapshot s
@@ -336,6 +380,36 @@ BEGIN
     END
 END
 GO
+-- Transform_Clean gọi đầu tiên: ghi lại các dòng staging CỦA BATCH NÀY thiếu khoá nghiệp vụ.
+-- Các dòng này bị câu SQL nguồn của Transform_Clean loại; trước đây bị bỏ âm thầm.
+CREATE OR ALTER PROC audit.usp_log_missing_keys
+    @batch_id varchar(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @run_id int = ISNULL(audit.fn_current_run_id(@batch_id), 0);
+    DELETE audit.reject_row WHERE batch_id = @batch_id AND run_id = @run_id AND stage = 'transform';
+    DECLARE @k TABLE (table_name sysname, key_col sysname);
+    INSERT @k VALUES (N'orders', N'order_id'), (N'customers', N'customer_id'), (N'order_items', N'order_id'),
+                     (N'order_payments', N'order_id'), (N'products', N'product_id'), (N'sellers', N'seller_id'),
+                     (N'category_translation', N'product_category_name');
+    DECLARE @sql nvarchar(max) = N'';
+    SELECT @sql += N'INSERT audit.reject_row (batch_id, run_id, table_name, stage, source_row_number, error_description, raw_data, rejected_at)
+        SELECT @batch, @run, N''' + k.table_name + N''', ''transform'', s.source_row_number,
+               N''Thiếu khoá nghiệp vụ (' + k.key_col + N'): không đưa vào tầng làm sạch'',
+               CONCAT_WS(N''|'', ' +
+               (SELECT STRING_AGG(CAST(N's.' + QUOTENAME(c.name) AS nvarchar(max)), N', ') WITHIN GROUP (ORDER BY c.column_id)
+                FROM sys.columns c WHERE c.object_id = OBJECT_ID(N'staging.' + k.table_name)
+                  AND c.name NOT IN (N'source_file', N'source_checksum', N'source_row_number', N'source_batch_id', N'ingested_at'))
+               + N'), SYSDATETIME()
+        FROM staging.' + QUOTENAME(k.table_name) + N' s
+        WHERE s.source_batch_id = @batch AND NULLIF(TRIM(s.' + QUOTENAME(k.key_col) + N'), N'''') IS NULL;
+        '
+    FROM @k k;
+    EXEC sys.sp_executesql @sql, N'@batch varchar(100), @run int', @batch = @batch_id, @run = @run_id;
+END
+GO
+
 -- Transform_Business: các đơn cần tính lại fact trong batch này.
 --   FULL: mọi đơn. INCREMENTAL: đơn có dòng mới / đổi ở orders, order_items, order_reviews, order_payments,
 --   đơn của khách đổi thông tin, đơn có dòng hàng của người bán đổi thông tin.
@@ -434,6 +508,7 @@ BEGIN
     DELETE dwh.dim_order_status WHERE status_key <> 0;
     DELETE dwh.dim_delivery_outcome WHERE outcome_key <> 0;
     DELETE audit.etl_step_log; DELETE audit.source_manifest; DELETE audit.extract_stat; DELETE audit.ingest_file;
+    DELETE audit.reject_row;
     DELETE audit.dim_key_snapshot; DELETE audit.etl_run; DELETE audit.etl_batch;
     UPDATE audit.etl_metadata SET lset = NULL, cet = NULL, current_batch_id = NULL, last_batch_id = NULL, updated_at = NULL;
 END

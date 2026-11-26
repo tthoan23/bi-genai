@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
-  DTS:CreationDate="11/26/2026 7:24:22 PM"
+  DTS:CreationDate="11/26/2026 8:09:22 PM"
   DTS:CreationName="Microsoft.Package"
   DTS:CreatorComputerName="CHULLZZ"
   DTS:CreatorName="CHULLZZ\USER"
   DTS:Description="Test: kiểm thử kho (T02-T13); có kiểm tra mức ERROR không đạt thì package báo lỗi"
-  DTS:DTSID="{EC8B1E19-2C0C-41A9-BB16-3FFF86C77D19}"
+  DTS:DTSID="{FEB6BBBD-AD8B-428B-8F16-3408FBB9F47E}"
   DTS:ExecutableType="Microsoft.Package"
   DTS:LastModifiedProductVersion="17.0.1000.7"
   DTS:LocaleID="1033"
   DTS:ObjectName="Test_DW"
   DTS:ProtectionLevel="0"
-  DTS:VersionGUID="{3F0A9BEA-177D-4FA6-AF9B-224A0F746568}">
+  DTS:VersionGUID="{DC6FB2D6-D2F0-418E-88EB-C7FF755C0D02}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -20,7 +20,7 @@
     <DTS:Executable
       DTS:refId="Package\SQL Kiem thu kho"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{7922C05F-D0AB-43F7-A746-8AFDB7692210}"
+      DTS:DTSID="{4EAE659E-94AF-477F-A184-662A9A7D974D}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL Kiem thu kho"

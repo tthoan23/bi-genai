@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
-  DTS:CreationDate="11/26/2026 7:24:21 PM"
+  DTS:CreationDate="11/26/2026 8:09:22 PM"
   DTS:CreationName="Microsoft.Package"
   DTS:CreatorComputerName="CHULLZZ"
   DTS:CreatorName="CHULLZZ\USER"
   DTS:Description="Load Facts: dòng của các đơn bị ảnh hưởng -&gt; bảng stage (Lookup khoá dimension, không khớp -&gt; 0) -&gt; MERGE vào fact"
-  DTS:DTSID="{8C0FB9CB-8C84-476B-9AD3-1150A90DA6B9}"
+  DTS:DTSID="{F691E765-A8DE-457D-9307-AC170706E5D3}"
   DTS:ExecutableType="Microsoft.Package"
   DTS:LastModifiedProductVersion="17.0.1000.7"
   DTS:LocaleID="1033"
   DTS:ObjectName="Load_Facts"
   DTS:ProtectionLevel="0"
-  DTS:VersionGUID="{2E8CAE43-3700-4320-B7D9-41E644514BA5}">
+  DTS:VersionGUID="{4B82981F-6CEE-4A49-B1BD-9191BDE4C820}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -21,7 +21,7 @@
       DTS:refId="Package\DFT fact_order_experience"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{A33686A6-1611-406A-AA13-F69D7CACA735}"
+      DTS:DTSID="{E0E60DD7-7ADA-4696-AE2E-1595793C5E6C}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT fact_order_experience"
@@ -2764,7 +2764,7 @@ WHERE t.order_id IN (SELECT order_id FROM intermediate.affected_orders)
       DTS:refId="Package\DFT fact_order_item"
       DTS:CreationName="Microsoft.Pipeline"
       DTS:DelayValidation="True"
-      DTS:DTSID="{ED5AC4BA-7FC2-4BA3-AC5A-C0932AB17BCC}"
+      DTS:DTSID="{F4783257-6940-47B7-9961-FBAE53171EAC}"
       DTS:ExecutableType="Microsoft.Pipeline"
       DTS:LocaleID="1033"
       DTS:ObjectName="DFT fact_order_item"
@@ -4596,7 +4596,7 @@ WHERE i.order_id IN (SELECT order_id FROM intermediate.affected_orders)
     <DTS:Executable
       DTS:refId="Package\SQL Don stage"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{BF62969E-A29F-487D-9E8E-1004B592B266}"
+      DTS:DTSID="{18B7E817-FD05-42E8-9E6F-9783478137B3}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL Don stage"
@@ -4612,7 +4612,7 @@ WHERE i.order_id IN (SELECT order_id FROM intermediate.affected_orders)
     <DTS:Executable
       DTS:refId="Package\SQL Ghi audit"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{E8BC83E0-E933-4BAD-B3E0-9D3553339947}"
+      DTS:DTSID="{082DDF43-B2A8-4E5A-B636-2E31F8660A0D}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL Ghi audit"
@@ -4630,7 +4630,7 @@ WHERE i.order_id IN (SELECT order_id FROM intermediate.affected_orders)
     <DTS:Executable
       DTS:refId="Package\SQL MERGE vao fact"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
-      DTS:DTSID="{639E87F9-1036-4C96-B08F-35884FBB92C6}"
+      DTS:DTSID="{2820FC40-8A46-42B3-9D55-EA1324A5C827}"
       DTS:ExecutableType="Microsoft.ExecuteSQLTask"
       DTS:LocaleID="-1"
       DTS:ObjectName="SQL MERGE vao fact"
@@ -4646,36 +4646,36 @@ WHERE i.order_id IN (SELECT order_id FROM intermediate.affected_orders)
   </DTS:Executables>
   <DTS:PrecedenceConstraints>
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{0307E374-3C86-45C2-8633-31F09122672D\}]"
+      DTS:refId="Package.PrecedenceConstraints[{30213599-9219-481F-9E00-598B4CADB260\}]"
       DTS:CreationName=""
-      DTS:DTSID="{0307E374-3C86-45C2-8633-31F09122672D}"
+      DTS:DTSID="{30213599-9219-481F-9E00-598B4CADB260}"
       DTS:From="Package\SQL Don stage"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{0307E374-3C86-45C2-8633-31F09122672D}"
+      DTS:ObjectName="{30213599-9219-481F-9E00-598B4CADB260}"
       DTS:To="Package\DFT fact_order_experience" />
     <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{48A77C16-B7DA-40CC-8953-DDD5E7BBBB1E\}]"
+      DTS:refId="Package.PrecedenceConstraints[{33FBEED5-6C7F-4D22-BDB8-34C24D4390BA\}]"
       DTS:CreationName=""
-      DTS:DTSID="{48A77C16-B7DA-40CC-8953-DDD5E7BBBB1E}"
-      DTS:From="Package\SQL MERGE vao fact"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{48A77C16-B7DA-40CC-8953-DDD5E7BBBB1E}"
-      DTS:To="Package\SQL Ghi audit" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{B4B115EC-D6E4-4539-B3B9-1E3B2970D11D\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{B4B115EC-D6E4-4539-B3B9-1E3B2970D11D}"
-      DTS:From="Package\DFT fact_order_item"
-      DTS:LogicalAnd="True"
-      DTS:ObjectName="{B4B115EC-D6E4-4539-B3B9-1E3B2970D11D}"
-      DTS:To="Package\SQL MERGE vao fact" />
-    <DTS:PrecedenceConstraint
-      DTS:refId="Package.PrecedenceConstraints[{BFDCF774-D062-42AC-87C9-E7C526290AC7\}]"
-      DTS:CreationName=""
-      DTS:DTSID="{BFDCF774-D062-42AC-87C9-E7C526290AC7}"
+      DTS:DTSID="{33FBEED5-6C7F-4D22-BDB8-34C24D4390BA}"
       DTS:From="Package\DFT fact_order_experience"
       DTS:LogicalAnd="True"
-      DTS:ObjectName="{BFDCF774-D062-42AC-87C9-E7C526290AC7}"
+      DTS:ObjectName="{33FBEED5-6C7F-4D22-BDB8-34C24D4390BA}"
       DTS:To="Package\DFT fact_order_item" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{5921DE10-E4CF-449A-BC5D-E085E04D5CEB\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{5921DE10-E4CF-449A-BC5D-E085E04D5CEB}"
+      DTS:From="Package\DFT fact_order_item"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{5921DE10-E4CF-449A-BC5D-E085E04D5CEB}"
+      DTS:To="Package\SQL MERGE vao fact" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[{DB9D1FE8-F795-4308-A17C-3CCB0CC8470F\}]"
+      DTS:CreationName=""
+      DTS:DTSID="{DB9D1FE8-F795-4308-A17C-3CCB0CC8470F}"
+      DTS:From="Package\SQL MERGE vao fact"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="{DB9D1FE8-F795-4308-A17C-3CCB0CC8470F}"
+      DTS:To="Package\SQL Ghi audit" />
   </DTS:PrecedenceConstraints>
 </DTS:Executable>

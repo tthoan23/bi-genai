@@ -19,6 +19,7 @@ public class TypeSpec
         if (s == "i2") { t.Type = RW.DataType.DT_I2; t.Cast = "(DT_I2)"; }
         else if (s == "i4") { t.Type = RW.DataType.DT_I4; t.Cast = "(DT_I4)"; }
         else if (s == "bool") { t.Type = RW.DataType.DT_BOOL; t.Cast = "(DT_BOOL)"; }
+        else if (s == "ntext") { t.Type = RW.DataType.DT_NTEXT; t.Cast = "(DT_NTEXT)"; }
         else if (s == "date") { t.Type = RW.DataType.DT_DBDATE; t.Cast = "(DT_DBDATE)"; }
         else if (s == "ts") { t.Type = RW.DataType.DT_DBTIMESTAMP2; t.Scale = 0; t.Cast = "(DT_DBTIMESTAMP2,0)"; }
         else if (s.StartsWith("w")) { t.Type = RW.DataType.DT_WSTR; t.Length = int.Parse(s.Substring(1)); t.Cast = "(DT_WSTR," + t.Length + ")"; }
@@ -132,6 +133,20 @@ public class Flow
         return new Node(c, c.OutputCollection[0]);
     }
 
+    // Error Output của Flat File Source: dòng không đọc được (lỗi cấu trúc, giá trị dài quá cột) đi sang nhánh này
+    // thay vì làm dừng cả Data Flow.
+    public Node RedirectErrors(Node source)
+    {
+        IDTSOutput100 main = null, error = null;
+        foreach (IDTSOutput100 o in source.Comp.OutputCollection) { if (o.IsErrorOut) error = o; else main = o; }
+        foreach (IDTSOutputColumn100 oc in main.OutputColumnCollection)
+        {
+            oc.ErrorRowDisposition = DTSRowDisposition.RD_RedirectRow;
+            oc.TruncationRowDisposition = DTSRowDisposition.RD_RedirectRow;
+        }
+        return new Node(source.Comp, error);
+    }
+
     // ---------- Derived Column: luôn thêm cột mới ----------
     public Node Derive(string name, Node prev, params Col[] cols)
     {
@@ -171,7 +186,7 @@ public class Flow
         var output = c.OutputCollection[0];
         foreach (var s in specs)
         {
-            var m = Regex.Match(s, @"^(\w+)>(\w+):(.+)$");
+            var m = Regex.Match(s, @"^(.+?)>(\w+):(.+)$");   // tên cột vào có thể có dấu cách
             var vc = Find(vin, m.Groups[1].Value, name);
             i.SetUsageType(input.ID, vin, vc.LineageID, DTSUsageType.UT_READONLY);
             var t = TypeSpec.Parse(m.Groups[3].Value);

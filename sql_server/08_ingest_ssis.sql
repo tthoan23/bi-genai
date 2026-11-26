@@ -124,6 +124,8 @@ BEGIN
     END
 
     DELETE audit.ingest_file WHERE batch_id = @batch_id AND table_name = @table;
+    -- Dòng lỗi còn sót của lần chạy trước bị ngắt giữa chừng (chưa được chốt run_id)
+    DELETE audit.reject_row WHERE batch_id = @batch_id AND table_name = @table AND stage = 'extract' AND run_id IS NULL;
     INSERT audit.ingest_file (batch_id, table_name, file_path, sha256) VALUES (@batch_id, @table, @file_path, @sha);
     SET @sql = N'TRUNCATE TABLE staging.' + QUOTENAME(@table + N'_load');
     EXEC sys.sp_executesql @sql;
@@ -178,6 +180,14 @@ BEGIN
     DECLARE @lset datetime2(0), @cet datetime2(0);
     SELECT @lset = lset, @cet = cet FROM audit.etl_metadata WHERE source_name = @table;
     IF @mode = 'FULL' SET @lset = NULL;
+    DECLARE @run_id int = ISNULL(audit.fn_current_run_id(@batch_id), 0);
+
+    -- Dòng Flat File Source không đọc được đã được Data Flow chuyển sang audit.reject_row (Error Output):
+    -- chốt lần chạy cho chúng và đếm. File có rows_read + rows_rejected dòng.
+    UPDATE audit.reject_row SET run_id = @run_id, rejected_at = SYSDATETIME(),
+           error_description = ISNULL(error_description, N'Flat File Source không đọc được dòng (sai cấu trúc hoặc giá trị dài quá độ rộng cột)')
+    WHERE batch_id = @batch_id AND table_name = @table AND stage = 'extract' AND run_id IS NULL;
+    DECLARE @rejected bigint = @@ROWCOUNT;
 
     -- Đối chiếu số dòng TRƯỚC khi ghi vào staging
     SET @sql = N'SELECT @c = COUNT_BIG(*) FROM ' + @load;
@@ -237,20 +247,20 @@ BEGIN
         MERGE audit.source_manifest AS t
         USING (SELECT @batch_id AS batch_id, @file AS source_file) AS s
            ON t.batch_id = s.batch_id AND t.source_file = s.source_file
-        WHEN MATCHED THEN UPDATE SET source_checksum = @sha, row_count = @rows_read, column_list = @col_list
+        WHEN MATCHED THEN UPDATE SET source_checksum = @sha, row_count = @rows_read + @rejected, column_list = @col_list
         WHEN NOT MATCHED THEN INSERT (batch_id, source_file, source_checksum, row_count, column_list)
-                              VALUES (@batch_id, @file, @sha, @rows_read, @col_list);
+                              VALUES (@batch_id, @file, @sha, @rows_read + @rejected, @col_list);
 
         INSERT audit.etl_step_log (run_id, step, table_name, rows_read, rows_loaded, rows_rejected, status)
-        VALUES (ISNULL(audit.fn_current_run_id(@batch_id), 0), 'ingest', N'staging.' + @table,
-                @rows_read, ISNULL(@extracted, 0), 0, 'SUCCESS');
+        VALUES (@run_id, 'ingest', N'staging.' + @table,
+                @rows_read + @rejected, ISNULL(@extracted, 0), @rejected, 'SUCCESS');
 
-        DECLARE @run_id int = ISNULL(audit.fn_current_run_id(@batch_id), 0);
         DELETE audit.extract_stat WHERE batch_id = @batch_id AND run_id = @run_id AND table_name = @table;
         INSERT audit.extract_stat (batch_id, run_id, table_name, load_mode, lset, cet, file_sha256, file_skipped,
-                                   rows_read, rows_in_window, rows_changed_outside_window, rows_extracted, rows_unchanged)
+                                   rows_read, rows_in_window, rows_changed_outside_window, rows_extracted, rows_unchanged,
+                                   rows_rejected)
         VALUES (@batch_id, @run_id, @table, @mode, @lset, @cet, @sha, 0, @rows_read, ISNULL(@in_window, 0),
-                ISNULL(@changed_only, 0), ISNULL(@extracted, 0), @rows_read - ISNULL(@extracted, 0));
+                ISNULL(@changed_only, 0), ISNULL(@extracted, 0), @rows_read - ISNULL(@extracted, 0), @rejected);
 
         SET @sql = N'TRUNCATE TABLE ' + @load;
         EXEC sys.sp_executesql @sql;

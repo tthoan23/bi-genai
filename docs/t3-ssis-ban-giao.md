@@ -62,7 +62,8 @@ Cách dựng giống bài HW4 (`HW4/HW4-23127038`): Control Flow gồm các Data
 Kết quả chạy thật (26/11, Master batch `FULL_001`, 3 lần): mọi tầng khớp bản tham chiếu từng dòng
 (`verify_dw.py`); KPI 99.441 đơn, trễ 6,77%, điểm 4,09, tiền hàng 13.591.643,70 BRL; Test_DW 10 PASS, 1 WARN (T13, 303 đơn);
 chạy lại không đổi số dòng và 151.323 khoá thay thế của dimension (commit `c1915e2`).
-Điểm dừng 2 (incremental) xem mục 5. Còn thiếu: reject theo dòng (điểm dừng 3).
+Điểm dừng 2 (incremental, commit `466aace`): chạy thật FULL_001 → INC_001 → INC_002 trên Visual Studio, kho cuối khớp
+bản tham chiếu từng dòng; chạy lại INC_002 bỏ qua 9/9 file, kho không đổi. Điểm dừng 3: dòng lỗi vào `audit.reject_row`, Test_DW thêm T11–T16.
 
 ## 5. Kiến trúc đã dựng
 
@@ -76,7 +77,7 @@ sau là **Incremental Load**; `audit.usp_start_run` tự chọn chế độ (ch�
 | `Transform_Business` | Transform (nghiệp vụ) | `cln_*` → `int_*`, `affected_orders` | Lookup, Aggregate, Derived Column; trung vị toạ độ, đánh giá đại diện bằng SQL nguồn; cuối cùng xác định **đơn bị ảnh hưởng** của batch |
 | `Load_Dimensions` | Load Dimensions | `cln_*`, `int_*`, CSV seed → `dim_*` | Lookup (không khớp thì chèn, khoá `IDENTITY` không đổi), Conditional Split và OLE DB Command (SCD 1); `dim_date` bằng thủ tục |
 | `Load_Facts` | Load Facts | `int_*`, `cln_*` → stage → `fact_*` | Chỉ đơn bị ảnh hưởng: chuỗi Lookup, Derived Column → bảng stage → `audit.usp_merge_facts` (MERGE trong một transaction, giữ `dw_created_at`) |
-| `Test_DW` | Test | kho, audit | `audit.usp_check_dw` (T02–T13): thêm T08 khoá không đổi, T09–T10 đối chiếu trích xuất |
+| `Test_DW` | Test | kho, audit | `audit.usp_check_dw`: T02–T07 kho, T08 khoá không đổi, T09–T10 đối chiếu trích xuất, T11 trùng khoá, T12 không trống, T14 giá trị hợp lệ; WARN: T13 lệch thanh toán, T15 thiếu khách, T16 dòng bị loại |
 | `Master` | Điều phối | | Execute Package Task theo thứ tự; SUCCESS thì đẩy LSET = CET, lỗi thì FAILED và giữ LSET |
 
 ### Incremental Extract và Incremental Load
@@ -89,6 +90,7 @@ sau là **Incremental Load**; `audit.usp_start_run` tự chọn chế độ (ch�
 | Đối chiếu số dòng trước khi ghi | `usp_finish_ingest` | Row Count của Data Flow phải bằng số dòng trong `_load`, nếu không thì không ghi |
 | Đơn bị ảnh hưởng | `usp_build_affected_orders` | FULL: mọi đơn. INCREMENTAL: đơn có dòng mới / đổi ở orders, items, reviews, payments, đơn của khách hoặc người bán đổi thông tin |
 | MERGE fact | `usp_merge_facts` | Cập nhật đơn đổi (giữ `dw_created_at`), chèn đơn mới, xoá dòng hàng không còn |
+| Dòng lỗi | `audit.reject_row` | Extract: Flat File Source không đọc được dòng (sai cấu trúc, giá trị dài quá cột) → Error Output → `reject_row`, các dòng khác vẫn nạp. Transform: dòng thiếu khoá nghiệp vụ được ghi lại (`usp_log_missing_keys`). Giá trị đọc lỗi ngày, số vẫn giữ dòng và gắn cờ `*_parse_error` |
 | Bằng chứng | `audit.extract_stat` | Mỗi batch, mỗi file: chế độ, LSET, CET, số dòng đọc / trong cửa sổ / đổi ngoài cửa sổ / lấy / không đổi, file bị bỏ qua |
 
 Dữ liệu batch: `python scripts/make_batches.py` tạo `data/batches/FULL_001` (đến 2017-12-31), `INC_001` (đến 2018-04-30),
@@ -112,7 +114,12 @@ Máy khác: chạy `python ssis/tools/register_packages.py --server <máy chủ>
 3. Sau mỗi batch xem `SELECT * FROM audit.extract_stat WHERE batch_id = '<batch>'` và `audit.etl_run`.
 4. Sau `INC_002`: `.venv\Scripts\python.exe -X utf8 ssis\tools\verify_dw.py cln int dim fact` phải TẤT CẢ KHỚP.
 5. Chạy lại `INC_002`: mọi file bị bỏ qua (`SKIPPED`), số dòng và khoá không đổi.
-6. Lỗi xem ở tab **Output** (Debug) của Visual Studio và `audit.etl_run.error_message`.
+6. Dòng lỗi và lỗi giữa chừng: `python scripts/make_test_batch.py` tạo `INC_003` (orders thêm 1 dòng dài quá cột và
+   1 dòng thiếu `order_id`). Gây lỗi: `EXEC sp_rename 'dwh.fact_order_item_stage', 'fact_order_item_stage_tam';`,
+   chạy Master với `INC_003` → FAILED ở Load_Facts, LSET giữ nguyên. Đổi tên lại
+   (`EXEC sp_rename 'dwh.fact_order_item_stage_tam', 'fact_order_item_stage';`), chạy lại → SUCCESS, 2 dòng trong
+   `audit.reject_row`, kho không đổi.
+7. Lỗi xem ở tab **Output** (Debug) của Visual Studio và `audit.etl_run.error_message`.
 
 Sửa package: sửa `ssis/tools/BuildOlistEtl.cs` rồi chạy `build.ps1` và `register_packages.py` (nguồn gốc là chương trình
 sinh; sửa tay trong Visual Studio sẽ bị ghi đè lần build sau).

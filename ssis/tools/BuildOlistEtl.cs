@@ -117,6 +117,15 @@ class BuildOlistEtl
 
             var flow = new Flow(p, seq, "DFT " + table);
             var n = flow.FileSource("FF Source " + table, ffName);
+            // Dòng lỗi -> audit.reject_row (giữ nguyên nội dung dòng), các dòng khác vẫn tiếp tục
+            var bad = flow.RedirectErrors(n);
+            bad = flow.Derive("DER Dong loi", bad,
+                new Col("batch_id", "s100", Batch), new Col("table_name", "w128", "\"" + table + "\""),
+                new Col("stage", "s20", "\"extract\""));
+            bad = flow.Convert("CNV Noi dung dong", bad, "Flat File Source Error Output Column>raw_data:ntext");
+            flow.Destination("DST reject_row", bad, "[audit].[reject_row]",
+                A("error_code=ErrorCode", "error_column=ErrorColumn"),
+                "reject_id", "run_id", "source_row_number", "error_description", "rejected_at");
             n = flow.RowCount("Row Count", n, "User::rows_" + table);
             var trace = new List<Col> {
                 new Col("source_file", "w260", "\"" + file + "\""),
@@ -189,7 +198,9 @@ class BuildOlistEtl
         var tables = A("orders", "customers", "order_items", "order_reviews", "order_payments", "products", "sellers", "geolocation", "category_translation");
         var truncate = "";
         foreach (var t in tables) truncate += "TRUNCATE TABLE intermediate.cln_" + t + "; ";
-        var steps = new List<Executable> { Control.Sql(p, p, "SQL Don bang cln", truncate.Trim(), null) };
+        var steps = new List<Executable> {
+            BatchSql(p, p, "SQL Ghi dong thieu khoa", "EXEC audit.usp_log_missing_keys {batch};"),
+            Control.Sql(p, p, "SQL Don bang cln", truncate.Trim(), null) };
         Func<string, Flow> flowFor = delegate(string t) { var f = new Flow(p, p, "DFT cln_" + t); steps.Add(f.Task); return f; };
         Func<Flow, string, Node> source = delegate(Flow f, string t) { return f.OleSource("SRC " + t, "OlistDW", Q("src_" + t)); };
 
