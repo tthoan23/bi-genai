@@ -293,7 +293,7 @@ Nhóm đang dựng hệ thống theo từng bước. Mỗi bước xong sẽ đ�
 - [ ] Bước 7: kết nối Power BI
 - [ ] Bước 8: AI tóm tắt và giải thích
 
-Nếu giảng viên yêu cầu dùng SSIS thay Mage: xem [docs/phuong-an-ssis.md](docs/phuong-an-ssis.md) (mới ghi lại những gì phải đổi, chưa làm).
+Nếu giảng viên yêu cầu dùng SSIS thay Mage: xem [docs/phuong-an-ssis.md](docs/phuong-an-ssis.md) (phương án chuyển đổi). Package nạp Nguồn → Staging (`Ingest_Staging.dtsx`) được hướng dẫn tại [docs/task2-nap-staging.md](docs/task2-nap-staging.md).
 
 ## 11. Xử lý sự cố
 
